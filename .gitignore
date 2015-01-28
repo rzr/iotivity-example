@@ -1,0 +1,12 @@
+*~
+a.out
+main
+*.o
+debian/*.debhelper.log
+client
+server
+*.exe
+bin/*
+*#
+**/**#**
+.#*
