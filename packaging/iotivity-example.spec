@@ -24,11 +24,13 @@ that share a single gpio output as IoTivity resource.
 %setup -q
 
 %build
-%__make %{?_smp_mflags}
+%__make %{?_smp_mflags} \
+ config_mraa=1
 
 
 %install
-%__make install DEST_LIB_DIR=%{buildroot}%{_libdir}/%{name}/
+%__make install DEST_LIB_DIR=%{buildroot}%{_libdir}/%{name}/ \
+ config_mraa=1
 
 
 %fdupes %{buildroot}
