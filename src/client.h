@@ -35,33 +35,33 @@
 
 class LED
 {
-  std::shared_ptr<OC::OCResource> m_resourceHandle;
-  OC::OCRepresentation m_ledRepresentation;
-  OC::GetCallback m_GETCallback;
-  OC::PutCallback m_PUTCallback;
-  void onGet(const OC::HeaderOptions&, const OC::OCRepresentation&, int);
-  void onPut(const OC::HeaderOptions&, const OC::OCRepresentation&, int);
-public:
-  void get();
-  void put(int);
-  LED(std::shared_ptr<OC::OCResource> Resource);
-  virtual ~LED();
+        std::shared_ptr<OC::OCResource> m_resourceHandle;
+        OC::OCRepresentation m_ledRepresentation;
+        OC::GetCallback m_GETCallback;
+        OC::PutCallback m_PUTCallback;
+        void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+        void onPut(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+    public:
+        void get();
+        void put(int);
+        LED(std::shared_ptr<OC::OCResource> Resource);
+        virtual ~LED();
 };
 
 
 class IoTClient
 {
-  std::shared_ptr<LED> m_platformLED;
-  std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-  OC::FindCallback m_resourceDiscoveryCallback;
-  void initializePlatform();
-  void discoveredResource(std::shared_ptr<OC::OCResource>);
-public:
-  std::shared_ptr<LED> getPlatformLED();
-  void findResource();
-  IoTClient();
-  virtual ~IoTClient();
-  static void DisplayMenu();
+        std::shared_ptr<LED> m_platformLED;
+        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        OC::FindCallback m_resourceDiscoveryCallback;
+        void initializePlatform();
+        void discoveredResource(std::shared_ptr<OC::OCResource>);
+    public:
+        std::shared_ptr<LED> getPlatformLED();
+        void findResource();
+        IoTClient();
+        virtual ~IoTClient();
+        static void DisplayMenu();
 };
 
 #endif /* CLIENT_H_ */

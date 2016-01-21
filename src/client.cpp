@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -29,14 +30,14 @@ using namespace OC;
 
 shared_ptr<LED> IoTClient::getPlatformLED()
 {
-  return m_platformLED;
+    return m_platformLED;
 }
 
 LED::LED(shared_ptr<OCResource> Resource)
 {
-  m_resourceHandle = Resource;
-  m_GETCallback = bind(&LED::onGet, this, placeholders::_1, placeholders::_2, placeholders::_3);
-  m_PUTCallback = bind(&LED::onPut, this, placeholders::_1, placeholders::_2, placeholders::_3);
+    m_resourceHandle = Resource;
+    m_GETCallback = bind(&LED::onGet, this, placeholders::_1, placeholders::_2, placeholders::_3);
+    m_PUTCallback = bind(&LED::onPut, this, placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 LED::~LED()
@@ -45,109 +46,111 @@ LED::~LED()
 
 void LED::get()
 {
-  QueryParamsMap params;
-  m_resourceHandle->get(params, m_GETCallback);
+    QueryParamsMap params;
+    m_resourceHandle->get(params, m_GETCallback);
 }
 
 void LED::put(int Switch)
 {
-  QueryParamsMap params;
-  OCRepresentation rep;
-  rep.setValue(Config::m_key, Switch);
-  m_resourceHandle->put(rep, params, m_PUTCallback);
+    QueryParamsMap params;
+    OCRepresentation rep;
+    rep.setValue(Config::m_key, Switch);
+    m_resourceHandle->put(rep, params, m_PUTCallback);
 }
 
-void LED::onGet(const HeaderOptions& headerOptions, const OCRepresentation& representation,
+void LED::onGet(const HeaderOptions &headerOptions, const OCRepresentation &representation,
                 int errCode)
 {
-  if (errCode == OC_STACK_OK)
+    if (errCode == OC_STACK_OK)
     {
-      int value;
-      representation.getValue(Config::m_key, value);
-      cout << endl << endl << "LED switch state is: " << value << endl;
+        int value;
+        representation.getValue(Config::m_key, value);
+        cout << endl << endl << "LED switch state is: " << value << endl;
     }
-  else {
-    cerr << endl << endl << "Error in GET response from LED resource" << endl;
-  }
-  IoTClient::DisplayMenu();
+    else
+    {
+        cerr << endl << endl << "Error in GET response from LED resource" << endl;
+    }
+    IoTClient::DisplayMenu();
 }
 
-void LED::onPut(const HeaderOptions& headerOptions, const OCRepresentation& representation,
+void LED::onPut(const HeaderOptions &headerOptions, const OCRepresentation &representation,
                 int errCode)
 {
-  if (errCode == OC_STACK_OK)
+    if (errCode == OC_STACK_OK)
     {
-      int value;
-      representation.getValue(Config::m_key, value);
-      cout << endl << endl << "Set LED switch to: " << value << endl;
+        int value;
+        representation.getValue(Config::m_key, value);
+        cout << endl << endl << "Set LED switch to: " << value << endl;
     }
-  else {
-    cerr << endl << endl << "Error in PUT response from LED resource" << endl;
-  }
-  IoTClient::DisplayMenu();
+    else
+    {
+        cerr << endl << endl << "Error in PUT response from LED resource" << endl;
+    }
+    IoTClient::DisplayMenu();
 }
 
 
 IoTClient::IoTClient()
 {
-  cout << "Running IoTClient constructor" << endl;
-  initializePlatform();
+    cout << "Running IoTClient constructor" << endl;
+    initializePlatform();
 }
 
 IoTClient::~IoTClient()
 {
-  cout << "Running IoTClient destructor" << endl;
+    cout << "Running IoTClient destructor" << endl;
 }
 
 void IoTClient::initializePlatform()
 {
-  m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc, ModeType::Client, "0.0.0.0",
-                                                 0, OC::QualityOfService::HighQos);
-  OCPlatform::Configure(*m_platformConfig);
-  m_resourceDiscoveryCallback = bind(&IoTClient::discoveredResource, this, placeholders::_1);
+    m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc, ModeType::Client, "0.0.0.0",
+                       0, OC::QualityOfService::HighQos);
+    OCPlatform::Configure(*m_platformConfig);
+    m_resourceDiscoveryCallback = bind(&IoTClient::discoveredResource, this, placeholders::_1);
 }
 
 void IoTClient::findResource()
 {
-  string coap_multicast_discovery = string(OC_WELL_KNOWN_QUERY "?if=" );
-  coap_multicast_discovery += Config::m_interface;
-  OCPlatform::findResource("", coap_multicast_discovery.c_str(), m_resourceDiscoveryCallback,
-                           OC::QualityOfService::LowQos);
+    string coap_multicast_discovery = string(OC_WELL_KNOWN_QUERY "?if=" );
+    coap_multicast_discovery += Config::m_interface;
+    OCPlatform::findResource("", coap_multicast_discovery.c_str(), m_resourceDiscoveryCallback,
+                             OC::QualityOfService::LowQos);
 }
 
 void IoTClient::discoveredResource(shared_ptr<OCResource> Resource)
 {
-  try
+    try
     {
-      if (Resource)
+        if (Resource)
         {
-          string resourceUri = Resource->uri();
-          string hostAddress = Resource->host();
+            string resourceUri = Resource->uri();
+            string hostAddress = Resource->host();
 
-          cout << "\nFound Resource" << endl << "Resource Types:" << endl;
-          for (auto& resourceTypes : Resource->getResourceTypes())
+            cout << "\nFound Resource" << endl << "Resource Types:" << endl;
+            for (auto & resourceTypes : Resource->getResourceTypes())
             {
-              cout << "\t" << resourceTypes << endl;
+                cout << "\t" << resourceTypes << endl;
             }
 
-          cout << "Resource Interfaces: " << endl;
-          for (auto& resourceInterfaces : Resource->getResourceInterfaces())
+            cout << "Resource Interfaces: " << endl;
+            for (auto & resourceInterfaces : Resource->getResourceInterfaces())
             {
-              cout << "\t" << resourceInterfaces << endl;
+                cout << "\t" << resourceInterfaces << endl;
             }
-          cout << "Resource uri: " << resourceUri << endl;
-          cout << "host: " << hostAddress << endl;
+            cout << "Resource uri: " << resourceUri << endl;
+            cout << "host: " << hostAddress << endl;
 
-          if (resourceUri == Config::m_endpoint)
+            if (resourceUri == Config::m_endpoint)
             {
-              m_platformLED = make_shared<LED>(Resource);
+                m_platformLED = make_shared<LED>(Resource);
             }
         }
-      IoTClient::DisplayMenu();
+        IoTClient::DisplayMenu();
     }
-  catch (OCException& ex)
+    catch (OCException &ex)
     {
-      cerr << "Caught exception in discoveredResource: " << ex.reason() << endl;
+        cerr << "Caught exception in discoveredResource: " << ex.reason() << endl;
     }
 }
 
@@ -155,45 +158,45 @@ void IoTClient::discoveredResource(shared_ptr<OCResource> Resource)
 
 void IoTClient::DisplayMenu()
 {
-  cout << "\nEnter:"<<endl
-       <<"0) Display this menu"<<endl
-       <<"1) Turn LED ON"<<endl
-       <<"2) Turn LED OFF"<<endl
-       <<"9) Quit"<<endl;
+    cout << "\nEnter:" << endl
+         << "0) Display this menu" << endl
+         << "1) Turn LED ON" << endl
+         << "2) Turn LED OFF" << endl
+         << "9) Quit" << endl;
 }
 
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  IoTClient client;
-  cout << "Performing Discovery..." << endl;
-  client.findResource();
-  int choice;
-  do
+    IoTClient client;
+    cout << "Performing Discovery..." << endl;
+    client.findResource();
+    int choice;
+    do
     {
-      cin >> choice;
-      switch (choice)
+        cin >> choice;
+        switch (choice)
         {
-        case 0:
-          IoTClient::DisplayMenu();
-          break;
-        case 1:
-          if (client.getPlatformLED())
-            client.getPlatformLED()->put(1);
-          else
-            cout << "LED resource not yet discovered" << endl;
-          break;
-        case 2:
-          if (client.getPlatformLED())
-            client.getPlatformLED()->put(0);
-          else
-            cout << "LED resource not yet discovered" << endl;
-          break;
-        case 9:
-        default:
-          return 0;
+            case 0:
+                IoTClient::DisplayMenu();
+                break;
+            case 1:
+                if (client.getPlatformLED())
+                    client.getPlatformLED()->put(1);
+                else
+                    cout << "LED resource not yet discovered" << endl;
+                break;
+            case 2:
+                if (client.getPlatformLED())
+                    client.getPlatformLED()->put(0);
+                else
+                    cout << "LED resource not yet discovered" << endl;
+                break;
+            case 9:
+            default:
+                return 0;
         }
     }
-  while (choice != 9);
-  return 0;
+    while (choice != 9);
+    return 0;
 }
