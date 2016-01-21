@@ -1,5 +1,5 @@
 Name:           iotivity-example
-Version:        0.0.0
+Version:        0.9.0
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
@@ -14,6 +14,8 @@ BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
+BuildRequires:  mraa-devel
+BuildRequires:  boost-devel
 
 
 %description
