@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -27,9 +28,8 @@
 #include <iostream>
 #include <memory>
 
-#include <OCPlatform.h>
-#include <OCApi.h>
-
+#include <iotivity/resource/OCPlatform.h>
+#include <iotivity/resource/OCApi.h>
 
 class IoTServer
 {
