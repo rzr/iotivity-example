@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -23,9 +24,9 @@
 #include "config.h"
 
 std::string Config::m_interface = "iotivity.example.resources";
-std::string Config::m_type = "Platform.Led";
+std::string Config::m_type = "platform.led";
 std::string Config::m_endpoint = "/led";
 std::string Config::m_key = "switch";
 
-/* default will work on minnowmax as GPIO_I2S_DO **/
-unsigned int Config::m_gpio = 18;
+/* default will work on minnowmax calamari's LED3 **/
+unsigned int Config::m_gpio = 21;
