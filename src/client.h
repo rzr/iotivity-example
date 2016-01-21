@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -26,10 +27,10 @@
 #include <memory>
 #include <iostream>
 
-#include "ocstack.h"
-#include "OCApi.h"
-#include "OCPlatform.h"
-#include "OCResource.h"
+#include <iotivity/resource/csdk/stack/ocstack.h>
+#include <iotivity/resource/OCApi.h>
+#include <iotivity/resource/OCPlatform.h>
+#include <iotivity/resource/OCResource.h>
 
 
 class LED
@@ -56,7 +57,7 @@ class IoTClient
   void initializePlatform();
   void discoveredResource(std::shared_ptr<OC::OCResource>);
 public:
-  shared_ptr<LED> getPlatformLED();
+  std::shared_ptr<LED> getPlatformLED();
   void findResource();
   IoTClient();
   virtual ~IoTClient();
