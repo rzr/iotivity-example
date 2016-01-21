@@ -28,33 +28,33 @@
 
 namespace Sensors
 {
-  extern mraa_gpio_context led_gpio;
+    extern mraa_gpio_context led_gpio;
 
-  inline void SetupPins(int pin)
-  {
-    led_gpio = mraa_gpio_init(pin);
-    if (led_gpio != NULL) // Set direction to OUTPUT
-      mraa_gpio_dir(led_gpio, MRAA_GPIO_OUT);
-  }
+    inline void SetupPins(int pin)
+    {
+        led_gpio = mraa_gpio_init(pin);
+        if (led_gpio != NULL) // Set direction to OUTPUT
+            mraa_gpio_dir(led_gpio, MRAA_GPIO_OUT);
+    }
 
-  inline void ClosePins()
-  {
-    mraa_gpio_close(led_gpio);
-  }
+    inline void ClosePins()
+    {
+        mraa_gpio_close(led_gpio);
+    }
 
-  inline void SetOnboardLed(int on)
-  {
-    if (led_gpio == NULL)
-      {
-        led_gpio = mraa_gpio_init(Config::m_gpio);
-        if (led_gpio != NULL)  // Set direction to OUTPUT
-          mraa_gpio_dir(led_gpio, MRAA_GPIO_OUT);
-	    else
-          exit(-1);
-      }
-    if (led_gpio != NULL) // Writes into GPIO
-      mraa_gpio_write(led_gpio, on);
-  }
+    inline void SetOnboardLed(int on)
+    {
+        if (led_gpio == NULL)
+        {
+            led_gpio = mraa_gpio_init(Config::m_gpio);
+            if (led_gpio != NULL)  // Set direction to OUTPUT
+                mraa_gpio_dir(led_gpio, MRAA_GPIO_OUT);
+            else
+                exit(-1);
+        }
+        if (led_gpio != NULL) // Writes into GPIO
+            mraa_gpio_write(led_gpio, on);
+    }
 
 }
 #endif // SENSORS_H_

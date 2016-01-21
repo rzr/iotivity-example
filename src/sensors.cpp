@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
