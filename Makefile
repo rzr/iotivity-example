@@ -3,6 +3,7 @@
 # //
 # // Copyright 2014 Intel Corporation.
 # // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+# // Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # //
@@ -20,32 +21,53 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-package?=iotivity-example
-
 default: all
 
-CXXFLAGS+=-std=c++11 -I/usr/include/iotivity -I.
+package?=iotivity-example
 
-LIBS+= -loc -loc_logger -loctbstack -lcoap
-LIBS+=-lmraa
+config_mraa?=1
 
-bindir?=bin
+DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
+local_bindir?=bin
+local_bindir?=opt
 vpath+=src
 VPATH+=src
-srcs?=config.cpp sensors.cpp
-objs?=${srcs:.cpp=.o}
-client?=${bindir}/client
-server?=${bindir}/server
-DEST_LIB_DIR?=${DESTDIR}/usr/lib/${package}/
 
-all: ${server} ${client}
+CPPFLAGS+=-I. \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/ \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/csdk/stack/ \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/oc_logger/ \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/stack/
+
+CXXFLAGS+=-std=c++11
+LIBS+= -loc -loc_logger -loctbstack -lcoap
+
+srcs?=config.cpp
+objs?=${srcs:.cpp=.o}
+client?=${local_bindir}/client
+server_objs?=sensors.o
+server?=${local_bindir}/server
+
+all?=${client}
+
+ifeq (${config_mraa},1)
+LIBS+=-lmraa
+all+=${server}
+
+${local_bindir}/server: server.o ${server_objs} ${objs}
+	@-mkdir -p ${@D}
+	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+endif
+
+all: ${all}
+
+${local_bindir}/%: %.o ${objs}
+	@-mkdir -p ${@D}
+	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
 run: ${client}
 	${<D}/${<F}
-
-bin/%: %.o ${objs}
-	@-mkdir -p ${@D}
-	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
 clean:
 	rm -f *.o *~ ${objs} */*.o
@@ -53,6 +75,7 @@ clean:
 distclean: clean
 	rm -f ${client} ${server}
 
-install:${client} ${server}
+install: ${all}
 	install -d ${DEST_LIB_DIR}
 	install $^ ${DEST_LIB_DIR}
+
