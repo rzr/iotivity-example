@@ -112,9 +112,12 @@ void IoTClient::initializePlatform()
 
 void IoTClient::findResource()
 {
-    string coap_multicast_discovery = string(OC_WELL_KNOWN_QUERY "?if=" );
+    string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI "?if=" );
     coap_multicast_discovery += Config::m_interface;
-    OCPlatform::findResource("", coap_multicast_discovery.c_str(), m_resourceDiscoveryCallback,
+    OCConnectivityType connectivityType(CT_ADAPTER_IP);
+    OCPlatform::findResource("", coap_multicast_discovery.c_str(),
+                             connectivityType,
+                             m_resourceDiscoveryCallback,
                              OC::QualityOfService::LowQos);
 }
 
