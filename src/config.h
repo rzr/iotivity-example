@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -29,17 +30,17 @@
 /** Pseudo singleton class to store common configuration variables **/
 class Config
 {
-public:
-  /** public interface (used both sides) **/
-  static std::string  m_interface;
-  /** type of resource (used both sides) **/
-  static std::string  m_type;
-  /** url's path (used both sides) **/
-  static std::string  m_endpoint;
-  /** key (used both sides) **/
-  static std::string  m_key;
-  /** gpio logical pin (only used in server) **/
-  static unsigned int m_gpio;
+    public:
+        /** public interface (used both sides) **/
+        static std::string  m_interface;
+        /** type of resource (used both sides) **/
+        static std::string  m_type;
+        /** url's path (used both sides) **/
+        static std::string  m_endpoint;
+        /** key (used both sides) **/
+        static std::string  m_key;
+        /** gpio logical pin (only used in server) **/
+        static unsigned int m_gpio;
 };
 
 #endif /* CONFIG_H_ */
