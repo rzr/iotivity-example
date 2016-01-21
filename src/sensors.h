@@ -3,6 +3,7 @@
 //
 // Copyright 2014 Intel Corporation.
 // Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
+// Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -48,6 +49,8 @@ namespace Sensors
         led_gpio = mraa_gpio_init(Config::m_gpio);
         if (led_gpio != NULL)  // Set direction to OUTPUT
           mraa_gpio_dir(led_gpio, MRAA_GPIO_OUT);
+	    else
+          exit(-1);
       }
     if (led_gpio != NULL) // Writes into GPIO
       mraa_gpio_write(led_gpio, on);
