@@ -36,12 +36,13 @@ VPATH+=src
 CPPFLAGS+=-I. \
  -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity \
  -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/ \
+ -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/c_common \
  -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/csdk/stack/ \
  -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/oc_logger/ \
  -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/stack/
 
 CXXFLAGS+=-std=c++11
-LIBS+= -loc -loc_logger -loctbstack -lcoap
+LIBS+= -loc -loc_logger -loctbstack
 
 srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
