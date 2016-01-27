@@ -49,8 +49,9 @@ objs?=${srcs:.cpp=.o}
 client?=${local_bindir}/client
 server_objs?=sensors.o
 server?=${local_bindir}/server
+observer?=${local_bindir}/observer
 
-all?=${client}
+all?=${client} ${observer}
 
 ifeq (${config_mraa},1)
 LIBS+=-lmraa
