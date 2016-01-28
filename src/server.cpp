@@ -87,6 +87,7 @@ void IoTServer::putLEDRepresentation()
     int state = 0;
     m_ledRepresentation.getValue(Config::m_key, state);
     SetOnboardLed(state);
+    OCStackResult result = OCPlatform::notifyAllObservers(m_ledResource);
     if (state == 0)
         cout << "Turned off LED" << endl;
     else if (state == 1)
