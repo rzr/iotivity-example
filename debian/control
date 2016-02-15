@@ -1,5 +1,5 @@
 Source: iotivity-example
-Section: unknown
+Section: network
 Priority: optional
 Maintainer: Philippe Coval <philippe.coval@osg.samsung.com>
 Build-Depends: debhelper (>= 8.0.0)
