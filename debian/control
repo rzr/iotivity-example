@@ -1,11 +1,13 @@
 Source: iotivity-example
-Section: network
+Section: net
 Priority: optional
 Maintainer: Philippe Coval <philippe.coval@osg.samsung.com>
-Build-Depends: debhelper (>= 8.0.0)
-Standards-Version: 3.9.4,
+Build-Depends: debhelper (>= 8.0.0),
  iotivity-dev,
+ libboost-program-options-dev,
+ libboost-thread-dev,
  mraa-dev
+Standards-Version: 3.9.4
 Homepage: <insert the upstream URL, if relevant>
 #Vcs-Git: git://git.debian.org/collab-maint/iotivity-example.git
 #Vcs-Browser: http://git.debian.org/?p=collab-maint/iotivity-example.git;a=summary
