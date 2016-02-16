@@ -162,9 +162,9 @@ void IoTClient::discoveredResource(shared_ptr<OCResource> Resource)
 void IoTClient::DisplayMenu()
 {
     cout << "\nEnter:" << endl
-         << "0) Display this menu" << endl
+         << "*) Display this menu" << endl
+         << "0) Turn LED OFF" << endl
          << "1) Turn LED ON" << endl
-         << "2) Turn LED OFF" << endl
          << "9) Quit" << endl;
 }
 
@@ -181,7 +181,10 @@ int main(int argc, char *argv[])
         switch (choice)
         {
             case 0:
-                IoTClient::DisplayMenu();
+                if (client.getPlatformLED())
+                    client.getPlatformLED()->put(0);
+                else
+                    cout << "LED resource not yet discovered" << endl;
                 break;
             case 1:
                 if (client.getPlatformLED())
@@ -189,15 +192,11 @@ int main(int argc, char *argv[])
                 else
                     cout << "LED resource not yet discovered" << endl;
                 break;
-            case 2:
-                if (client.getPlatformLED())
-                    client.getPlatformLED()->put(0);
-                else
-                    cout << "LED resource not yet discovered" << endl;
-                break;
             case 9:
+	      return 0;
             default:
-                return 0;
+                IoTClient::DisplayMenu();
+		break;
         }
     }
     while (choice != 9);
