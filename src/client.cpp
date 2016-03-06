@@ -168,6 +168,9 @@ void IoTClient::DisplayMenu()
          << "9) Quit" << endl;
 }
 
+#if 1
+#define main client_main
+#endif
 
 int main(int argc, char *argv[])
 {
