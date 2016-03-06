@@ -26,6 +26,7 @@
 using namespace std;
 using namespace OC;
 
+IoTObserver* IoTObserver::mInstance = nullptr;
 const OC::ObserveType IoTObserver::OBSERVE_TYPE_TO_USE = OC::ObserveType::Observe;
 
 
@@ -34,6 +35,15 @@ IoTObserver::IoTObserver()
   cout << "Running IoTObserver constructor" << endl;
   initializePlatform();
 }
+
+IoTObserver* IoTObserver::getInstance()
+{
+	if ( IoTObserver::mInstance == 0 ) {
+	 mInstance = new IoTObserver;
+	}
+	return mInstance;
+}
+
 
 IoTObserver::~IoTObserver()
 {
