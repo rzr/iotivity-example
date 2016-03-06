@@ -31,6 +31,7 @@
 #include <iotivity/resource/OCPlatform.h>
 #include <iotivity/resource/OCResource.h>
 
+int observer_main(int argc, char *argv[]);
 
 
 class IoTObserver
@@ -49,6 +50,10 @@ public:
   virtual ~IoTObserver();
   static void DisplayMenu();
   static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+
+  static IoTObserver* getInstance();
+  static IoTObserver* mInstance;
+
 };
 
 #endif /* OBSERVER_H_ */
