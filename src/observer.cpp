@@ -140,6 +140,9 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
     }
 
 }
+#if 1
+#define main observer_main
+#endif
 
 int main(int argc, char *argv[])
 {
