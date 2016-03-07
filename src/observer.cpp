@@ -19,6 +19,7 @@
 // limitations under the License.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#include <cstdio>
 
 #include "config.h"
 #include "observer.h"
@@ -32,12 +33,13 @@ const OC::ObserveType IoTObserver::OBSERVE_TYPE_TO_USE = OC::ObserveType::Observ
 
 IoTObserver::IoTObserver()
 {
-  cout << "Running IoTObserver constructor" << endl;
+	Config::log(__PRETTY_FUNCTION__);
   initializePlatform();
 }
 
 IoTObserver* IoTObserver::getInstance()
 {
+	Config::log(__PRETTY_FUNCTION__);
 	if ( IoTObserver::mInstance == 0 ) {
 	 mInstance = new IoTObserver;
 	}
@@ -47,11 +49,13 @@ IoTObserver* IoTObserver::getInstance()
 
 IoTObserver::~IoTObserver()
 {
-  cout << "Running IoTObserver destructor" << endl;
+	Config::log(__PRETTY_FUNCTION__);
 }
 
 void IoTObserver::initializePlatform()
 {
+	Config::log(__PRETTY_FUNCTION__);
+
   m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc, ModeType::Client, "0.0.0.0",
 						 0, OC::QualityOfService::HighQos);
   OCPlatform::Configure(*m_platformConfig);
@@ -60,7 +64,9 @@ void IoTObserver::initializePlatform()
 
 void IoTObserver::findResource()
 {
-  string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI "?if=" );
+	Config::log(__PRETTY_FUNCTION__);
+
+	string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI "?if=" );
   coap_multicast_discovery += Config::m_interface;
   OCConnectivityType connectivityType(CT_ADAPTER_IP);
   OCPlatform::findResource("", coap_multicast_discovery.c_str(),
@@ -71,6 +77,8 @@ void IoTObserver::findResource()
 
 void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
 {
+	Config::log(__PRETTY_FUNCTION__);
+
   try
     {
       if (resource)
@@ -111,6 +119,8 @@ void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
 void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation& rep,
 			    const int& eCode, const int& sequenceNumber)
 {
+	Config::log(__PRETTY_FUNCTION__);
+
   try
     {
       if(eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
@@ -129,7 +139,10 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
 	  int state = 0;
 	  rep.getValue( Config::m_key, state);
 
-	  std::cout << Config::m_key <<"=" << state << std::endl;
+	  char line[1024];
+	  snprintf(line,1024,"### %s=%d\m", Config::m_key.c_str(), state );
+	  Config::log(line);
+
         }
       else
         {
