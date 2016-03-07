@@ -165,6 +165,7 @@ void IoTClient::DisplayMenu()
          << "*) Display this menu" << endl
          << "0) Turn LED OFF" << endl
          << "1) Turn LED ON" << endl
+         << "2) Toggle LED" << endl
          << "9) Quit" << endl;
 }
 
@@ -175,29 +176,36 @@ int main(int argc, char *argv[])
     cout << "Performing Discovery..." << endl;
     client.findResource();
     int choice;
+    bool state=false;
     do
     {
         cin >> choice;
         switch (choice)
         {
             case 0:
-                if (client.getPlatformLED())
-                    client.getPlatformLED()->put(0);
-                else
-                    cout << "LED resource not yet discovered" << endl;
-                break;
-            case 1:
-                if (client.getPlatformLED())
-                    client.getPlatformLED()->put(1);
-                else
-                    cout << "LED resource not yet discovered" << endl;
-                break;
-            case 9:
-	      return 0;
-            default:
-                IoTClient::DisplayMenu();
-		break;
+	      state=false;
+	      break;
+	case 1:
+	  state=true;
+	  break;
+
+	case 2:
+	  state=!state;
+	  break;
+
+	case 9:
+	  return 0;
+
+	default:
+	  IoTClient::DisplayMenu();
+	  break;
         }
+	
+	if (client.getPlatformLED())
+	  client.getPlatformLED()->put(state);
+	else
+	  cout << "LED resource not yet discovered" << endl;
+	
     }
     while (choice != 9);
     return 0;
