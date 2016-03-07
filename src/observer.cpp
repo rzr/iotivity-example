@@ -66,7 +66,7 @@ void IoTObserver::findResource()
 {
 	Config::log(__PRETTY_FUNCTION__);
 
-	string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI "?if=" );
+	string coap_multicast_discovery(OC_RSRVD_WELL_KNOWN_URI "?if=" );
   coap_multicast_discovery += Config::m_interface;
   OCConnectivityType connectivityType(CT_ADAPTER_IP);
   OCPlatform::findResource("", coap_multicast_discovery.c_str(),
@@ -136,11 +136,19 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
 
 	  std::cout << "OBSERVE RESULT:"<<std::endl;
 	  std::cout << "\tSequenceNumber: "<< sequenceNumber << std::endl;
-	  int state = 0;
-	  rep.getValue( Config::m_key, state);
+	  string value = "42";
 
+	  if ( rep.hasAttribute(Config::m_key) ) {
+		  value = rep.getValueToString( Config::m_key );
+	  }
+
+	  std::cout << "value="<< value <<std::endl;
 	  char line[1024];
-	  snprintf(line,1024,"### %s=%d\n", Config::m_key.c_str(), state );
+	  snprintf(line,1024,"### [%d], %s=%s\n\n",
+			  rep.numberOfAttributes(),
+			  Config::m_key.c_str(),
+			  value.c_str());
+
 	  Config::log(line);
 
         }
