@@ -140,7 +140,7 @@ void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepre
 	  rep.getValue( Config::m_key, state);
 
 	  char line[1024];
-	  snprintf(line,1024,"### %s=%d\m", Config::m_key.c_str(), state );
+	  snprintf(line,1024,"### %s=%d\n", Config::m_key.c_str(), state );
 	  Config::log(line);
 
         }
