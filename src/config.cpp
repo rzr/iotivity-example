@@ -35,6 +35,6 @@ unsigned int Config::m_gpio = 21;
 #include <dlog.h>
 void Config::log(char const * const message)
 {
-	char* LOGTAG="LOG";
+	char const * const LOGTAG="LOG";
 	dlog_print(DLOG_INFO, LOGTAG, message);
 }
