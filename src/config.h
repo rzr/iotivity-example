@@ -41,6 +41,11 @@ class Config
         static std::string  m_key;
         /** gpio logical pin (only used in server) **/
         static unsigned int m_gpio;
+
+        static void log(char const * const message);
+        static void log(std::string & message) { log(message.c_str() ); }
+
 };
+
 
 #endif /* CONFIG_H_ */
