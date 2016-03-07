@@ -412,12 +412,25 @@ main(int argc, char *argv[])
 {
 	appdata_s ad = { 0, };
 	int ret = 0;
+	{
 	elm_init(argc, argv);
 	int n = ecore_thread_max_get();
 	printf("Initial max threads: %d\n", n);
+	}
 
+#if 0
     // char filename[100] = "/opt/usr/apps/tmp/out.tmp";
 	char filename[100] = "/tmp/out.tmp";
+	freopen(filename,"w",stdout);
+
+
+    char mode[] = "0777";
+    int i;
+       i = strtol(mode, 0, 8);
+       i = chmod (filename,i);
+
+
+#endif
 
 #if 0
     string line;
@@ -431,12 +444,6 @@ main(int argc, char *argv[])
     }
 #endif
 
-	freopen(filename,"w",stdout);
-
-    char mode[] = "0777";
-    int i;
-       i = strtol(mode, 0, 8);
-       i = chmod (filename,i);
 
 
 	ui_app_lifecycle_callback_s event_callback = { 0, };
