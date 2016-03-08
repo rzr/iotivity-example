@@ -1,8 +1,12 @@
+#include "config.h"
+
 #include <assert.h>
 #include <Evas.h>
 
+
 #include "iotivityexample.h"
 #include "observer.h"
+#include "client.h"
 
 typedef struct appdata {
 	Evas_Object *win;
@@ -11,7 +15,9 @@ typedef struct appdata {
 	Evas_Object *output;
 	Evas_Object *input;
 	Evas_Object *eval;
+	Evas_Object *on_button;
 	Ecore_Thread* thread;
+	Ecore_Thread* client_thread;
 	Eina_Lock mutex;
 	int length;
 	int len;
@@ -19,16 +25,17 @@ typedef struct appdata {
 	int position_bottom;
 } appdata_s;
 
-static char const * const command =
-// "date"
-		"/opt/usr/apps/org.example.ekzekuto/lib/runme.sh"
-//
-;
 
-static char const * const EDITOR_FONT = "DEFAULT='font=Regular font_size=40'";
+appdata_s * gad=0; //TODO
 
-static void printlog(char const * const message) {
+void printlog(char const * const message) {
 	dlog_print(DLOG_INFO, LOG_TAG, message);
+	if ( gad ) {
+		ecore_thread_main_loop_begin();
+		elm_entry_entry_append(gad->output, message );
+		elm_entry_entry_append(gad->output, "<br/>");
+		ecore_thread_main_loop_end();
+	}
 }
 
 static int quit(char* message) {
@@ -57,33 +64,6 @@ exit_cb(void *user_data, Evas_Object *obj, void *event_info) {
 	elm_exit();
 }
 
-static void
-oneshoteval_cb(void *user_data, Evas_Object *obj, void *event_info) {
-	appdata_s *ad =  (appdata_s *) user_data;
-	int capacity = 512;
-	char output[capacity];
-	char *tmp = output;
-	int len = 0;
-
-	elm_object_text_set(ad->output, "DONE");
-
-	char const * const cmdline = elm_entry_entry_get(ad->input);
-
-	FILE *fp = popen(cmdline, "r");
-	if (!fp) {
-		sprintf(output, "error: %s", cmdline);
-	} else {
-		int ch;
-		while ((len < capacity) && ((ch = fgetc(fp)) != EOF)) {
-			*tmp = ch;
-			tmp++;
-			len++;
-		}
-		*tmp = 0;
-		pclose(fp);
-	}
-	elm_object_text_set(ad->output, output);
-}
 
 static void end_func(void *data, Ecore_Thread *thread) {
 	appdata_s *ad =  (appdata_s *) data;
@@ -113,6 +93,7 @@ static Eina_Bool handle_text(void *data, int sig, void *msgdata) {
 
 	int pos = elm_entry_cursor_pos_get(ad->output);
 	autoscroll = (ad->position_bottom == pos);
+	autoscroll = true;
 
 	int textlen = strlen(text);
 	ad->len += textlen;
@@ -151,7 +132,7 @@ static void notify_func(void *data, Ecore_Thread *thread/* __UNUSED__*/,
 }
 
 static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
-	appdata_s *ad = (appdata_s*) data;
+	appdata_s *ad = gad = (appdata_s*) data;
 	ad->thread = thread;
 	ad->len = 0;
 	ad->length = 0;
@@ -168,38 +149,9 @@ static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
 	elm_entry_cursor_end_set(ad->output);
 	ad->position_bottom = elm_entry_cursor_pos_get(ad->output);
 
-#if 1
 	IoTObserver::getInstance()->findResource();
-#else
-	FILE *fp = popen(cmdline, "r");
-	if (!fp) {
-		sprintf(buff, "error: %s<br/>", cmdline);
-	} else {
-		bool over = false;
-		elm_entry_input_panel_enabled_set(ad->eval, EINA_TRUE);
-		while (!over) {
-			if (fgets(buff, sizeof(buff), fp) != NULL) {
-
-				eina_lock_take(&(ad->mutex));
-				sprintf(copy, "%s", buff);
-				ecore_thread_feedback(thread, (void*) (uintptr_t) copy);
-				eina_lock_release(&(ad->mutex));
-
-				usleep(100 * 1000);
-			} else {
-				over = true;
-				break;
-			}
-			if (ecore_thread_check(thread)) {
-				over = true;
-				break;
-			}
-		}
-		eina_lock_release(&(ad->mutex));
-	}
-	pclose(fp);
-#endif
 }
+
 
 static void eval_cb(void *user_data, Evas_Object *obj, void *event_info) {
 
@@ -223,6 +175,44 @@ static void eval_cb(void *user_data, Evas_Object *obj, void *event_info) {
 	}
 }
 
+
+static void client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
+	Config::log(__PRETTY_FUNCTION__);
+
+	appdata_s *ad = gad = (appdata_s*) data;
+	ad->thread = thread;
+	ad->len = 0;
+	ad->length = 0;
+	ad->page = 0;
+	char buff[1024];
+	char copy[1024];
+	static int value = 0;
+
+	static IoTClient* client = 0;
+
+	if ( client == 0 ) {
+		Config::log(__PRETTY_FUNCTION__);
+		client = IoTClient::getInstance();
+		client->findResource();
+	}
+	else {
+		Config::log(__PRETTY_FUNCTION__);
+	  if( IoTClient::getInstance()->getPlatformLED() ) {
+		  Config::log(__PRETTY_FUNCTION__);
+		  value = !value;
+		  IoTClient::getInstance()->getPlatformLED()->put(value);
+	  }
+	}
+}
+static void on_cb(void *user_data, Evas_Object *obj, void *event_info) {
+	Config::log(__PRETTY_FUNCTION__);
+
+	appdata_s *ad = (appdata_s*) user_data;
+
+		ad->client_thread = ecore_thread_feedback_run(client_heavy_func, notify_func,
+				end_func, cancel_func, ad, EINA_FALSE);
+
+}
 static void
 create_base_gui(appdata_s *ad)
 {
@@ -280,7 +270,6 @@ create_base_gui(appdata_s *ad)
 
 		evas_object_size_hint_align_set(edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
-		elm_entry_text_style_user_push(edit, EDITOR_FONT);
 		elm_box_pack_end(box, edit);
 		evas_object_show(edit);
 	}
@@ -297,15 +286,27 @@ create_base_gui(appdata_s *ad)
 		elm_box_pack_end(box, button);
 		evas_object_show(button);
 	}
+
+	{
+		char const * const text = "On !";
+		Evas_Object *button = ad->on_button = elm_button_add(box);
+
+		evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, 0);
+		evas_object_size_hint_align_set(button, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+		elm_object_text_set(button, text);
+		evas_object_smart_callback_add(button, "clicked", on_cb, ad);
+
+		elm_box_pack_end(box, button);
+		evas_object_show(button);
+	}
 	{
 		Evas_Object *edit = ad->input = elm_entry_add(box);
 		elm_entry_single_line_set(edit, EINA_FALSE);
 		elm_entry_line_wrap_set(edit, ELM_WRAP_WORD);
-		elm_entry_entry_set(edit, command);
 
 		evas_object_size_hint_weight_set(edit, EVAS_HINT_EXPAND, 0);
 		evas_object_size_hint_align_set(edit, EVAS_HINT_FILL, EVAS_HINT_FILL);
-		elm_entry_text_style_user_push(edit, EDITOR_FONT);
 
 		elm_box_pack_end(box, edit);
 		evas_object_show(edit);
@@ -432,21 +433,7 @@ main(int argc, char *argv[])
 
 #endif
 
-#if 0
-    string line;
-    ifstream  stream{filename};
-    if ( stream.is_open() ) {
-        while (stream.good() ) {
-        	line<<stream;
-        	Config::log(line);
-        }
-        stream.close();
-    }
-#endif
-
-
-
-	ui_app_lifecycle_callback_s event_callback = { 0, };
+    ui_app_lifecycle_callback_s event_callback = { 0, };
 	app_event_handler_h handlers[5] = { NULL, };
 
 	event_callback.create = app_create;
