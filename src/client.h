@@ -62,6 +62,9 @@ class IoTClient
         IoTClient();
         virtual ~IoTClient();
         static void DisplayMenu();
+
+        static IoTClient* getInstance();
+        static IoTClient* mInstance;
 };
 
 #endif /* CLIENT_H_ */
