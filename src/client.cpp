@@ -23,9 +23,20 @@
 
 #include "config.h"
 #include "client.h"
-
 using namespace std;
 using namespace OC;
+
+IoTClient* IoTClient::mInstance = nullptr;
+
+IoTClient* IoTClient::getInstance()
+{
+	Config::log(__PRETTY_FUNCTION__);
+	if ( IoTClient::mInstance == 0 ) {
+	 mInstance = new IoTClient;
+	}
+	return mInstance;
+}
+
 
 
 shared_ptr<LED> IoTClient::getPlatformLED()
@@ -52,6 +63,8 @@ void LED::get()
 
 void LED::put(int Switch)
 {
+	Config::log(__PRETTY_FUNCTION__);
+
     QueryParamsMap params;
     OCRepresentation rep;
     rep.setValue(Config::m_key, Switch);
@@ -112,7 +125,7 @@ void IoTClient::initializePlatform()
 
 void IoTClient::findResource()
 {
-    string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI "?if=" );
+    string coap_multicast_discovery(OC_RSRVD_WELL_KNOWN_URI "?if=" );
     coap_multicast_discovery += Config::m_interface;
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("", coap_multicast_discovery.c_str(),
