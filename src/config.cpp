@@ -31,10 +31,15 @@ std::string Config::m_key = "switch";
 /* default will work on minnowmax calamari's LED3 **/
 unsigned int Config::m_gpio = 21;
 
-
+#if 1
 #include <dlog.h>
+#else
+#define dlog_print(type,tag,message) printf(message)
+#endif
+
 void Config::log(char const * const message)
 {
 	char const * const LOGTAG="LOG";
 	dlog_print(DLOG_INFO, LOGTAG, message);
+	printlog(message);
 }
