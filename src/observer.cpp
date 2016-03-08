@@ -54,7 +54,7 @@ IoTObserver::~IoTObserver()
 
 void IoTObserver::initializePlatform()
 {
-	Config::log(__PRETTY_FUNCTION__);
+	//Config::log(__PRETTY_FUNCTION__);
 
   m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc, ModeType::Client, "0.0.0.0",
 						 0, OC::QualityOfService::HighQos);
@@ -64,7 +64,7 @@ void IoTObserver::initializePlatform()
 
 void IoTObserver::findResource()
 {
-	Config::log(__PRETTY_FUNCTION__);
+	//Config::log(__PRETTY_FUNCTION__);
 
 	string coap_multicast_discovery(OC_RSRVD_WELL_KNOWN_URI "?if=" );
   coap_multicast_discovery += Config::m_interface;
@@ -77,7 +77,7 @@ void IoTObserver::findResource()
 
 void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
 {
-	Config::log(__PRETTY_FUNCTION__);
+	//Config::log(__PRETTY_FUNCTION__);
 
   try
     {
@@ -119,7 +119,7 @@ void IoTObserver::discoveredResource(shared_ptr<OCResource> resource)
 void IoTObserver::onObserve(const HeaderOptions /*headerOptions*/, const OCRepresentation& rep,
 			    const int& eCode, const int& sequenceNumber)
 {
-	Config::log(__PRETTY_FUNCTION__);
+	//Config::log(__PRETTY_FUNCTION__);
 
   try
     {
