@@ -26,6 +26,8 @@
 
 #include <string>
 
+void printlog(char const * const message);
+
 
 /** Pseudo singleton class to store common configuration variables **/
 class Config
