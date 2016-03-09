@@ -37,6 +37,8 @@ unsigned int Config::m_gpio = 21;
 #define dlog_print(type,tag,message) printf(message)
 #endif
 
+// 	Config::log(__PRETTY_FUNCTION__);
+
 void Config::log(char const * const message)
 {
 	char const * const LOGTAG="LOG";
