@@ -177,7 +177,7 @@ static void eval_cb(void *user_data, Evas_Object *obj, void *event_info) {
 
 
 static void client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
-	Config::log(__PRETTY_FUNCTION__);
+	// Config::log(__PRETTY_FUNCTION__);
 
 	appdata_s *ad = gad = (appdata_s*) data;
 	ad->thread = thread;
@@ -191,21 +191,21 @@ static void client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread) {
 	static IoTClient* client = 0;
 
 	if ( client == 0 ) {
-		Config::log(__PRETTY_FUNCTION__);
+		//Config::log(__PRETTY_FUNCTION__);
 		client = IoTClient::getInstance();
 		client->findResource();
 	}
 	else {
-		Config::log(__PRETTY_FUNCTION__);
+		//Config::log(__PRETTY_FUNCTION__);
 	  if( IoTClient::getInstance()->getPlatformLED() ) {
-		  Config::log(__PRETTY_FUNCTION__);
+		  //Config::log(__PRETTY_FUNCTION__);
 		  value = !value;
 		  IoTClient::getInstance()->getPlatformLED()->put(value);
 	  }
 	}
 }
 static void on_cb(void *user_data, Evas_Object *obj, void *event_info) {
-	Config::log(__PRETTY_FUNCTION__);
+	// Config::log(__PRETTY_FUNCTION__);
 
 	appdata_s *ad = (appdata_s*) user_data;
 
