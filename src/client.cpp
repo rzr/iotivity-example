@@ -30,7 +30,6 @@ IoTClient* IoTClient::mInstance = nullptr;
 
 IoTClient* IoTClient::getInstance()
 {
-	Config::log(__PRETTY_FUNCTION__);
 	if ( IoTClient::mInstance == 0 ) {
 	 mInstance = new IoTClient;
 	}
@@ -63,8 +62,6 @@ void LED::get()
 
 void LED::put(int Switch)
 {
-	Config::log(__PRETTY_FUNCTION__);
-
     QueryParamsMap params;
     OCRepresentation rep;
     rep.setValue(Config::m_key, Switch);
