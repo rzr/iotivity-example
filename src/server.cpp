@@ -25,7 +25,6 @@
 #include <functional>
 
 #include "server.h"
-#include "sensors.h"
 
 using namespace Sensors;
 using namespace std;
