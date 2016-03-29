@@ -42,6 +42,7 @@ CPPFLAGS=-I. \
 
 CXXFLAGS+=-std=gnu++0x
 LIBS+= -loc -loc_logger -loctbstack
+# -luuid -lconnectivity_abstraction
 
 srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
