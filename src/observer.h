@@ -26,10 +26,11 @@
 #include <memory>
 #include <iostream>
 
-#include <iotivity/resource/stack/ocstack.h>
+
 #include <iotivity/resource/OCApi.h>
 #include <iotivity/resource/OCPlatform.h>
 #include <iotivity/resource/OCResource.h>
+//#include <ocstack.h>
 
 int observer_main(int argc, char *argv[]);
 
