@@ -3,8 +3,7 @@
 #include <assert.h>
 #include <Evas.h>
 
-
-#include "iotivityexample.h"
+#include "main.h"
 #include "observer.h"
 #include "client.h"
 
