@@ -31,10 +31,11 @@ using namespace Sensors;
 using namespace std;
 using namespace OC;
 
+bool IoTServer::m_over = false;
 
 void IoTServer::initializePlatform()
 {
-    cout << "Running IoTServer constructor" << endl;
+    cerr << __PRETTY_FUNCTION__ << endl;
 
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc,
@@ -47,6 +48,7 @@ void IoTServer::initializePlatform()
 
 IoTServer::IoTServer(int pin, string key)
 {
+    cerr << __PRETTY_FUNCTION__ << endl;
     initializePlatform();
     setupResources();
     m_ledRepresentation.setValue(key, 0);
@@ -55,12 +57,13 @@ IoTServer::IoTServer(int pin, string key)
 
 IoTServer::~IoTServer()
 {
-    cout << "Running IoTServer destructor" << endl;
+    cerr << __PRETTY_FUNCTION__ << endl;
     ClosePins();
 }
 
 void IoTServer::setupResources()
 {
+    cerr << __PRETTY_FUNCTION__ << endl;
     EntityHandler cb3 = bind(&IoTServer::LEDEntityHandler, this, placeholders::_1);
     createResource(Config::m_endpoint, Config::m_type, cb3, m_ledResource);
 }
@@ -177,11 +180,10 @@ OCEntityHandlerResult IoTServer::LEDEntityHandler(shared_ptr<OCResourceRequest> 
     return result;
 }
 
-static int g_quit = 0;
 
 void handle_signal(int signal)
 {
-    g_quit = 1;
+    IoTServer::m_over = true;
 }
 
 int main(int argc, char *argv[])
@@ -206,7 +208,7 @@ int main(int argc, char *argv[])
     {
         usleep(2000000);
     }
-    while (g_quit != 1);
+    while ( ! IoTServer::m_over );
     return 0;
 }
 
