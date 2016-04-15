@@ -48,6 +48,8 @@ class IoTServer
     public:
         IoTServer(int pin = 0, std::string key = "switch");
         virtual ~IoTServer();
+
+        static bool m_over;
 };
 
 #endif /* SERVER_H_ */
