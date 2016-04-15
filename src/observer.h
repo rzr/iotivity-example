@@ -26,7 +26,6 @@
 #include <memory>
 #include <iostream>
 
-#include <iotivity/resource/stack/ocstack.h>
 #include <iotivity/resource/OCApi.h>
 #include <iotivity/resource/OCPlatform.h>
 #include <iotivity/resource/OCResource.h>
@@ -35,20 +34,24 @@
 
 class IoTObserver
 {
-  std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-  OC::FindCallback m_resourceDiscoveryCallback;
-  void initializePlatform();
-  void discoveredResource(std::shared_ptr<OC::OCResource>);
-public:
-  static void onObserve(const OC::HeaderOptions /*headerOptions*/,
-			const OC::OCRepresentation& rep,
-			const int& eCode, const int& sequenceNumber);
-  
-  void findResource();
-  IoTObserver();
-  virtual ~IoTObserver();
-  static void DisplayMenu();
-  static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        OC::FindCallback m_resourceDiscoveryCallback;
+        void initializePlatform();
+        void discoveredResource(std::shared_ptr<OC::OCResource>);
+    public:
+        static void onObserve(const OC::HeaderOptions /*headerOptions*/,
+                              const OC::OCRepresentation &rep,
+                              const int &eCode, const int &sequenceNumber);
+
+        void findResource();
+        IoTObserver();
+        virtual ~IoTObserver();
+        static void DisplayMenu();
+        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+
+        static IoTObserver *getInstance();
+        static IoTObserver *mInstance;
+
 };
 
 #endif /* OBSERVER_H_ */
