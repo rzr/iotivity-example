@@ -102,6 +102,18 @@ IoTClient::~IoTClient()
     cout << "Running IoTClient destructor" << endl;
 }
 
+
+IoTClient *IoTClient::mInstance = nullptr;
+
+IoTClient *IoTClient::getInstance()
+{
+    if ( IoTClient::mInstance == 0 )
+    {
+        mInstance = new IoTClient;
+    }
+    return mInstance;
+}
+
 void IoTClient::initializePlatform()
 {
     m_platformConfig = make_shared<PlatformConfig>(ServiceType::InProc, ModeType::Client, "0.0.0.0",
@@ -176,36 +188,36 @@ int main(int argc, char *argv[])
     cout << "Performing Discovery..." << endl;
     client.findResource();
     int choice;
-    bool state=false;
+    bool state = false;
     do
     {
         cin >> choice;
         switch (choice)
         {
             case 0:
-	      state=false;
-	      break;
-	case 1:
-	  state=true;
-	  break;
+                state = false;
+                break;
+            case 1:
+                state = true;
+                break;
 
-	case 2:
-	  state=!state;
-	  break;
+            case 2:
+                state = !state;
+                break;
 
-	case 9:
-	  return 0;
+            case 9:
+                return 0;
 
-	default:
-	  IoTClient::DisplayMenu();
-	  break;
+            default:
+                IoTClient::DisplayMenu();
+                break;
         }
-	
-	if (client.getPlatformLED())
-	  client.getPlatformLED()->put(state);
-	else
-	  cout << "LED resource not yet discovered" << endl;
-	
+
+        if (client.getPlatformLED())
+            client.getPlatformLED()->put(state);
+        else
+            cout << "LED resource not yet discovered" << endl;
+
     }
     while (choice != 9);
     return 0;

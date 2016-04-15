@@ -27,7 +27,6 @@
 #include <memory>
 #include <iostream>
 
-#include <iotivity/resource/stack/ocstack.h>
 #include <iotivity/resource/OCApi.h>
 #include <iotivity/resource/OCPlatform.h>
 #include <iotivity/resource/OCResource.h>
@@ -62,6 +61,9 @@ class IoTClient
         IoTClient();
         virtual ~IoTClient();
         static void DisplayMenu();
+
+        static IoTClient *getInstance();
+        static IoTClient *mInstance;
 };
 
 #endif /* CLIENT_H_ */
