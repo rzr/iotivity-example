@@ -34,7 +34,6 @@ tmp
 /Debug
 /Release
 /temp
-/SA_Report
 iotivity
 build*
 log*
@@ -42,4 +41,5 @@ log*
 local.mk
 iotivity
 lib
+res
 usr

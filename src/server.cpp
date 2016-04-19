@@ -42,10 +42,9 @@ double IoTServer::m_offset = 0.001;
 double IoTServer::m_latmax = 49;
 double IoTServer::m_latmin = 48;
 
-IoTServer::IoTServer(string endpoint)
+IoTServer::IoTServer()
 {
     LOG();
-    Common::m_endpoint = endpoint;
     init();
     setup();
 }
@@ -117,20 +116,12 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 }
 
 
-OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
+void IoTServer::postResourceRepresentation()
 {
-    OCStackResult result =  OC_STACK_ERROR;
     LOG();
-
-    if (response)
-    {
-        response->setErrorCode(200);
-        response->setResponseResult(OC_EH_OK);
-        response->setResourceRepresentation(m_Representation);
-        result = OCPlatform::sendResponse(response);
-    }
-    return result;
+    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
 }
+
 
 
 OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
@@ -147,8 +138,24 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
-
-            if (requestType == "GET")
+            if (requestType == "POST")
+            {
+                cerr << "POST request for platform Resource" << endl;
+                OCRepresentation requestRep = request->getResourceRepresentation();
+                m_Representation = requestRep;
+                postResourceRepresentation();
+                if (response)
+                {
+                    response->setErrorCode(200);
+                    response->setResourceRepresentation(m_Representation);
+                    response->setResponseResult(OC_EH_OK);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else if (requestType == "GET")
             {
                 cerr << "GET request for platform Resource" << endl;
                 if (response)
@@ -195,6 +202,8 @@ void IoTServer::update()
 
         cerr << "location: " << std::fixed << m_lat << "," << std::fixed << m_lon << endl;
     }
+
+    postResourceRepresentation();
 }
 
 
@@ -215,23 +224,17 @@ int IoTServer::main(int argc, char *argv[])
     sigaction(SIGINT, &sa, nullptr);
 
     cerr << "log: Server: " << endl
-         << "Press Ctrl-C to quit...." << endl
-         << "Usage: server -v" << endl
-         ;
+         << "Press Ctrl-C to quit...." << endl;
 
-    int subargc = argc;
-    char **subargv = argv;
-    for (int i = 1; i < argc; i++)
+    for(int i=1; i<argc; i++)
     {
-        if (0 == strcmp("-v", argv[i]))
+        if (0 == strcmp("-v",argv[i]))
         {
             Common::m_logLevel++;
-            argc--;
-            subargv++;
         }
     }
 
-    Platform::getInstance().setup(subargc, subargv);
+    Platform::getInstance().setup(argc, argv);
 
     IoTServer server;
     try

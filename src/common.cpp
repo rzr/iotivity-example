@@ -38,6 +38,7 @@ void Common::log(char const *const message)
     {
         std::cerr << "log: " << message << std::endl;
     }
+    Platform::log(message);
 }
 
 
@@ -46,7 +47,12 @@ Logger::Logger(const char *message)
     mMessage = message;
     if (Common::m_logLevel)
     {
+#ifdef __TIZEN__
+        Platform::log("log: {");
+        Platform::log(mMessage);
+#else
         std::cerr << "log: { " << mMessage << std::endl;
+#endif
     }
 }
 
@@ -54,6 +60,11 @@ Logger::~Logger()
 {
     if (Common::m_logLevel)
     {
+#ifdef __TIZEN__
+        Platform::log(mMessage);
+        Platform::log("log: }");
+#else
         std::cerr << "log: } " << mMessage << std::endl;
+#endif
     }
 }

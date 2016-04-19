@@ -75,9 +75,10 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     }
     else
     {
+        Common::log( __PRETTY_FUNCTION__);
+        Common::log("errror:: in GET response");
         cerr << "errror:: in GET response:" << eCode << endl;
     }
-
 }
 
 
@@ -132,7 +133,6 @@ void IoTClient::start()
 {
     LOG();
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
-
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("", //
                              coap_multicast_discovery.c_str(),
@@ -169,6 +169,8 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     catch (OCException &ex)
     {
         cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
+        Common::log( "error: Caught exception in discoveredResource");
+        Common::log(__PRETTY_FUNCTION__ );
     }
 }
 
@@ -188,7 +190,6 @@ void IoTClient::print(shared_ptr<OCResource> resource)
         cerr << "log: Resource: interface: " << interface << endl;
     }
 }
-
 
 
 int IoTClient::main(int argc, char *argv[])
