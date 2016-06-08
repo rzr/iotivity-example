@@ -69,8 +69,6 @@ class IoTObserver
 
     private:
         static IoTObserver *mInstance;
-
-
 };
 
 #endif /* OBSERVER_H_ */
