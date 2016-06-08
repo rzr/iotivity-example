@@ -3,7 +3,6 @@
 *.exe
 *.o
 *.orig
-*.tmp
 *~
 .#*
 a.out
@@ -12,8 +11,3 @@ client
 debian/*.debhelper.log
 main
 server
-/Debug
-/Release
-crash-info
-/tmp
-/SA_Report
