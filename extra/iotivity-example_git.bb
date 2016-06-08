@@ -1,12 +1,12 @@
 SUMMARY = "Iotivity Example"
-DESCRIPTION = "Minimalist Iotivity Client/Server application that controle single LED resource using GPIO"
-HOMEPAGE = "https://notabug.org/tizen/iotivity-example"
+DESCRIPTION = "Minimalist Iotivity Client/Server application that control single LED resource using GPIO"
+HOMEPAGE = "https://github.com/TizenTeam/iotivity-example"
 SECTION = "apps"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://COPYING;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-hash = "8865ad69215cbf4c04365b1f673793b48cc175df"
-SRC_URI = "git://notabug.org/tizen/iotivity-example/;branch=master;tag=${hash};protocol=http"
+SRCREV = "master"
+SRC_URI = "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobranch=1"
 
 S = "${WORKDIR}/git"
 
@@ -22,9 +22,9 @@ RDEPENDS_${PN} += "mraa"
 DEPENDS_${PN} += "iotivity-resource-dev iotivity-resource-thin-staticdev iotivity-service-dev iotivity-service-staticdev"
 
 BBCLASSEXTEND = "native nativesdk"
+RDEPENDS_${PN} += " iotivity-resource "
 
-EXTRA_OEMAKE = " \
-   "
+EXTRA_OEMAKE = " "
 
 do_configure() {
 }
