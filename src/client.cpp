@@ -49,7 +49,6 @@ shared_ptr<Resource> IoTClient::getPlatformResource()
 void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation &representation,
                      int errCode)
 {
-
     if (errCode == OC_STACK_OK)
     {
         IoTClient::handle(headerOptions, representation, errCode, 0);
