@@ -1,5 +1,5 @@
-Name:           iotivity-example-stream
-Version:        0.9.0
+Name:           iotivity-example
+Version:        1.0.0
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
@@ -12,7 +12,6 @@ Source:         %{name}-%{version}.tar.gz
 BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
-BuildRequires:  iotivity
 BuildRequires:  boost-devel
 
 
