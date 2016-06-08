@@ -33,23 +33,32 @@
 
 class IoTServer
 {
-        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        OC::OCRepresentation m_ledRepresentation;
-        OCResourceHandle m_ledResource;
-
-        void initializePlatform();
-        void setupResources();
-        void createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
-
-        OC::OCRepresentation getLEDRepresentation();
-        void putLEDRepresentation();
-        OCEntityHandlerResult LEDEntityHandler(std::shared_ptr<OC::OCResourceRequest>);
-
     public:
-        IoTServer(int pin = 0, std::string key = "switch");
+        IoTServer();
         virtual ~IoTServer();
 
+    public:
+        static int main(int argc, char *argv[]);
+
+    protected:
+        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        std::string m_Line;
+        OC::OCRepresentation m_Representation;
+        OCResourceHandle m_Resource;
+
+        void init();
+        void setup();
+        void createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
+
+        OC::OCRepresentation getResourceRepresentation();
+        void putResourceRepresentation();
+        OCEntityHandlerResult ResourceEntityHandler(std::shared_ptr<OC::OCResourceRequest>);
+
+        void update(std::string &line);
+        static void handle_signal(int signal);
+
         static bool m_over;
+
 };
 
 #endif /* SERVER_H_ */
