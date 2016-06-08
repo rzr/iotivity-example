@@ -33,7 +33,6 @@ vpath+=src
 VPATH+=src
 
 IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
-#IOTIVITY_DIR?=${CURDIR}/iotivity
 
 CPPFLAGS=\
  -I$(IOTIVITY_DIR) \
