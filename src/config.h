@@ -26,6 +26,11 @@
 
 #include <string>
 
+#if !defined(PACKAGE)
+#define PACKAGE "Example"
+#endif
+
+
 
 /** Pseudo singleton class to store common configuration variables **/
 class Config
@@ -39,8 +44,10 @@ class Config
         static std::string  m_endpoint;
         /** key (used both sides) **/
         static std::string  m_key;
-        /** gpio logical pin (only used in server) **/
-        static unsigned int m_gpio;
+        /** network interface**/
+        static std::string m_link;
+        /** polling period**/
+        static const int m_period = 5;
 };
 
 #endif /* CONFIG_H_ */
