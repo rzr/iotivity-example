@@ -25,7 +25,6 @@ default: all
 
 package?=iotivity-example
 
-config_mraa?=1
 
 DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
 local_bindir?=bin
@@ -33,35 +32,37 @@ local_bindir?=opt
 vpath+=src
 VPATH+=src
 
-CPPFLAGS=-I. \
- -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity \
- -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/ \
- -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/c_common \
- -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/oc_logger/ \
- -I$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity/resource/stack/
+IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 
-CXXFLAGS+=-std=gnu++0x
+CPPFLAGS=\
+ -I$(IOTIVITY_DIR) \
+ -I$(IOTIVITY_DIR)/resource/ \
+ -I$(IOTIVITY_DIR)/resource/c_common \
+ -I$(IOTIVITY_DIR)/resource/oc_logger \
+ -I$(IOTIVITY_DIR)/resource/stack \
+ -I. \
+ #eol
+
+CXXFLAGS+=-std=c++11
 LIBS+= -loc -loc_logger -loctbstack
 
 srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
+
 client?=${local_bindir}/client
-server_objs?=sensors.o
+server_objs?=
 server?=${local_bindir}/server
 observer?=${local_bindir}/observer
 
 all?=${client} ${observer}
 
-ifeq (${config_mraa},1)
-LIBS+=-lmraa
 all+=${server}
 
 ${local_bindir}/server: server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
-endif
 
-all: ${all}
+all: setup ${all}
 
 ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
@@ -80,3 +81,6 @@ install: ${all}
 	install -d ${DEST_LIB_DIR}
 	install $^ ${DEST_LIB_DIR}
 
+
+setup:
+	ln -fs /usr/include iotivity
