@@ -68,7 +68,6 @@ class IoTClient
 
         static IoTClient *getInstance();
         static IoTClient *mInstance;
-
 };
 
 #endif /* CLIENT_H_ */
