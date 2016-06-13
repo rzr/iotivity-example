@@ -12,7 +12,6 @@ Source:         %{name}-%{version}.tar.gz
 BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
-BuildRequires:  mraa-devel
 BuildRequires:  boost-devel
 
 
