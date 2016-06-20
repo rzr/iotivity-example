@@ -52,6 +52,7 @@ objs?=${srcs:.cpp=.o}
 client?=${local_bindir}/client
 server_objs?=
 server?=${local_bindir}/server
+client_objs?=
 observer?=${local_bindir}/observer
 
 all?=${client} ${observer}
@@ -59,6 +60,10 @@ all?=${client} ${observer}
 all+=${server}
 
 ${local_bindir}/server: server.o ${server_objs} ${objs}
+	@-mkdir -p ${@D}
+	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+
+${local_bindir}/client: client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
