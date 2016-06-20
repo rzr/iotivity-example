@@ -24,8 +24,8 @@
 #include "config.h"
 #include <iotivity/resource/OCApi.h>
 
-std::string Config::m_interface = "iotivity.example.resources";
-std::string Config::m_type = "platform.data";
-std::string Config::m_endpoint = "/data";
-std::string Config::m_key = "data";
+std::string Config::m_interface = "iotivity.example.line";
+std::string Config::m_type = "platform.line";
+std::string Config::m_endpoint = "/line";
+std::string Config::m_key = "line";
 std::string Config::m_link(OC::LINK_INTERFACE);

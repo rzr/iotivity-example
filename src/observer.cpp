@@ -71,10 +71,8 @@ void IoTObserver::start()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
     string uri = string(OC_RSRVD_WELL_KNOWN_URI);
-    uri += "?if=";
-    uri += Config::m_interface;
 
-    cerr << uri << endl;
+    cerr << "URI: " << uri << endl;
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("",  //
                              uri.c_str(), //
