@@ -27,7 +27,7 @@ that share a single gpio output as IoTivity resource.
 
 
 %install
-%__make install DEST_LIB_DIR=%{buildroot}%{_libdir}/%{name}/
+%__make install DEST_LIB_DIR=%{buildroot}/opt/%{name}/
 
 
 %fdupes %{buildroot}
@@ -39,5 +39,4 @@ that share a single gpio output as IoTivity resource.
 
 %files
 %defattr(-,root,root)
-%{_libdir}/%{name}/*
-
+/opt/%{name}/*
