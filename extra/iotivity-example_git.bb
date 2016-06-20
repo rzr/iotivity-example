@@ -1,5 +1,5 @@
-SUMMARY = "Iotivity Example"
-DESCRIPTION = "Minimalist Iotivity Client/Server application that control single LED resource using GPIO"
+SUMMARY = "IoTivity Example"
+DESCRIPTION = "Minimalist IoTivity Client/Server application that share a line of text"
 HOMEPAGE = "https://github.com/TizenTeam/iotivity-example"
 SECTION = "apps"
 LICENSE = "Apache-2.0"
@@ -10,21 +10,21 @@ SRC_URI = "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobran
 
 S = "${WORKDIR}/git"
 
+inherit systemd
+
 LOCAL_OPT_DIR = "/opt"
 LOCAL_OPT_DIR_D = "${D}${LOCAL_OPT_DIR}"
 
 DEPENDS += "iotivity "
-
-config_mraa="1"
-DEPENDS += "mraa"
-RDEPENDS_${PN} += "mraa"
 
 DEPENDS_${PN} += "iotivity-resource-dev iotivity-resource-thin-staticdev iotivity-service-dev iotivity-service-staticdev"
 
 BBCLASSEXTEND = "native nativesdk"
 RDEPENDS_${PN} += " iotivity-resource "
 
-EXTRA_OEMAKE = " "
+EXTRA_OEMAKE = " package=${PN} "
+
+SYSTEMD_SERVICE_${PN} = "${PN}.service"
 
 do_configure() {
 }
@@ -36,8 +36,7 @@ do_compile() {
  unset DISPLAY
  LD_AS_NEEDED=1; export LD_AS_NEEDED ;
  
- oe_runmake all \
-  config_mraa=${config_mraa} 
+ oe_runmake all
 }
 
 do_install() {
@@ -48,11 +47,14 @@ do_install() {
  unset DISPLAY
  rm -rf ${D}
  install -d ${D}
+
  oe_runmake \
   install \
   DESTDIR=${LOCAL_OPT_DIR_D} \
-  config_mraa=${config_mraa} \
   #eol
+
+  install -d ${D}${base_libdir}/systemd/system
+  install ${S}/extra/${PN}.service ${D}${base_libdir}/systemd/system/${PN}.service
 }
 
 FILES_${PN} += "${LOCAL_OPT_DIR}/${PN}/*"
