@@ -25,6 +25,7 @@ default: all
 
 package?=iotivity-example
 
+config_mraa?=1
 
 DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
 local_bindir?=bin
@@ -50,18 +51,21 @@ srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
 
 client?=${local_bindir}/client
-server_objs?=
+server_objs?=sensors.o
 server?=${local_bindir}/server
 client_objs?=
 observer?=${local_bindir}/observer
 
 all?=${client} ${observer}
 
+ifeq (${config_mraa},1)
+LIBS+=-lmraa
 all+=${server}
 
 ${local_bindir}/server: server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+endif
 
 ${local_bindir}/client: client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}

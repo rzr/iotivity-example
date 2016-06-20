@@ -25,24 +25,28 @@
 #include <functional>
 
 #include "server.h"
+#include "sensors.h"
 
+using namespace Sensors;
 using namespace std;
 using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer()
+IoTServer::IoTServer(int pin, string key)
 {
     cerr << __PRETTY_FUNCTION__ << endl;
-    m_Line = "line";
     init();
     setup();
+    m_Representation.setValue(key, 0);
+    SetupPins(pin);
 }
 
 
 IoTServer::~IoTServer()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
+    ClosePins();
 }
 
 
@@ -129,9 +133,16 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 void IoTServer::putResourceRepresentation()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
-    m_Representation.getValue(Config::m_key, m_Line);
+    int state = 0;
+    m_Representation.getValue(Config::m_key, state);
+    SetOnboardLed(state);
     OCStackResult result = OCPlatform::notifyAllObservers(m_Resource);
-    cout << m_Line << endl;
+    if (state == 0)
+        cout << "Turned off GPIO" << endl;
+    else if (state == 1)
+        cout << "Turned on GPIO" << endl;
+    else
+        cerr << "Invalid request value" << endl;
 }
 
 
@@ -164,7 +175,7 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> Requ
                 {
                     try
                     {
-                        requestRep.getValue<string>(Config::m_key);
+                        requestRep.getValue<int>(Config::m_key);
                     }
                     catch (...)
                     {
@@ -220,17 +231,6 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> Requ
 }
 
 
-void IoTServer::update()
-{
-    cerr << __PRETTY_FUNCTION__ << endl;
-    istream *stream = &std::cin;
-    std::string line;
-    std::getline(*stream, line);
-    m_Representation.setValue(Config::m_key, line);
-    putResourceRepresentation();
-}
-
-
 void IoTServer::handle_signal(int signal)
 {
     cerr << __PRETTY_FUNCTION__ << endl;
@@ -250,22 +250,20 @@ int IoTServer::main(int argc, char *argv[])
     cerr << "Server: " << endl
          << "Press Ctrl-C to quit...." << endl;
 
-    IoTServer serv;
+    if (argc > 1 && argv[1])
+    {
+        Config::m_gpio  = atoi(argv[1]);
+    }
+
+    IoTServer server(Config::m_gpio, Config::m_key);
     try
     {
-        int delay = Config::m_period;
-        if ((argc > 1) && argv[1])
-        {
-            delay = atoi(argv[1]);
-        }
 
         do
         {
-            serv.update();
-            sleep(delay);
+            usleep(2000000);
         }
         while (!IoTServer::m_over );
-
     }
     catch (...)
     {
