@@ -41,14 +41,11 @@ Resource::~Resource()
 {
 }
 
-shared_ptr<Resource> IoTClient::getPlatformResource()
-{
-    return m_platformResource;
-}
 
 void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation &representation,
                      int errCode)
 {
+    cerr << __PRETTY_FUNCTION__ << std::endl;
     if (errCode == OC_STACK_OK)
     {
         IoTClient::handle(headerOptions, representation, errCode, 0);
@@ -62,7 +59,7 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
 
 void Resource::get()
 {
-
+    cerr << __PRETTY_FUNCTION__ << std::endl;
     QueryParamsMap params;
     assert(m_resourceHandle); //TODO display alert if not ready
     m_resourceHandle->get(params, m_GETCallback);
@@ -93,6 +90,7 @@ IoTClient *IoTClient::getInstance()
     return mInstance;
 }
 
+
 void IoTClient::init()
 {
     cerr << __PRETTY_FUNCTION__ << std::endl;
@@ -108,17 +106,23 @@ void IoTClient::init()
     m_FindCallback = bind(&IoTClient::onFind, this, placeholders::_1);
 }
 
+
 void IoTClient::start()
 {
     cerr << __PRETTY_FUNCTION__ << std::endl;
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
-    coap_multicast_discovery += "?if=";
-    coap_multicast_discovery += Config::m_interface;
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
-    OCPlatform::findResource("", coap_multicast_discovery.c_str(),
+    OCPlatform::findResource("", //
+                             coap_multicast_discovery.c_str(),
                              connectivityType,
                              m_FindCallback,
                              OC::QualityOfService::HighQos);
+}
+
+
+shared_ptr<Resource> IoTClient::getPlatformResource()
+{
+    return m_platformResource;
 }
 
 
@@ -129,23 +133,8 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     {
         if (resource)
         {
+            print(resource);
             string resourceUri = resource->uri();
-            string hostAddress = resource->host();
-
-            cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
-            for (auto & resourceTypes : resource->getResourceTypes())
-            {
-                cerr << "\t" << resourceTypes << endl;
-            }
-
-            cerr << "Resource Interfaces: " << endl;
-            for (auto & resourceInterfaces : resource->getResourceInterfaces())
-            {
-                cerr << "\t" << resourceInterfaces << endl;
-            }
-            cerr << "Resource uri: " << resourceUri << endl;
-            cerr << "host: " << hostAddress << endl;
-
             if (resourceUri == Config::m_endpoint)
             {
                 m_platformResource = make_shared<Resource>(resource);
@@ -159,14 +148,13 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
 }
 
 
-
-
 void IoTClient::print(shared_ptr<OCResource> resource)
 {
     string resourceUri = resource->uri();
     string hostAddress = resource->host();
-    cerr << "host: " << hostAddress << endl;
 
+    cerr << "Resource uri: " << resourceUri << endl;
+    cerr << "Resource host: " << hostAddress << endl;
 
     cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
     for (auto & resourceTypes : resource->getResourceTypes())
@@ -179,8 +167,6 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     {
         cerr << "\t" << resourceInterfaces << endl;
     }
-    cerr << "Resource uri: " << resourceUri << endl;
-
 }
 
 
@@ -195,7 +181,6 @@ void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation
 }
 
 
-
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
@@ -204,7 +189,8 @@ int IoTClient::main(int argc, char *argv[])
     while (delay >= 0)
     {
         sleep(delay);
-        IoTClient::getInstance()->getPlatformResource()->get();;
+        shared_ptr<Resource> resource = IoTClient::getInstance()->getPlatformResource();
+        if (resource) resource->get();;
 
     }
     return 0;
