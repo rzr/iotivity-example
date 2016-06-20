@@ -48,13 +48,13 @@ class IoTServer
 
         void init();
         void setup();
-        void createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
+        OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
 
         OC::OCRepresentation getResourceRepresentation();
         void putResourceRepresentation();
-        OCEntityHandlerResult ResourceEntityHandler(std::shared_ptr<OC::OCResourceRequest>);
+        OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
 
-        void update(std::string &line);
+        void update();
         static void handle_signal(int signal);
 
         static bool m_over;
