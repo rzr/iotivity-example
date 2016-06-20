@@ -35,6 +35,7 @@ Resource::Resource(shared_ptr<OCResource> resource)
     cerr << __PRETTY_FUNCTION__ << std::endl;
     m_resourceHandle = resource;
     m_GETCallback = bind(&Resource::onGet, this, placeholders::_1, placeholders::_2, placeholders::_3);
+    m_PUTCallback = bind(&Resource::onPut, this, placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
@@ -48,13 +49,32 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
     cerr << __PRETTY_FUNCTION__ << std::endl;
     if (errCode == OC_STACK_OK)
     {
-        IoTClient::handle(headerOptions, representation, errCode, 0);
+        int value;
+        representation.getValue(Config::m_key, value);
+        cout << endl << endl << "GPIO switch state is: " << value << endl;
     }
     else
     {
         cerr << endl << endl << "Error in GET response from Resource resource" << endl;
     }
+    IoTClient::DisplayMenu();
+}
 
+void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation &representation,
+                     int errCode)
+{
+    cerr << __PRETTY_FUNCTION__ << std::endl;
+    if (errCode == OC_STACK_OK)
+    {
+        int value;
+        representation.getValue(Config::m_key, value);
+        cout << endl << endl << "Set GPIO switch to: " << value << endl;
+    }
+    else
+    {
+        cerr << endl << endl << "Error in PUT response from GPIO resource" << endl;
+    }
+    IoTClient::DisplayMenu();
 }
 
 void Resource::get()
@@ -63,6 +83,15 @@ void Resource::get()
     QueryParamsMap params;
     assert(m_resourceHandle); //TODO display alert if not ready
     m_resourceHandle->get(params, m_GETCallback);
+}
+
+void Resource::put(int Switch)
+{
+    cerr << __PRETTY_FUNCTION__ << std::endl;
+    QueryParamsMap params;
+    OCRepresentation rep;
+    rep.setValue(Config::m_key, Switch);
+    m_resourceHandle->put(rep, params, m_PUTCallback);
 }
 
 
@@ -140,6 +169,7 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
                 m_platformResource = make_shared<Resource>(resource);
             }
         }
+        IoTClient::DisplayMenu();
     }
     catch (OCException &ex)
     {
@@ -170,29 +200,54 @@ void IoTClient::print(shared_ptr<OCResource> resource)
 }
 
 
-// TODO: overide with your business logic
-void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
-                       const int &eCode, const int &sequenceNumber)
+void IoTClient::DisplayMenu()
 {
-    std::string line;
-    rep.getValue( Config::m_key, line);
-
-    std::cout << line << std::endl;
+    cout << "\nEnter:" << endl
+         << "*) Display this menu" << endl
+         << "0) Turn GPIO OFF" << endl
+         << "1) Turn GPIO ON" << endl
+         << "2) Toggle GPIO" << endl
+         << "9) Quit" << endl;
 }
 
 
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
-    int delay = 5;
 
-    while (delay >= 0)
+    int choice;
+    bool state = false;
+    do
     {
-        sleep(delay);
-        shared_ptr<Resource> resource = IoTClient::getInstance()->getPlatformResource();
-        if (resource) resource->get();;
+        cin >> choice;
+        switch (choice)
+        {
+            case 0:
+                state = false;
+                break;
+            case 1:
+                state = true;
+                break;
+
+            case 2:
+                state = !state;
+                break;
+
+            case 9:
+                return 0;
+
+            default:
+                IoTClient::DisplayMenu();
+                break;
+        }
+
+        if (IoTClient::getInstance()->getPlatformResource())
+            IoTClient::getInstance()->getPlatformResource()->put(state);
+        else
+            cout << "LED resource not yet discovered" << endl;
 
     }
+    while (choice != 9);
     return 0;
 }
 

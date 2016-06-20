@@ -34,7 +34,7 @@
 class IoTServer
 {
     public:
-        IoTServer();
+        IoTServer(int pin = 0, std::string key = "switch");
         virtual ~IoTServer();
 
     public:
@@ -42,7 +42,6 @@ class IoTServer
 
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        std::string m_Line;
         OC::OCRepresentation m_Representation;
         OCResourceHandle m_Resource;
 
@@ -54,7 +53,6 @@ class IoTServer
         void putResourceRepresentation();
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
 
-        void update();
         static void handle_signal(int signal);
 
         static bool m_over;

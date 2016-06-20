@@ -37,9 +37,12 @@ class Resource
         std::shared_ptr<OC::OCResource> m_resourceHandle;
         OC::OCRepresentation m_Representation;
         OC::GetCallback m_GETCallback;
+        OC::PutCallback m_PUTCallback;
         void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+        void onPut(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
     public:
         void get();
+        void put(int);
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
 };
@@ -53,10 +56,6 @@ class IoTClient
         void init();
         void onFind(std::shared_ptr<OC::OCResource>);
     public:
-        static void handle(const OC::HeaderOptions /*headerOptions*/,
-                           const OC::OCRepresentation &rep,
-                           const int &eCode, const int &sequenceNumber);
-
         void print(std::shared_ptr<OC::OCResource> resource);
 
         static  int main(int argc, char *argv[]);
@@ -65,6 +64,8 @@ class IoTClient
         void start();
         IoTClient();
         virtual ~IoTClient();
+
+        static void DisplayMenu();
 
         static IoTClient *getInstance();
         static IoTClient *mInstance;

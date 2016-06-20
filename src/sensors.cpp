@@ -21,35 +21,7 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#include "config.h"
+#include "sensors.h"
 
-#include <string>
-
-#if !defined(PACKAGE)
-#define PACKAGE "Example"
-#endif
-
-
-
-/** Pseudo singleton class to store common configuration variables **/
-class Config
-{
-    public:
-        /** public interface (used both sides) **/
-        static std::string  m_interface;
-        /** type of resource (used both sides) **/
-        static std::string  m_type;
-        /** url's path (used both sides) **/
-        static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_key;
-        /** network interface**/
-        static std::string m_link;
-        /** polling period**/
-        static const int m_period = 5;
-        /** gpio logical pin (only used in server) **/
-        static unsigned int m_gpio;
-};
-
-#endif /* CONFIG_H_ */
+mraa_gpio_context Sensors::gpio = NULL;
