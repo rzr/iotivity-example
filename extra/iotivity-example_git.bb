@@ -21,10 +21,6 @@ BDEPENDS += " iotivity-dev "
 
 DEPENDS += "iotivity "
 
-config_mraa="1"
-DEPENDS += "mraa"
-RDEPENDS_${PN} += "mraa"
-
 DEPENDS_${PN} += "iotivity-resource-dev iotivity-resource-thin-staticdev iotivity-service-dev iotivity-service-staticdev"
 
 BBCLASSEXTEND = "native nativesdk"
@@ -59,8 +55,7 @@ do_compile() {
  unset DISPLAY
  LD_AS_NEEDED=1; export LD_AS_NEEDED;
  
- oe_runmake all \
-  config_mraa=${config_mraa} 
+ oe_runmake all
 }
 
 do_install() {
@@ -74,7 +69,6 @@ do_install() {
 
  oe_runmake install \
   DESTDIR=${D} \
-  config_mraa=${config_mraa} \
   #eol
 
   install -d ${D}${base_libdir}/systemd/system
