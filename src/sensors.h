@@ -21,35 +21,40 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef SENSORS_H_
+#define SENSORS_H_
 
-#include <string>
+#include <mraa.h>
 
-#if !defined(PACKAGE)
-#define PACKAGE "Example"
-#endif
-
-
-
-/** Pseudo singleton class to store common configuration variables **/
-class Config
+namespace Sensors
 {
-    public:
-        /** public interface (used both sides) **/
-        static std::string  m_interface;
-        /** type of resource (used both sides) **/
-        static std::string  m_type;
-        /** url's path (used both sides) **/
-        static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_key;
-        /** network interface**/
-        static std::string m_link;
-        /** polling period**/
-        static const int m_period = 5;
-        /** gpio logical pin (only used in server) **/
-        static unsigned int m_gpio;
-};
+    extern mraa_gpio_context gpio;
 
-#endif /* CONFIG_H_ */
+    inline void SetupPins(int pin)
+    {
+        gpio = mraa_gpio_init(pin);
+        if (gpio != NULL) // Set direction to OUTPUT
+            mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
+    }
+
+    inline void ClosePins()
+    {
+        mraa_gpio_close(gpio);
+    }
+
+    inline void SetOnboardLed(int on)
+    {
+        if (gpio == NULL)
+        {
+            gpio = mraa_gpio_init(Config::m_gpio);
+            if (gpio != NULL)  // Set direction to OUTPUT
+                mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
+            else
+                exit(-1);
+        }
+        if (gpio != NULL) // Writes into GPIO
+            mraa_gpio_write(gpio, on);
+    }
+
+}
+#endif // SENSORS_H_

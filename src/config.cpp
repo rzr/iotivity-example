@@ -24,8 +24,11 @@
 #include "config.h"
 #include <iotivity/resource/OCApi.h>
 
-std::string Config::m_interface = "iotivity.example.line";
-std::string Config::m_type = "platform.line";
-std::string Config::m_endpoint = "/line";
-std::string Config::m_key = "line";
+std::string Config::m_interface = "iotivity.example.resources";
+std::string Config::m_type = "platform.led";
+std::string Config::m_endpoint = "/led";
+std::string Config::m_key = "switch";
 std::string Config::m_link(OC::LINK_INTERFACE);
+
+/* default will work on minnowmax calamari's LED3 **/
+unsigned int Config::m_gpio = 21;
