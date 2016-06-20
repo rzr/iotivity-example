@@ -39,6 +39,7 @@ IoTServer::IoTServer()
     setup();
 }
 
+
 IoTServer::~IoTServer()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
@@ -64,47 +65,66 @@ void IoTServer::init()
 void IoTServer::setup()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
-    EntityHandler handler = bind(&IoTServer::ResourceEntityHandler, this, placeholders::_1);
-
-    createResource(Config::m_endpoint, Config::m_type, handler, m_Resource);
-
     OCStackResult result ;
+    EntityHandler handler = bind(&IoTServer::handleEntity, this, placeholders::_1);
+
+    result = createResource(Config::m_endpoint, Config::m_type, handler, m_Resource);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+
     result = OCPlatform::bindTypeToResource(m_Resource, Config::m_type);
     if (OC_STACK_OK != result)
     {
-        cerr << "Binding TypeName to Resource was unsuccessful\n";
+        cerr << "Binding TypeName to Resource was unsuccessful" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
 
     result = OCPlatform::bindInterfaceToResource(m_Resource, Config::m_link);
     if (OC_STACK_OK != result)
     {
-        cerr << "Binding TypeName to Resource was unsuccessful\n";
+        cerr << "Binding TypeName to Resource was unsuccessful" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
 
-    m_Representation.setValue(Config::m_key, m_Line); //TODO
 }
 
 
-void IoTServer::createResource(string uri, string type, EntityHandler handler,
-                               OCResourceHandle &handle)
+OCStackResult IoTServer::createResource(string uri, string type, EntityHandler handler,
+                                        OCResourceHandle &handle)
 {
     cerr << __PRETTY_FUNCTION__ << endl;
+    OCStackResult result;
     string resourceUri = uri;
     string resourceType = type;
     string resourceInterface = Config::m_interface;
     uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
+    try
+    {
+        result = OCPlatform::registerResource//
+                 ( handle,
+                   resourceUri, resourceType,
+                   resourceInterface, //
+                   handler, resourceFlag);
 
-    OCStackResult result = OCPlatform::registerResource//
-                           ( handle,
-                             resourceUri, resourceType,
-                             resourceInterface, //
-                             handler, resourceFlag);
+        if (result != OC_STACK_OK)
+            cerr << "Could not create " << type << " resource" << endl;
+        else
+            cerr << "Successfully created " << type << " resource" << endl;
+    }
 
-    if (result != OC_STACK_OK)
-        cerr << "Could not create " << type << " resource" << endl;
-    else
-        cerr << "Successfully created " << type << " resource" << endl;
+    catch (OC::OCException &e)
+    {
+        cerr << "OCException " <<  e.reason().c_str() << " " << hex << e.code();
+        cerr << "@" << __PRETTY_FUNCTION__ << endl;
+        result = OC_STACK_ERROR;
+    }
+
+    return result;
 }
+
 
 void IoTServer::putResourceRepresentation()
 {
@@ -122,7 +142,7 @@ OCRepresentation IoTServer::getResourceRepresentation()
 }
 
 
-OCEntityHandlerResult IoTServer::ResourceEntityHandler(shared_ptr<OCResourceRequest> Request)
+OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> Request)
 {
     cerr << __PRETTY_FUNCTION__ << endl;
 
@@ -200,9 +220,12 @@ OCEntityHandlerResult IoTServer::ResourceEntityHandler(shared_ptr<OCResourceRequ
 }
 
 
-void IoTServer::update(string &line)
+void IoTServer::update()
 {
     cerr << __PRETTY_FUNCTION__ << endl;
+    istream *stream = &std::cin;
+    std::string line;
+    std::getline(*stream, line);
     m_Representation.setValue(Config::m_key, line);
     putResourceRepresentation();
 }
@@ -222,26 +245,32 @@ int IoTServer::main(int argc, char *argv[])
     sigfillset(&sa.sa_mask);
     sa.sa_flags = 0;
     sa.sa_handler = IoTServer::handle_signal;
-    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGINT, &sa, nullptr);
 
     cerr << "Server: " << endl
          << "Press Ctrl-C to quit...." << endl;
 
-    IoTServer serv; //(Config::m_key);
-
-    int delay = 0;
-    if ((argc > 1) && argv[1])
+    IoTServer serv;
+    try
     {
-        delay = atoi(argv[1]);
+        int delay = Config::m_period;
+        if ((argc > 1) && argv[1])
+        {
+            delay = atoi(argv[1]);
+        }
+
+        do
+        {
+            serv.update();
+            sleep(delay);
+        }
+        while (!IoTServer::m_over );
+
     }
-
-    istream *stream = &std::cin;
-    std::string line;
-    while (std::getline(*stream, line))
+    catch (...)
     {
-        serv.update(line);
-        sleep(delay);
-    } while ( ! IoTServer::m_over );
+        exit(1);
+    }
     return 0;
 }
 
