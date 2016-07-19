@@ -87,5 +87,7 @@ install: ${all}
 	install $^ ${DEST_LIB_DIR}
 
 
-setup:
-	ln -fs /usr/include iotivity
+setup: iotivity/resource
+
+iotivity/resource: ${IOTIVITY_DIR}
+	ln -fs ${<D} ${@D}
