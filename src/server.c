@@ -91,6 +91,7 @@ OCStackResult createLightResource() {
                     "core.rw",
                     "/a/light",
                     0,
+                    NULL,
                     OC_DISCOVERABLE|OC_OBSERVABLE);
     return res;
 }
