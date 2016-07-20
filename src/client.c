@@ -61,8 +61,8 @@ int main() {
 
     /* Start a discovery query*/
     char szQueryUri[64] = { 0 };
-    strcpy(szQueryUri, OC_EXPLICIT_DEVICE_DISCOVERY_URI);
-    if (OCDoResource(NULL, OC_REST_GET, szQueryUri, 0, 0, OC_LOW_QOS,
+    strcpy(szQueryUri, OC_MULTICAST_DISCOVERY_URI);
+    if (OCDoResource(NULL, OC_REST_GET, szQueryUri, 0, 0, CT_DEFAULT, OC_LOW_QOS,
             0, 0, 0) != OC_STACK_OK) {
         OIC_LOG(ERROR, TAG, "OCStack resource error");
         return 0;
