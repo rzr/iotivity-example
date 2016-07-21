@@ -34,6 +34,8 @@ VPATH+=src
 
 IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 
+CPPFLAGS=$(shell pkg-config iotivity --cflags)
+
 CPPFLAGS=\
  -I$(IOTIVITY_DIR) \
  -I$(IOTIVITY_DIR)/resource/ \
@@ -44,6 +46,8 @@ CPPFLAGS=\
  #eol
 
 CXXFLAGS+=-std=c++11
+
+
 LIBS+= -loc -loc_logger -loctbstack
 
 srcs?=config.cpp
@@ -73,11 +77,11 @@ ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-run: ${client}
+run: ${server}
 	${<D}/${<F}
 
 clean:
-	rm -f *.o *~ ${objs} */*.o
+	rm -f *.o *~ ${objs} */*.o iotivity
 
 distclean: clean
 	rm -f ${client} ${server}
