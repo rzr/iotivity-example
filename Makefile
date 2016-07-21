@@ -25,10 +25,10 @@ default: all
 
 package?=iotivity-example
 
-
-DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
 local_bindir?=bin
-local_bindir?=opt
+local_optdir?=opt
+DEST_LIB_DIR?=${DESTDIR}/${local_optdir}/${package}/
+
 vpath+=src
 VPATH+=src
 
