@@ -10,6 +10,7 @@ a.out
 bin/*
 client
 debian/*.debhelper.log
+iotivity
 main
 server
 /Debug
@@ -17,3 +18,4 @@ server
 crash-info
 /tmp
 /SA_Report
+
