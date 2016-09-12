@@ -32,11 +32,14 @@ local_bindir?=opt
 vpath+=src
 VPATH+=src
 
+CPPFLAGS+=$(shell pkg-config iotivity --cflags)
+LDFLAGS+=$(shell pkg-config iotivity --libs --ldflags)
+V=1
+
+IOTIVITY_DIR=${CURDIR}/iotivity
 IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 
-CPPFLAGS=$(shell pkg-config iotivity --cflags)
-
-CPPFLAGS=\
+CPPFLAGS+=\
  -I$(IOTIVITY_DIR) \
  -I$(IOTIVITY_DIR)/resource/ \
  -I$(IOTIVITY_DIR)/resource/c_common \
@@ -90,8 +93,10 @@ install: ${all}
 	install -d ${DEST_LIB_DIR}
 	install $^ ${DEST_LIB_DIR}
 
+iotivity: ${IOTIVITY_DIR}
 
-setup: iotivity/resource
+${IOTIVITY_DIR}: $(PKG_CONFIG_SYSROOT_DIR)/usr/include
+	ls $</iotivity && ln -fs $</iotivity $@ || ln -fs $< $@
 
-iotivity/resource: ${IOTIVITY_DIR}
-	ln -fs ${<D} ${@D}
+setup: iotivity
+	ls $</resource
