@@ -48,8 +48,7 @@ CPPFLAGS+=\
  -I. \
  #eol
 
-CXXFLAGS+=-std=c++11
-
+CXXFLAGS+=-std=c++0x
 
 LIBS+= -loc -loc_logger -loctbstack
 
@@ -80,9 +79,6 @@ ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-run: ${server}
-	${<D}/${<F}
-
 clean:
 	rm -f *.o *~ ${objs} */*.o iotivity
 
@@ -100,3 +96,22 @@ ${IOTIVITY_DIR}: $(PKG_CONFIG_SYSROOT_DIR)/usr/include
 
 setup: iotivity
 	ls $</resource
+
+run/%: ${CURDIR}/bin/%
+	${<D}/${<F}
+
+xterm/% : bin/%
+	xterm -e ${MAKE} run/${@F} &
+	sleep 5
+
+run: xterm/server xterm/client
+
+run/server-auto:  ${CURDIR}/bin/server
+	while true ; do date ; sleep 1 ;  done | $<
+
+xterm/server-auto : bin/server
+	xterm -e ${MAKE} run/${@F} &
+	sleep 5
+
+demo: xterm/server-auto xterm/client
+	sync
