@@ -35,7 +35,7 @@ VPATH+=src
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
 config_pkconfig?=1
 LIBS+=$(shell pkg-config iotivity --libs)
-LIBS+=-loc -loc_logger -loctbstack)
+LIBS+=-loc -loc_logger -loctbstack
 V=1
 
 IOTIVITY_DIR=${CURDIR}/iotivity
