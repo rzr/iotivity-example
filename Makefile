@@ -33,7 +33,9 @@ vpath+=src
 VPATH+=src
 
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
-LDFLAGS+=$(shell pkg-config iotivity --libs --ldflags)
+config_pkconfig?=1
+LIBS+=$(shell pkg-config iotivity --libs)
+LIBS+=-loc -loc_logger -loctbstack)
 V=1
 
 IOTIVITY_DIR=${CURDIR}/iotivity
@@ -50,7 +52,6 @@ CPPFLAGS+=\
 
 CXXFLAGS+=-std=c++0x
 
-LIBS+= -loc -loc_logger -loctbstack
 
 srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
