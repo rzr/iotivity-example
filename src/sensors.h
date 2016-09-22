@@ -26,35 +26,23 @@
 
 #include <mraa.h>
 
+#define HIGH 1
+#define LOW 0
+#define INPUT 1
+#define OUTPUT 0
+
 namespace Sensors
 {
     extern mraa_gpio_context gpio;
 
-    inline void SetupPins(int pin)
-    {
-        gpio = mraa_gpio_init(pin);
-        if (gpio != NULL) // Set direction to OUTPUT
-            mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
-    }
+    bool digitalPinMode(int pin, int dir);
 
-    inline void ClosePins()
-    {
-        mraa_gpio_close(gpio);
-    }
+    bool digitalPinWrite(int pin, bool on);
 
-    inline void SetOnboardLed(int on)
-    {
-        if (gpio == NULL)
-        {
-            gpio = mraa_gpio_init(Config::m_gpio);
-            if (gpio != NULL)  // Set direction to OUTPUT
-                mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
-            else
-                exit(-1);
-        }
-        if (gpio != NULL) // Writes into GPIO
-            mraa_gpio_write(gpio, on);
-    }
+    void SetupPins(int pin);
 
+    void ClosePins();
+
+    void SetOnboardLed(int on);
 }
 #endif // SENSORS_H_
