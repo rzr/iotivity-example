@@ -30,5 +30,5 @@ std::string Config::m_endpoint = "/led";
 std::string Config::m_key = "switch";
 std::string Config::m_link(OC::LINK_INTERFACE);
 
-/* default will work on minnowmax calamari's LED3 **/
-unsigned int Config::m_gpio = 21;
+/* default 21 will work on minnowmax calamari's LED3 **/
+unsigned int Config::m_gpio = 22;
