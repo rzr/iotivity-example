@@ -23,29 +23,42 @@
 
 default: all
 
-package?=iotivity-example
+package?=iotivity-example-mraa
 
 config_mraa?=1
 
-DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
+
 local_bindir?=bin
 local_bindir?=opt
+DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
+
 vpath+=src
 VPATH+=src
 
-IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 
-CPPFLAGS=\
- -I$(IOTIVITY_DIR) \
- -I$(IOTIVITY_DIR)/resource/ \
- -I$(IOTIVITY_DIR)/resource/c_common \
- -I$(IOTIVITY_DIR)/resource/oc_logger \
- -I$(IOTIVITY_DIR)/resource/stack \
- -I. \
+#TODO: workaround missing /usr/include/iotivity namespace
+prep_tasks+=iotivity
+config_pkgconfig?=1
+usr_include_dir?=${PKG_CONFIG_SYSROOT_DIR}/usr/include
+iotivity_dir?=${CURDIR}/iotivity
+ifeq (${config_pkgconfig},1)
+CPPFLAGS+=$(shell pkg-config iotivity --cflags)
+LIBS+=$(shell pkg-config iotivity --libs)
+else
+LIBS+=-loc -loc_logger -loctbstack
+CPPFLAGS+=\
+ -I${iotivity_dir} \
+ -I${iotivity_dir}/resource/ \
+ -I${iotivity_dir}/resource/c_common \
+ -I${iotivity_dir}/resource/oc_logger \
+ -I${iotivity_dir}/resource/stack \
  #eol
+endif
+CPPFLAGS+=-I.
+V=1
 
-CXXFLAGS+=-std=c++11
-LIBS+= -loc -loc_logger -loctbstack
+
+CXXFLAGS+=-std=c++0x
 
 srcs?=config.cpp
 objs?=${srcs:.cpp=.o}
@@ -71,17 +84,14 @@ ${local_bindir}/client: client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-all: setup ${all}
+all: prep ${all}
 
 ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-run: ${client}
-	${<D}/${<F}
-
 clean:
-	rm -f *.o *~ ${objs} */*.o
+	rm -f *.o *~ ${objs} */*.o iotivity
 
 distclean: clean
 	rm -f ${client} ${server}
@@ -90,6 +100,30 @@ install: ${all}
 	install -d ${DEST_LIB_DIR}
 	install $^ ${DEST_LIB_DIR}
 
+iotivity: ${iotivity_dir}
+	@echo "TODO: workaround for namespace"
 
-setup:
-	ln -fs /usr/include iotivity
+${iotivity_dir}: ${usr_include_dir}
+	ls $</iotivity && ln -fs $</iotivity $@ || ln -fs $< $@
+	ls $@/resource
+
+prep: ${prep_tasks}
+
+run/%: ${CURDIR}/bin/%
+	${<D}/${<F}
+
+xterm/% : bin/%
+	xterm -e ${MAKE} run/${@F} &
+	sleep 5
+
+run: xterm/server xterm/client
+
+run/server-auto:  ${CURDIR}/bin/server
+	while true ; do date ; sleep 1 ;  done | $<
+
+xterm/server-auto : bin/server
+	xterm -e ${MAKE} run/${@F} &
+	sleep 5
+
+demo: xterm/server-auto xterm/client
+	sync
