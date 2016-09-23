@@ -21,65 +21,95 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-default: all
+top/local/%: config.mk
+	${MAKE} $@{F}
 
-package?=iotivity-example
+-include config.mk
+
+deps+=config.mk
+#platform?=arduino
+platform?=linux
+mode?=release
+mode=debug
+export platform
+arch?=$(shell arch || echo ${ARCH})
+
+CFLAGS+=-g -O0 
+CFLAGS+=-Wall
+#eol
+
+demo_time?=20
+#demo_time=200
+
+log_dir?=${CURDIR}/temp/user/${USER}/platform/${platform}/tmp/
+
+linux: linux/default
+
+arduino: arduino/default
+
+arduino/% linux/%:
+	make platform=${@D} ${@F}
 
 
-DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
-local_bindir?=bin
-local_bindir?=opt
-vpath+=src
-VPATH+=src
+include ${platform}.mk
 
-IOTIVITY_DIR?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
+cleanall: clean
+	rm -rf bin config.mk *.temp
 
-CPPFLAGS=$(shell pkg-config iotivity --cflags)
+#echo TODO
+iotivity_out: 
+	ls ${iotivity_out} || ${MAKE} platform?=${platform} deps ${iotivity_out}
+	sync
 
-CPPFLAGS+=\
- -I$(IOTIVITY_DIR) \
- -I$(IOTIVITY_DIR)/resource/c_common/ \
- -I$(IOTIVITY_DIR)/resource/csdk/ \
- -I$(IOTIVITY_DIR)/resource/logger \
- -I$(IOTIVITY_DIR)/resource/stack/ \
- -I. \
- #eol
+demo/kill: bin/server bin/client
+	-killall ${^F}
 
+demo/linux: iotivity_out demo/kill
+	${MAKE} platform=linux run &
+	@echo "# please check it change state on server"
+	sleep ${demo_time}
+	@echo "# please check it change state on server"
+	sleep ${demo_time}
+	${MAKE}	demo/kill
 
-LIBS+= -loc -loc_logger -loctbstack
+demo/arduino: iotivity_out
+	${MAKE} platform=arduino iotivity_out all
+	${MAKE} platform=linux iotivity_out all
+	@echo "# to try locally, press ctrl+c then type:"
+	@echo "# make run "
+	@echo "#"
+	sleep 10
+	@echo "# About to deploy to ardiuno "
+	@echo "#  please plug it now with eth shield "
+	@echo "#  or press Ctrl+C to stop this build : $@"
+	@echo "#"
+	sleep 10
+	${MAKE} platform=arduino upload
+	sleep 10	
+	${MAKE} platform=linux run/client
 
-client?=${local_bindir}/client
-server_objs?=
-server?=${local_bindir}/server
-client_objs?=
+demo: demo/${platform}
 
-all?=${client} ${observer}
+demo/all: distclean
+	${MAKE} platform=linux distclean
+	${MAKE} platform=arduino distclean
+	${MAKE} platform=linux demo
+	${MAKE} platform=arduino demo
 
-all+=${server}
+help:
+	echo "iotivity_out=${iotivity_out}"
 
-${local_bindir}/server: server.o ${server_objs} ${objs}
-	@-mkdir -p ${@D}
-	${CC} -o ${@} $^ ${LDFLAGS} ${LIBS}
+rebuild: cleanall all
 
-${local_bindir}/client: client.o ${client_objs} ${objs}
-	@-mkdir -p ${@D}
-	${CC} -o ${@} $^ ${LDFLAGS} ${LIBS}
+config.mk:
+	ls /usr/lib*/pkgconfig/iotivity.pc && \
+ echo "export config_pkgconfig=1" \
+ || echo "export config_pkgconfig=0" > $@
 
-all: ${all}
+distclean: cleanall
+	-rm -rf tmp build*
+#	-rm -rf temp #TODO
 
-${local_bindir}/%: %.o ${objs}
-	@-mkdir -p ${@D}
-	${CC} -o ${@} $^ ${LDFLAGS} ${LIBS}
+deps: ${deps}
 
-run: ${client}
-	${<D}/${<F}
-
-clean:
-	rm -f *.o *~ ${objs} */*.o
-
-distclean: clean
-	rm -f ${client} ${server}
-
-install: ${all}
-	install -d ${DEST_LIB_DIR}
-	install $^ ${DEST_LIB_DIR}
+-include local.mk
