@@ -56,6 +56,11 @@ else
 CPPFLAGS+=-I${iotivity_dir}/resource/stack
 CPPFLAGS+=-I${iotivity_dir}/resource/c_common
 endif
+CFLAGS+=-fPIC
+
+# for artik10
+#CPPFLAGS+=-DCONFIG_GPIO=22
+#CPPFLAGS+=-DCONFIG_WANT_GPIO=1
 
 client?=${local_bindir}/client
 server_objs?=
@@ -65,10 +70,6 @@ client_objs?=
 all+=${server}
 all+=${client}
 all+=${observer}
-
-# for artik10
-#CPPFLAGS+=-DCONFIG_GPIO=22
-#CPPFLAGS+=-DCONFIG_WANT_GPIO=1
 
 all: ${all}
 
