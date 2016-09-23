@@ -100,7 +100,7 @@ all+=deps
 all+=iotivity_out
 
 scons_flags+=TARGET_TRANSPORT=IP
-scons_flags+=RELEASE=0
+scons_flags+=RELEASE=1
 scons_flags+=SECURED=0
 #scons_flags+=LOGGING=0
 #scons_flags+=DEBUG=0
@@ -111,7 +111,7 @@ scons_flags+=SECURED=0
 # tizen
 scons_flags+=WITH_TCP=1 
 scons_flags+=WITH_CLOUD=0
-scons_flags+=LOGGING=1 
+#scons_flags+=LOGGING=1 
 scons_flags+=ROUTING=EP 
 #ES_TARGET_ENROLLEE=tizen 
 #LIB_INSTALL_DIR=/usr/lib 
