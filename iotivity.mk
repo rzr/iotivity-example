@@ -4,7 +4,7 @@ iotivity_version?=1.1.1
 
 #overide here
 #iotivity_version=master
-#iotivity_version=1.2-rel
+iotivity_version=1.2-rel
 
 tinycbor_url?=https://github.com/01org/tinycbor.git 
 ifeq (${iotivity_version}, 1.1.1)
@@ -99,13 +99,24 @@ iotivity_out?=${iotivity_dir}/out/${platform}/${arch}/${mode}
 all+=deps
 all+=iotivity_out
 
-scons_flags+=\
- TARGET_TRANSPORT=IP \
- RELEASE=0 \
- SECURED=0 \
- LOGGING=0 \
- DEBUG=0 \
- #eol
+scons_flags+=TARGET_TRANSPORT=IP
+scons_flags+=RELEASE=0
+scons_flags+=SECURED=0
+#scons_flags+=LOGGING=0
+#scons_flags+=DEBUG=0
+
+#scons_flags+=LOGGING=1 
+
+
+# tizen
+scons_flags+=WITH_TCP=1 
+scons_flags+=WITH_CLOUD=0
+scons_flags+=LOGGING=1 
+scons_flags+=ROUTING=EP 
+#ES_TARGET_ENROLLEE=tizen 
+#LIB_INSTALL_DIR=/usr/lib 
+scons_flags+=WITH_PROXY=0
+
 
 scons_flags+=VERBOSE=1 
 

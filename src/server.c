@@ -154,7 +154,7 @@ OCStackResult server_loop()
         return result;
     }
 
-    sleep(1); //TODO
+    sleep(gDelay);
     return result;
 }
 

@@ -200,7 +200,7 @@ OCStackApplicationResult handleDiscover(void *ctx,
         LOGf("%p", resource);
         if(resource->uri)
         {
-            LOGf("%s", resource->uri);
+            LOGf("%s", resource->uri); //segfault w/ 1.1.1
         }
         resource = resource->next;
     }
@@ -276,7 +276,7 @@ OCStackResult client_loop()
 
     if (kbhit()) get();
 
-    sleep(3);
+    sleep(gDelay);
     LOGf("%d", gOver);
     return result;
 }
@@ -359,7 +359,7 @@ int main(int argc, char* argv[])
 {
     client_setup();
 
-    sleep(10);
+    sleep(gDelay);
 
     // Break from loop with Ctrl+C
     signal(SIGINT, handleSigInt);

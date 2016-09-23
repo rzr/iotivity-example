@@ -64,4 +64,4 @@ typedef struct SWITCHRESOURCE
 static SwitchResource gSwitch = {NULL, false};
 
 
-
+static const int gDelay = 1;
