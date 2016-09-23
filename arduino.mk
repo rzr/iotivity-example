@@ -104,9 +104,11 @@ ${iotivity_out}: ${iotivity_dir} ${iotivity_dir}/extlibs/tinycbor/tinycbor scons
 #	cd $< && ./auto_build.sh ${platform}
 
 
-scons_flags += TARGET_OS=arduino UPLOAD=false BOARD=mega \
- TARGET_ARCH=avr SHIELD=ETH \
- #eol
+scons_flags+=TARGET_OS=arduino
+scons_flags+=UPLOAD=false 
+scons_flags+=BOARD=mega
+scons_flags+=TARGET_ARCH=avr
+scons_flags+=SHIELD=ETH
 
 scons: ${iotivity_dir} tinycbor
 	cd $< && scons resource ${scons_flags}
