@@ -23,7 +23,7 @@ local/%: arduino/% linux/%
 	date
 
 
-local/reset:
+todo/local/reset:
 	rm -rf *
 	make sync
 	git checkout .
