@@ -1,3 +1,4 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2016 Samsung Electronics France SAS All Rights Reserved.
