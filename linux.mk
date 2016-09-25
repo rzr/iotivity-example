@@ -32,7 +32,6 @@ DEST_LIB_DIR?=${DESTDIR}${local_optdir}/${package}/
 
 config_pkgconfig?=1
 
-
 ifeq (${config_pkgconfig},1)
 iotivity_dir?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 iotivity_out?=$(PKG_CONFIG_SYSROOT_DIR)/usr/lib
