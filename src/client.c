@@ -23,10 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <iotivity_config.h>
 #include <octypes.h>
 #include <ocstack.h>
 #include <ocpayload.h>
+//#include <payload_logging.h>
 
 #ifdef __linux__
 #ifndef HAVE_UNISTD_H
@@ -52,31 +53,54 @@ int gDiscovered=0;
 OCStackResult client_setup();
 OCStackResult post();
 
+OCRepPayload* createPayload()
+{
+    OCRepPayload* payload = OCRepPayloadCreate();
+
+    LOGf("%p", payload);
+    if (!payload)
+    {
+        exit(1);
+    }
+
+    LOGf("changing: from %d",gSwitch.value);
+#if 1
+    gSwitch.value = !gSwitch.value;
+#else
+    gSwitch.value = 1;
+#endif
+    OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
+
+    LOGf("%d",gSwitch.value);
+    return payload;
+}
+
+
 OCStackApplicationResult handleResponse(void *ctx,
                                         OCDoHandle handle,
                                         OCClientResponse *clientResponse)
 {
-    printf("%s: { %d\n", __FUNCTION__, gSwitch.value);
-    OCStackApplicationResult result= OC_STACK_DELETE_TRANSACTION;
+    LOGf("{ %d\n", gSwitch.value);
+    OCStackApplicationResult result = OC_STACK_DELETE_TRANSACTION;
 
     if (!clientResponse)
     {
+        LOGf("error: %p", clientResponse);
         return result;
     }
     OCRepPayload* payload = (OCRepPayload*)(clientResponse->payload);
     if (!payload)
     {
+        LOGf("error: %p", payload);
         return result;
     }
 
     if (!OCRepPayloadGetPropBool(payload, "value", &gSwitch.value))
     {
-        printf("%s: error: %d\n", __FUNCTION__, __LINE__);
+        LOGf("error: %d", gSwitch.value);
     }
 
-
-    printf("%s: } %d\n", __FUNCTION__, gSwitch.value);
-
+    LOGf("} %d", gSwitch.value);
     return OC_STACK_DELETE_TRANSACTION;
 }
 
@@ -88,14 +112,39 @@ OCStackApplicationResult handleGet(void *ctx,
     LOGf("{ %d", gSwitch.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
-    result = handleResponse(ctx, handle, clientResponse);
     LOGf("%p", clientResponse);
-    LOGf("%d", result);
-
-    result = post();
+    result = handleResponse(ctx, handle, clientResponse);
+    if (result != OC_STACK_OK)
+    {
+        LOGf("error: %d", result);
+    }
+    //result = post();
 
     LOGf("} %d", gSwitch.value);
     return OC_STACK_DELETE_TRANSACTION;
+}
+
+
+OCStackResult get()
+{
+    LOGf("{ %d", gSwitch.value);
+    OCStackResult result = OC_STACK_OK;
+    OCMethod method = OC_REST_GET;
+    OCRepPayload* payload = NULL;
+    OCCallbackData callback = {NULL, NULL, NULL};
+    callback.cb = handleGet;
+
+    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
+                          (OCPayload*) payload,
+                          gConnectivityType, gQos, &callback, NULL,0);
+
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d", result);
+    }
+
+    LOGf("} %d", gSwitch.value);
+    return result;
 }
 
 
@@ -106,31 +155,39 @@ OCStackApplicationResult handlePost(void *ctx,
     LOGf("{ %d", gSwitch.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
-    result = handleResponse(ctx, handle, clientResponse);
-
     LOGf("%p", clientResponse);
+    //result = handleResponse(ctx, handle, clientResponse);
+
     LOGf("%d", result);
     LOGf("} %d", gSwitch.value);
     return OC_STACK_DELETE_TRANSACTION;
 }
 
 
-OCRepPayload* createPayload()
+OCStackResult post()
 {
-    OCRepPayload* payload = OCRepPayloadCreate();
+    LOGf("{ %d", gSwitch.value);
+    OCStackResult result = OC_STACK_OK;
+    OCMethod method = OC_REST_POST;
+    OCRepPayload* payload = NULL;
+    OCCallbackData callback = {NULL, NULL, NULL};
+    callback.cb = handlePost;
 
-    printf("%s: %s=%p\n", __FUNCTION__, STR(payload), payload);
-    if (!payload)
+    LOGf("%d", gSwitch.value);
+    payload = createPayload();
+
+    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
+                          (OCPayload*) payload,
+                          gConnectivityType, gQos, &callback, NULL,0);
+
+    if (result != OC_STACK_OK)
     {
-        exit(1);
+        LOGf("%d", result);
     }
-
-    LOGf("changing: from %d",gSwitch.value);
-    OCRepPayloadSetPropBool(payload, "value", !gSwitch.value); //TODO
-    LOGf("%d",gSwitch.value);
-
-    return payload;
+    LOGf("} %d", gSwitch.value);
+    return result;
 }
+
 
 // This is a function called back when a device is discovered
 OCStackApplicationResult handleDiscover(void *ctx,
@@ -139,27 +196,31 @@ OCStackApplicationResult handleDiscover(void *ctx,
 {
     OCStackResult result = OC_STACK_OK;
 
-    printf("%s: %s=%p\n", __FUNCTION__, STR(clientResponse), clientResponse);
+    LOGf("%p",ctx);
+    LOGf("%p",clientResponse);
 
     if (!clientResponse)
     {
         return OC_STACK_DELETE_TRANSACTION;
     }
 
-    printf("%s: %s=%p\n", __FUNCTION__, STR(clientResponse->devAddr.addr), clientResponse->devAddr.addr);
-
+    LOGf("%p", clientResponse->devAddr.addr);
     LOGf("%d", clientResponse->sequenceNumber);
 
     gDestination = clientResponse->devAddr;
     gConnectivityType = clientResponse->connType;
-
-
+    LOGf("%s", gDestination.addr);
     LOGf("%p", clientResponse->payload);
     OCDiscoveryPayload *payload = (OCDiscoveryPayload*) clientResponse->payload;
     LOGf("%p", payload);
+    gDiscovered++; //TODO
     if (!payload)
-    {
+    { 
+        //return OC_STACK_KEEP_TRANSACTION;
+
         return OC_STACK_DELETE_TRANSACTION;
+    } else {
+        //OIC_LOG_PAYLOAD(INFO, payload);
     }
 
     OCResourcePayload *resource = (OCResourcePayload*) payload->resources;
@@ -176,60 +237,22 @@ OCStackApplicationResult handleDiscover(void *ctx,
 
     gSwitch.handle = handle;
 
-    gDiscovered++;
-
     return OC_STACK_KEEP_TRANSACTION;
 }
 
-
-OCStackResult get()
+int kbhit()
 {
-    LOGf("{ %d", gSwitch.value);
-    OCStackResult result = OC_STACK_OK;
-    OCMethod method = OC_REST_GET;
-    OCCallbackData getCallback = { NULL, NULL, NULL };
-    getCallback.cb = handleGet;
-    OCRepPayload* payload = NULL;
-
-    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
-                          (OCPayload*) payload,
-                          gConnectivityType, gQos, &getCallback, NULL,0);
-
-    LOGf("} %d", gSwitch.value);
-    return result;
+    static char buf;
+    fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
+    return read(0,&buf,1);
 }
 
-OCStackResult post()
-{
-    LOGf("{ %d", gSwitch.value);
-    OCStackResult result = OC_STACK_OK;
-    OCMethod method = OC_REST_POST;
-    OCRepPayload* payload;
-    OCCallbackData postCallback = {NULL, NULL, NULL};
-    postCallback.cb = handlePost;
-
-    printf("%s: %d\n", __FUNCTION__, gSwitch.value);
-    payload = createPayload();
-
-    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
-                          (OCPayload*) payload,
-                          gConnectivityType, gQos, &postCallback, NULL,0);
-
-    if (result != OC_STACK_OK)
-    {
-        LOGf("%d", method);
-        LOGf("%d", result);
-    }
-
-    return result;
-    LOGf("} %d", gSwitch.value);
-}
 
 OCStackResult client_loop()
 {
     OCStackResult result;
 
-    printf("iterate: %d\n", gSwitch.value);
+    LOGf("%d (iterate)", gSwitch.value);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
@@ -239,20 +262,12 @@ OCStackResult client_loop()
     }
     static int once = 1;
     if (gDiscovered && once-->0) {
-        result = get();
+        result = post();
     }
-
-    {
-        char buf;
-        fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
-        int numRead = read(0,&buf,1);
-        if(numRead > 0){
-            get();
-        }
+    if (gDiscovered && kbhit()) {
+        post();
     }
-
-    //if (kbhit()) get();
-
+    
     sleep(gDelay);
     LOGf("%d", gOver);
     return result;
@@ -276,9 +291,9 @@ OCStackResult client_setup()
 	}
     }
 
-    OCCallbackData cbData = {NULL, NULL, NULL };
+    OCCallbackData cbData = {NULL, NULL, NULL};
     cbData.cb = handleDiscover;
-
+    cbData.context = 0x99; //TODO
     char queryUri[MAX_QUERY_LENGTH] = { 0 };
     snprintf(queryUri, sizeof (queryUri), "%s", OC_RSRVD_WELL_KNOWN_URI);
     //
@@ -288,23 +303,26 @@ OCStackResult client_setup()
     //LOGf("%s", queryUri);
 
 
-    for (i=0; i<2; i++) {
+    for (i=0; !gDiscovered && i<2; i++)
+    {
         result = OCDoResource(NULL, // handle
                               OC_REST_DISCOVER, // method
                               queryUri, //requestUri: /oic/res
                               NULL, // destination
                               NULL,  // opayload
                               gConnectivityType, //
-                              gQos, //
+                              OC_LOW_QOS, //gQos, //
                               &cbData, //
                               NULL, // options
                               0 // numOptions
             );
-        sleep(1);
-    }
-    if (result != OC_STACK_OK)
-    {
-        LOGf("%d (error)", result);
+
+        if (result != OC_STACK_OK)
+        {
+            LOGf("%d (error)", result);
+        }
+
+        sleep(1 * gDelay);
     }
 
     LOGf("%d", result);
@@ -312,7 +330,7 @@ OCStackResult client_setup()
 }
 
 
-void finish()
+void client_finish()
 {
     OCStackResult result = OCStop();
 
@@ -345,7 +363,7 @@ int main(int argc, char* argv[])
     {
         client_loop();
     }
-    finish();
+    client_finish();
 
     return 0;
 }
