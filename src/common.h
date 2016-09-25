@@ -1,3 +1,4 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2014 Intel Mobile Communications GmbH All Rights Reserved.
@@ -31,7 +32,7 @@
 
 #ifdef __linux__
 #define LOGf(f,p)                                       \
-    printf("%s: %s=" f "\n", __FUNCTION__,STR(p), p)
+    printf("%s: %s: %s=" f "\n", __FILE__,  __FUNCTION__,STR(p), p)
 #else
 #define LOGf(f,p)                               \
     platform_log(__FUNCTION__)
@@ -41,16 +42,18 @@ static int gOver = 0;
 
 static const char * gName = "oic.r.switch.binary";
 
-static const char * gUri = "/switch";
+static const char * gUri = "/a/switch/0";
 
 static char const * gIface = //
-    OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline"
+    OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline" //TODO
+    //"oc.mi.def"
     ;
 
 static OCDevAddr gDestination;
 
 static OCConnectivityType gConnectivityType =//
-    CT_DEFAULT // CT_ADAPTER_IP//
+    //CT_DEFAULT
+    CT_ADAPTER_IP//
     ;
 static OCQualityOfService gQos = OC_HIGH_QOS;
 
