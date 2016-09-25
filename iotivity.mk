@@ -1,3 +1,6 @@
+git?=git
+export git
+
 iotivity_url?=http://github.com/iotivity/iotivity
 iotivity_version?=1.1.1
 #iotivity_version=1.1.0
@@ -5,12 +8,13 @@ iotivity_version?=1.1.1
 #overide here
 #iotivity_version=master
 iotivity_version=1.2-rel
+export iotivity_version
 
 tinycbor_url?=https://github.com/01org/tinycbor.git 
 ifeq (${iotivity_version}, 1.1.1)
 tinycbor_version?=v0.2.1
 else
-tinycbor_version=v0.3.1
+tinycbor_version?=v0.3.1
 endif
 
 gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8ccdf5c46b05ba54a9fd1d130d7/gtest-1.7.0.zip
@@ -54,9 +58,6 @@ ${iotivity_out}: ${iotivity_dir}
 #	cd ${<} && ./auto_build.sh ${platform}_unsecured_with_rd
 	cd ${<} && scons resource ${scons_flags}
 
- # DEBUG=0 \
- # 
- #
 
 setup: /etc/debian_version
 	sudo apt-get install libboost1.55-dev libboost1.55-all-dev libboost-thread1.55-dev \
@@ -65,7 +66,7 @@ setup: /etc/debian_version
 
 ${iotivity_dir}:
 	mkdir -p ${@D}
-	cd ${@D} && git clone ${iotivity_url} -b ${iotivity_version} ${@}
+	cd ${@D} && ${git} clone ${iotivity_url} -b ${iotivity_version} ${@}
 
 gtest: ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip
 
@@ -83,7 +84,8 @@ ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip/github:
 
 ${iotivity_dir}/extlibs/tinycbor/tinycbor:
 	${MAKE} ${iotivity_dir}
-	cd ${iotivity_dir} && git clone ${tinycbor_url} -b ${tinycbor_version} "extlibs/tinycbor/tinycbor"
+	cd ${iotivity_dir}\
+ && git clone ${tinycbor_url} -b ${tinycbor_version} "extlibs/tinycbor/tinycbor"
 
 #TODO
 iotivity_out: 
@@ -99,26 +101,21 @@ iotivity_out?=${iotivity_dir}/out/${platform}/${arch}/${mode}
 all+=deps
 all+=iotivity_out
 
-scons_flags+=TARGET_TRANSPORT=IP
-scons_flags+=RELEASE=1
-scons_flags+=SECURED=0
-#scons_flags+=LOGGING=0
+
+#TODO: check mode
+#scons_flags+=LOGGING=1 
+#scons_flags+=LOGGING=1 
+#scons_flags+=RELEASE=1
 #scons_flags+=DEBUG=0
-
-#scons_flags+=LOGGING=1 
-
-
-# tizen
-scons_flags+=WITH_TCP=1 
-scons_flags+=WITH_CLOUD=0
-#scons_flags+=LOGGING=1 
+scons_flags+=LOGGING=0
+scons_flags+=RELEASE=0
 scons_flags+=ROUTING=EP 
-#ES_TARGET_ENROLLEE=tizen 
-#LIB_INSTALL_DIR=/usr/lib 
-scons_flags+=WITH_PROXY=0
-
-
+scons_flags+=SECURED=0
+scons_flags+=TARGET_TRANSPORT=IP
 scons_flags+=VERBOSE=1 
+scons_flags+=WITH_CLOUD=0
+scons_flags+=WITH_PROXY=0
+scons_flags+=WITH_TCP=0
 
 ifeq (${iotivity_version}, 1.1.1)
 #scons_flags+=WITH_RD=1
