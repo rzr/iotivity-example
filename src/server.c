@@ -1,3 +1,4 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2014 Intel Mobile Communications GmbH All Rights Reserved.
@@ -65,51 +66,55 @@ OCEntityHandlerResult handleOCEntity(OCEntityHandlerFlag flag,
     LOGf("%p", entityHandlerRequest);
     LOGf("%d (current)", gSwitch.value);
 
+#if 1
+    OCRepPayload *payload = (OCRepPayload *) OCRepPayloadCreate();
+    if (!payload)
+    {
+        LOGf("%p (error)", payload);
+        return OC_EH_ERROR;
+    }
+    
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
         LOGf("%d", entityHandlerRequest->method);
         OCRepPayload* input = NULL;
         switch (entityHandlerRequest->method) {
-        case OC_REST_POST:
+        case OC_REST_POST: //4
         case OC_REST_PUT:
-
+            
             input = (OCRepPayload*) entityHandlerRequest->payload;
             OCRepPayloadGetPropBool(input, "value", &gSwitch.value);
+#if 0 // defined ARDUINO            
+            if ( !false ) {
+                LOGf("TODO: check %s (workaround)",__FILE__);
+                gSwitch.value = !gSwitch.value;
+            }
+#endif
             LOGf("%d (update)", gSwitch.value);
             setValue(gSwitch.value);
 
-            LOGf("TODO: check %s (workaround)",__FILE__);
-#if defined ARDUINO
-            
-            if ( !false ) {
-		setValue(!gSwitch.value);
-            }
-#endif
             break;
-        case OC_REST_GET:
-            LOGf("%d", entityHandlerRequest->method);
+        case OC_REST_GET: //1
+            OCRepPayloadSetUri(payload, gUri);
+            OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
+            //OCRepPayloadAddResourceType(payload, gIface);
+            //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
+
             break;
         default:
             break;
         }
 
-        OCRepPayload *payload = (OCRepPayload *) OCRepPayloadCreate();
-        if (!payload)
-        {
-            LOGf("%p (error)", payload);
-            return OC_EH_ERROR;
-        }
         //
-        OCRepPayloadSetUri(payload, gUri);
-        OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
-        OCRepPayloadAddResourceType(payload, gIface);
-        //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
 
         response.ehResult = result;
+
         response.numSendVendorSpecificHeaderOptions = 0;
         memset(response.sendVendorSpecificHeaderOptions, 0,
                sizeof response.sendVendorSpecificHeaderOptions);
+
         memset(response.resourceUri, 0, sizeof response.resourceUri);
+
         response.persistentBufferFlag = 0;
         response.payload = (OCPayload *) payload;
         response.requestHandle = entityHandlerRequest->requestHandle;
@@ -124,7 +129,7 @@ OCEntityHandlerResult handleOCEntity(OCEntityHandlerFlag flag,
         }
         OCRepPayloadDestroy(payload);
     }
-
+#endif
     return result;
 }
 
@@ -137,7 +142,7 @@ OCStackResult createSwitchResource()
                                             gUri,
                                             handleOCEntity,
                                             NULL,
-                                            OC_DISCOVERABLE);
+                                            OC_DISCOVERABLE|OC_OBSERVABLE);
     LOGf("%s", gIface ); //
     LOGf("%d", result);
     return result;
@@ -154,7 +159,7 @@ OCStackResult server_loop()
         return result;
     }
 
-    sleep(gDelay);
+    sleep(2*gDelay);
     return result;
 }
 
