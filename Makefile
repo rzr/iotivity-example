@@ -34,7 +34,7 @@ mode=debug
 export platform
 arch?=$(shell arch || echo ${ARCH})
 
-CFLAGS+=-g -O0 
+CFLAGS+=-g -O0
 CFLAGS+=-Wall
 #eol
 
@@ -57,7 +57,7 @@ cleanall: clean
 	rm -rf bin config.mk *.temp
 
 #echo TODO
-iotivity_out: 
+iotivity_out:
 	ls ${iotivity_out} || ${MAKE} platform?=${platform} deps ${iotivity_out}
 	sync
 
@@ -85,7 +85,7 @@ demo/arduino: iotivity_out
 	@echo "#"
 	sleep 10
 	${MAKE} platform=arduino upload
-	sleep 10	
+	sleep 10
 	${MAKE} platform=linux run/client
 
 demo: demo/${platform}
@@ -95,6 +95,16 @@ demo/all: distclean
 	${MAKE} platform=arduino distclean
 	${MAKE} platform=linux demo
 	${MAKE} platform=arduino demo
+
+demo/check: demo/log
+	grep "client_loop: gSwitch.value=1 (iterate)" ${log_dir}/client
+
+demo/log: ${log_dir}/server  ${log_dir}/client
+	grep "server.c:" ${log_dir}/server 
+	grep "client.c:" ${log_dir}/client 
+
+
+check: distclean demo demo/check
 
 help:
 	echo "iotivity_out=${iotivity_out}"
