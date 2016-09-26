@@ -36,6 +36,7 @@ ifeq (${config_pkgconfig},1)
 iotivity_dir?=$(PKG_CONFIG_SYSROOT_DIR)/usr/include/iotivity
 iotivity_out?=$(PKG_CONFIG_SYSROOT_DIR)/usr/lib
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
+CPPFLAGS+=-I${iotivity_dir}/..
 else
 include iotivity.mk
 LDFLAGS+=-L${iotivity_out}
