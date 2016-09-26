@@ -8,7 +8,7 @@ include iotivity.mk
 ARDUINO_DIR = /usr/share/arduino
 AVR_TOOLS_DIR = ${ARDUINO_DIR}/hardware/tools/avr/
 BOARD_TAG = mega2560
-MONITOR_PORT = /dev/ttyACM*
+MONITOR_PORT ?= /dev/ttyACM*
 ARCHITECTURE=avr
 
 MONITOR_BAUDRATE = 115200
@@ -23,14 +23,6 @@ platform=arduino
 
 #{ configuration
 eth_enabled?=1
-CPPFLAGS += -DCONFIG_GPIO_PIN=13
-CPPFLAGS += -DCONFIG_MAC_1=0x90
-CPPFLAGS += -DCONFIG_MAC_2=0xA2
-CPPFLAGS += -DCONFIG_MAC_3=0xDA
-CPPFLAGS += -DCONFIG_MAC_4=0x0F
-CPPFLAGS += -DCONFIG_MAC_5=0x97
-CPPFLAGS += -DCONFIG_MAC_6=0xB3
-
 CPPFLAGS += -DARDUINOSERIAL=1
 ARDUINO_LIBS += Wire 
 ARDUINO_LIBS += SoftwareSerial
@@ -133,3 +125,5 @@ $(TARGET_ELF): $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
 	${CC} ${LDFLAGS} -o $@ ${^}
 	ls -l ${@}
+
+
