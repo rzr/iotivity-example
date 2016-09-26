@@ -3,9 +3,9 @@ Version:        1.0.0
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
-Url:            https://gitorious.org/tizen/iotivitity-example
+Url:            http://github.com/TizenTeam/iotivity-example
 Group:          System/Libraries
-#X-Vc-Url:      git@gitorious.org:tizen/iotivitity-example.git
+#X-Vc-Url:      http://github.com/TizenTeam/iotivity-example
 Group:          Contrib
 Source:         %{name}-%{version}.tar.gz
 
@@ -13,6 +13,7 @@ BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
+BuildRequires:  pkgconfig(dlog)
 
 
 %description
@@ -23,12 +24,16 @@ that share a single gpio output as IoTivity resource.
 %setup -q
 
 %build
-%__make %{?_smp_mflags}
 
+%__make %{?_smp_mflags} \
+    PLATFORM=TIZEN \
+    #eol
 
 %install
-%__make install DEST_LIB_DIR=%{buildroot}%{_libdir}/%{name}/
-
+%__make install \
+    DEST_LIB_DIR=%{buildroot}/opt/%{name}/ \
+    PLATFORM=TIZEN \
+    #eol
 
 %fdupes %{buildroot}
 
@@ -39,5 +44,4 @@ that share a single gpio output as IoTivity resource.
 
 %files
 %defattr(-,root,root)
-%{_libdir}/%{name}/*
-
+/opt/%{name}/*
