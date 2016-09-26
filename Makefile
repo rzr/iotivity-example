@@ -26,6 +26,7 @@ top/local/%: config.mk
 
 -include config.mk
 
+user?=${USER}
 deps+=config.mk
 #platform?=arduino
 platform?=linux
