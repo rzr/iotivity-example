@@ -14,7 +14,6 @@ BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
-BuildRequires:  boost-devel
 
 
 %description
@@ -32,7 +31,7 @@ that share a single gpio output as IoTivity resource.
 
 %install
 %__make install \
-    DESTDIR=%{buildroot}/opt/%{name}/ \
+    DESTDIR=%{buildroot}/ \
     PLATFORM=TIZEN \
     #eol
 
