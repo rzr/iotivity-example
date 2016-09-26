@@ -26,9 +26,9 @@ that share a single gpio output as IoTivity resource.
 %build
 
 %__make %{?_smp_mflags} \
-    CPPFLAGS=-DCONFIG_WANT_GPIO=1 \
     PLATFORM=TIZEN \
     #eol
+#  CPPFLAGS=-DCONFIG_WANT_GPIO=1
 
 %install
 %__make install \
