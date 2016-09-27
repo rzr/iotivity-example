@@ -73,7 +73,7 @@ OCEntityHandlerResult handleOCEntity(OCEntityHandlerFlag flag,
         LOGf("%p (error)", payload);
         return OC_EH_ERROR;
     }
-    
+
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
         LOGf("%d", entityHandlerRequest->method);
@@ -81,14 +81,16 @@ OCEntityHandlerResult handleOCEntity(OCEntityHandlerFlag flag,
         switch (entityHandlerRequest->method) {
         case OC_REST_POST: //4
         case OC_REST_PUT:
-            
+
             input = (OCRepPayload*) entityHandlerRequest->payload;
+#if ! defined ARDUINO
             OCRepPayloadGetPropBool(input, "value", &gSwitch.value);
-#if 0 // defined ARDUINO            
+#else
             if ( !false ) {
                 LOGf("TODO: check %s (workaround)",__FILE__);
                 gSwitch.value = !gSwitch.value;
             }
+
 #endif
             LOGf("%d (update)", gSwitch.value);
             setValue(gSwitch.value);
@@ -177,6 +179,7 @@ OCStackResult server_setup()
     result = createSwitchResource();
     if (result != OC_STACK_OK)
     {
+        errror(result);        
         LOGf("%d (error)", result);
         return result;
     }
