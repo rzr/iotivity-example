@@ -8,7 +8,8 @@ iotivity_version?=1.1.1
 #overide here
 #iotivity_version=master
 #iotivity_version=1.2-rel
-#export iotivity_version
+
+export iotivity_version
 
 tinycbor_url?=https://github.com/01org/tinycbor.git
 ifeq (${iotivity_version}, 1.1.1)
