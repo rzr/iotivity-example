@@ -31,7 +31,7 @@
 #define STR(a) #a
 
 #ifdef __linux__
-#define LOGf(f,p)                                       \
+#define LOGf(f,p)                                                       \
     printf("%s: %s: %s=" f "\n", __FILE__,  __FUNCTION__,STR(p), p)
 #else
 #define LOGf(f,p)                               \
@@ -42,7 +42,7 @@ static int gOver = 0;
 
 static const char * gName = "oic.r.switch.binary";
 
-static const char * gUri = "/a/switch/0";
+static const char * gUri = "/a/switch";
 
 static char const * gIface = //
     OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline" //TODO
