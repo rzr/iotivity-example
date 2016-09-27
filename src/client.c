@@ -322,7 +322,7 @@ OCStackResult client_setup()
             LOGf("%d (error)", result);
         }
 
-        sleep(1 * gDelay);
+        sleep(10 * gDelay);
     }
 
     LOGf("%d", result);
