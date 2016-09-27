@@ -2,6 +2,7 @@
 
 atmega256
 
+works on 1.1.1
 
 ### TODO ###
 
