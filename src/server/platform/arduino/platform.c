@@ -1,3 +1,4 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2016 Samsung Electronics France SAS All Rights Reserved.
@@ -47,16 +48,16 @@
 #define CONFIG_MAC_2 0xA2
 #endif
 #ifndef CONFIG_MAC_3
-#define  CONFIG_MAC_3 0xDA
+#define CONFIG_MAC_3 0xDA
 #endif
 #ifndef CONFIG_MAC_4
-#define  CONFIG_MAC_4 0x0E
+#define CONFIG_MAC_4 0x0E
 #endif
 #ifndef CONFIG_MAC_5
-#define  CONFIG_MAC_5 0xC4
+#define CONFIG_MAC_5 0xC4
 #endif
 #ifndef CONFIG_MAC_6
-#define  CONFIG_MAC_6 0x05
+#define CONFIG_MAC_6 0x05
 #endif
 
 static int gGpio = CONFIG_GPIO_PIN;
@@ -74,7 +75,7 @@ void platform_setValue(bool value)
 
 void blink(int n)
 {
-    int step = 1000;
+    int step = 250;
     delay(4*step);
     for (int i=0;i<n;i++){
         platform_setValue(false);
@@ -172,7 +173,7 @@ void setup()
 
 void loop()
 {
-    if (!false) blink(1);
+    if (false) blink(1); // heartbeat to debug
     server_loop();
 }
 
@@ -181,7 +182,7 @@ int main(void)
 {
     init();
     setup();
-    for(;gOver;)
+    for(;!gOver;)
     {
         loop();
     }
