@@ -42,7 +42,7 @@ static int gOver = 0;
 
 static const char * gName = "oic.r.switch.binary";
 
-static const char * gUri = "/a/switch";
+static const char * gUri = "/switch";
 
 static char const * gIface = //
     OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline" //TODO
