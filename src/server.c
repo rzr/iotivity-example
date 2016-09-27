@@ -107,8 +107,6 @@ OCEntityHandlerResult handleOCEntity(OCEntityHandlerFlag flag,
             break;
         }
 
-        //
-
         response.ehResult = result;
 
         response.numSendVendorSpecificHeaderOptions = 0;
@@ -179,7 +177,6 @@ OCStackResult server_setup()
     result = createSwitchResource();
     if (result != OC_STACK_OK)
     {
-//      error(result);        
         LOGf("%d (error)", result);
         return result;
     }
