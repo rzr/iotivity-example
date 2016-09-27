@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <iotivity_config.h>
+//#include <iotivity_config.h> //1.2.0+
 #include <octypes.h>
 #include <ocstack.h>
 #include <ocpayload.h>
