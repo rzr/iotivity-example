@@ -71,7 +71,7 @@ void blink(int n)
 {
     int step = 500;
     delay(4*step);
-    for (int i=0;i<n;i++){
+    for (int i=1;i<n;i++){
         platform_setValue(false);
         delay(step);
         platform_setValue(true);
@@ -79,7 +79,6 @@ void blink(int n)
     }
     platform_setValue(false);
     delay(4*step);
-    //LOGf("%i", n); // beware of infinite loop
 }
 
 
@@ -102,26 +101,27 @@ void platform_log(const char* text)
 
 int setup_network()
 {
-
 #ifdef ARDUINOETH
     //TODO: update with actual MAC address
     uint8_t ETHERNET_MAC[] =
         { CONFIG_MAC_1, CONFIG_MAC_2, CONFIG_MAC_3,
-        CONFIG_MAC_4, CONFIG_MAC_5, CONFIG_MAC_6};
+          CONFIG_MAC_4, CONFIG_MAC_5, CONFIG_MAC_6};
     uint8_t error = Ethernet.begin(ETHERNET_MAC);
     if (error == 0)
     {
-       LOGf("%s",__FUNCTION__);
-       return -1;
+        LOGf("%s",__FUNCTION__);
+        return -1;
     }
 
-if (false) {
-    IPAddress ip = Ethernet.localIP();
-    for(int i=0;i<4;i++) {
-        blink(ip[i]);
+    if (false) {
+        IPAddress ip = Ethernet.localIP();
+        for(int i=0;i<4;i++) {
+            blink(ip[i]);
+        }
     }
-}
     //TODO: OIC_LOG_V(INFO, TAG, "IP Address:  %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+#else
+    blink(20);
 #endif
 
     return 0;
@@ -130,25 +130,27 @@ if (false) {
 
 void platform_test()
 {
-    if (false ) blink(2);
+    if (false) blink(2);
 }
 
 void platform_setup()
 {
+    if (false) blink(1);
+
     static int init=1; // make sure it will be init once
     if (init--)
     {
         pinMode(gGpio, OUTPUT);
         LOGf("%d",gGpio);
 
-#ifdef ARDUINOSERIAL
-        //TODO: this will break it all
-        // Serial.begin(115200);
+#ifdef CONFIG_ARDUINOSERIAL
+        Serial.begin(115200);
 #endif
         if (true)
         {
             setup_network();
         }
+        if (false) blink(5);
         platform_log("1");
     }
 }
