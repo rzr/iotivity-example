@@ -43,7 +43,8 @@
 #include <unistd.h>
 #endif
 
-#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 
 #include "common.h"
 
@@ -242,16 +243,23 @@ OCStackApplicationResult handleDiscover(void *ctx,
 
 int kbhit()
 {
-    static char buf;
-    fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
-    return read(0,&buf,1);
+    struct termios term, oterm;
+    int fd = 0;
+    int c = 0;
+    tcgetattr(fd, &oterm);
+    memcpy(&term, &oterm, sizeof(term));
+    term.c_lflag = term.c_lflag & (!ICANON);
+    term.c_cc[VMIN] = 0;
+    term.c_cc[VTIME] = 1;
+    tcsetattr(fd, TCSANOW, &term);
+    c = getchar();
+    tcsetattr(fd, TCSANOW, &oterm);
+    return (c);
 }
-
 
 OCStackResult client_loop()
 {
     OCStackResult result;
-
     LOGf("%d (iterate)", gSwitch.value);
 
     result = OCProcess();
@@ -260,16 +268,20 @@ OCStackResult client_loop()
         LOGf("%d (error)", result);
         return result;
     }
+
     static int once = 1;
     if (gDiscovered && once-->0) {
         result = post();
+        LOGf("%d (post)", result);
     }
-    if (gDiscovered && kbhit()) {
-        post();
+    int c =0;
+    if (gDiscovered && ((c=kbhit())>0)) {
+        LOGf("%d (post on kbhit)", c);
+        result = post();
     }
-    
     sleep(gDelay);
     LOGf("%d", gOver);
+
     return result;
 }
 
@@ -353,12 +365,10 @@ void handleSigInt(int signum)
 int main(int argc, char* argv[])
 {
     client_setup();
-
     sleep(gDelay);
 
     // Break from loop with Ctrl+C
     signal(SIGINT, handleSigInt);
-
     for(;!gOver;)
     {
         client_loop();
