@@ -1,3 +1,8 @@
+### REQUIEREMENT ###
+
+atmega256
+
+
 ### TODO ###
 
 * build server
