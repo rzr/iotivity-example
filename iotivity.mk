@@ -10,7 +10,7 @@ iotivity_version?=1.1.1
 #iotivity_version=1.2-rel
 #export iotivity_version
 
-tinycbor_url?=https://github.com/01org/tinycbor.git 
+tinycbor_url?=https://github.com/01org/tinycbor.git
 ifeq (${iotivity_version}, 1.1.1)
 tinycbor_version?=v0.2.1
 else
@@ -107,7 +107,7 @@ all+=iotivity_out
 #scons_flags+=LOGGING=1 
 #scons_flags+=RELEASE=1
 #scons_flags+=DEBUG=0
-scons_flags+=LOGGING=0
+scons_flags+=LOGGING=1
 scons_flags+=RELEASE=0
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
