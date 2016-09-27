@@ -62,6 +62,11 @@
 static int gGpio = CONFIG_GPIO_PIN;
 
 
+void sleep(int secs)
+{
+    delay(secs*1000);
+}
+
 void platform_setValue(bool value)
 {
     digitalWrite(gGpio, (value) ? HIGH : LOW);
@@ -69,9 +74,9 @@ void platform_setValue(bool value)
 
 void blink(int n)
 {
-    int step = 500;
+    int step = 1000;
     delay(4*step);
-    for (int i=1;i<n;i++){
+    for (int i=0;i<n;i++){
         platform_setValue(false);
         delay(step);
         platform_setValue(true);
@@ -135,41 +140,39 @@ void platform_test()
 
 void platform_setup()
 {
-    if (false) blink(1);
-
     static int init=1; // make sure it will be init once
     if (init--)
     {
         pinMode(gGpio, OUTPUT);
-        LOGf("%d",gGpio);
+
+        if (!false) blink(1);
 
 #ifdef CONFIG_ARDUINOSERIAL
         Serial.begin(115200);
+        LOGf("%d",gGpio);
 #endif
+        if (!false) blink(2);
         if (true)
         {
             setup_network();
         }
-        if (false) blink(5);
+        if (!false) blink(3);
         platform_log("1");
     }
 }
 
 
-void sleep(int value)
-{
-    delay(value*1000);
-}
 
 void setup()
 {
     platform_setup();
     server_setup();
+    if (!false) blink(4);
 }
 
 void loop()
 {
-    if (false) blink(2);
+    if (!false) blink(1);
     server_loop();
 }
 
