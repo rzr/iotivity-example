@@ -179,7 +179,7 @@ OCStackResult server_setup()
     result = createSwitchResource();
     if (result != OC_STACK_OK)
     {
-        errror(result);        
+//      error(result);        
         LOGf("%d (error)", result);
         return result;
     }
