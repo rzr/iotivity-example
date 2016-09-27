@@ -24,6 +24,7 @@ platform=arduino
 #{ configuration
 eth_enabled?=1
 CPPFLAGS += -DARDUINOSERIAL=1
+#CPPFLAGS += -DCONFIG_ARDUINOSERIAL=1
 ARDUINO_LIBS += Wire 
 ARDUINO_LIBS += SoftwareSerial
 #ARDUINO_LIBS += HardwareSerial
