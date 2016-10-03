@@ -72,12 +72,6 @@ build_()
     git clone -b ${branch} ${url}
     $make -C ${package}
     
-    package="mraa"
-    branch="sandbox/pcoval/tizen"
-    url="https://git.tizen.org/cgit/contrib/${package}.git"
-    git clone -b ${branch} ${url}
-    $make -C ${package}
-
     package="iotivity-example"
     url="https://github.com/TizenTeam/${package}"
     branch="tizen"
