@@ -19,7 +19,7 @@
 // limitations under the License.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "config.h"
+#include "common.h"
 #include <cstdio>
 
 #include "observer.h"
@@ -92,7 +92,7 @@ void IoTObserver::onFind(shared_ptr<OC::OCResource> resource)
         {
             print(resource);
 
-            if (resource->uri() == Config::m_endpoint)
+            if (resource->uri() == Common::m_endpoint)
             {
                 QueryParamsMap test;
                 resource->observe(OBSERVE_TYPE_TO_USE, test, &IoTObserver::onObserve);
@@ -175,10 +175,10 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
                          const int &eCode, const int &sequenceNumber)
 {
 
-    int state = 0;
-    rep.getValue( Config::m_key, state);
+    bool value = false;
+    rep.getValue( Common::m_propname, value);
 
-    std::cout << Config::m_key << "=" << state << std::endl;
+    std::cout << Common::m_propname << "=" << value << std::endl;
 }
 
 
