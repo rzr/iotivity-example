@@ -145,7 +145,7 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
         response->setResponseResult(OC_EH_OK);
         response->setResourceRepresentation(m_Representation);
         result = OCPlatform::sendResponse(response);
-        cerr<<STR(OC_EH_OK)<<"="<<OC_EH_OK<<endl;
+        cerr<<"response-result:"<<STR(OC_EH_OK)<<"="<<OC_EH_OK<<endl;
     }
     return result;
 }
@@ -265,7 +265,7 @@ int IoTServer::main(int argc, char *argv[])
     return 0;
 }
 
-#if 1
+#ifdef CONFIG_SERVER_MAIN
 int main(int argc, char *argv[])
 {
     return IoTServer::main(argc, argv);
