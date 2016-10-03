@@ -50,7 +50,8 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
                      int errCode)
 {
     LOG();
-    if (errCode == OC_EH_OK)
+   if(errCode == OC_STACK_OK \
+      || errCode == OC_STACK_RESOURCE_CHANGED)
     {
         bool value;
         representation.getValue(Common::m_propname, value);
@@ -67,7 +68,9 @@ void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation 
                      int errCode)
 {
     LOG();
-    if (errCode == OC_EH_OK)
+    if (errCode == OC_STACK_OK \
+      || errCode == OC_STACK_RESOURCE_CREATED \
+      || errCode == OC_STACK_RESOURCE_CHANGED)
     {
         bool value;
         representation.getValue(Common::m_propname, value);
@@ -250,7 +253,7 @@ int IoTClient::main(int argc, char *argv[])
 }
 
 
-#if 1
+#ifdef CONFIG_CLIENT_MAIN
 int main(int argc, char *argv[])
 {
     return IoTClient::main(argc, argv);
