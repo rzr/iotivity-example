@@ -33,29 +33,31 @@
 
 class IoTServer
 {
-    public:
-        IoTServer(int pin = 0, std::string key = "switch");
-        virtual ~IoTServer();
+public:
+    IoTServer(std::string propname = "switch");
+    virtual ~IoTServer();
 
-    public:
-        static int main(int argc, char *argv[]);
+public:
+    static int main(int argc, char *argv[]);
 
-    protected:
-        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        OC::OCRepresentation m_Representation;
-        OCResourceHandle m_Resource;
+protected:
+    std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+    OC::OCRepresentation m_Representation;
+    OCResourceHandle m_Resource;
 
-        void init();
-        void setup();
-        OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
+    void init();
+    void setup();
+    OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
+    
+    OC::OCRepresentation getResourceRepresentation();
+    void putResourceRepresentation();
+    OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
+    OCStackResult handlePut(std::shared_ptr<OC::OCResourceRequest> request);
+    OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
 
-        OC::OCRepresentation getResourceRepresentation();
-        void putResourceRepresentation();
-        OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
+    static void handle_signal(int signal);
 
-        static void handle_signal(int signal);
-
-        static bool m_over;
+    static bool m_over;
 
 };
 
