@@ -3,7 +3,7 @@ Description="Iotivity example server"
 After=network.target
 
 [Service]
-ExecStart=/opt/iotivity-example-mraa/server
+ExecStart=/opt/iotivity-example/server
 Restart=always
 
 [Install]
