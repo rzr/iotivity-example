@@ -1,4 +1,4 @@
-Name:           iotivity-example-mraa
+Name:           iotivity-example
 Version:        1.0.0
 Release:        0
 License:        Apache-2.0
@@ -13,7 +13,6 @@ BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
-BuildRequires:  mraa-devel
 BuildRequires:  pkgconfig(dlog)
 
 
