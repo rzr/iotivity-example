@@ -202,7 +202,8 @@ int IoTObserver::main(int argc, char *argv[])
     return 0;
 }
 
-#if 1
+
+#ifdef CONFIG_OBSERVER_MAIN
 int main(int argc, char *argv[])
 {
     return IoTObserver::main(argc, argv);
