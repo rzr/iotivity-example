@@ -1,3 +1,4 @@
+// -*-c++-*-
 //******************************************************************
 //
 // Copyright 2014 Intel Corporation.
@@ -19,48 +20,44 @@
 // limitations under the License.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "config.h"
+#include "common.h"
 
 #include <csignal>
 #include <functional>
 
 #include "server.h"
-#include "sensors.h"
+#include "platform.h"
 
-using namespace Sensors;
 using namespace std;
 using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer(int pin, string key)
+IoTServer::IoTServer(string property)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     init();
     setup();
-    m_Representation.setValue(key, 0);
-    SetupPins(pin);
+    m_Representation.setValue(property, false); //TODO
 }
-
 
 IoTServer::~IoTServer()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-    ClosePins();
+    LOG();
 }
 
 
 void IoTServer::init()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
 
     m_platformConfig = make_shared<PlatformConfig>
-                       (ServiceType::InProc, // different services ?
-                        ModeType::Server, // other is client
-                        "0.0.0.0", // default ip
-                        0, // default port ?
-                        OC::QualityOfService::HighQos// qos
-                       );
+        (ServiceType::InProc, // different services ?
+         ModeType::Server, // other is client
+         "0.0.0.0", // default ip
+         0, // default port ?
+         OC::QualityOfService::HighQos// qos
+            );
 
     OCPlatform::Configure(*m_platformConfig);
 }
@@ -68,61 +65,60 @@ void IoTServer::init()
 
 void IoTServer::setup()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     OCStackResult result ;
     EntityHandler handler = bind(&IoTServer::handleEntity, this, placeholders::_1);
 
-    result = createResource(Config::m_endpoint, Config::m_type, handler, m_Resource);
+    result = createResource(Common::m_endpoint, Common::m_type, handler, m_Resource);
     if (OC_STACK_OK != result)
     {
-        cerr << "Error on createResource" << endl;
+        cerr << "error: Error on createResource" << endl;
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
 
-    result = OCPlatform::bindTypeToResource(m_Resource, Config::m_type);
+    result = OCPlatform::bindTypeToResource(m_Resource, Common::m_type);
     if (OC_STACK_OK != result)
     {
-        cerr << "Binding TypeName to Resource was unsuccessful" << endl;
+        cerr << "error: Binding TypeName to Resource was unsuccessful" << endl;
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
 
-    result = OCPlatform::bindInterfaceToResource(m_Resource, Config::m_link);
+    result = OCPlatform::bindInterfaceToResource(m_Resource, Common::m_link);
     if (OC_STACK_OK != result)
     {
-        cerr << "Binding TypeName to Resource was unsuccessful" << endl;
+        cerr << "error: Binding TypeName to Resource was unsuccessful" << endl;
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
-
 }
 
 
 OCStackResult IoTServer::createResource(string uri, string type, EntityHandler handler,
                                         OCResourceHandle &handle)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     OCStackResult result;
     string resourceUri = uri;
     string resourceType = type;
-    string resourceInterface = Config::m_interface;
+    string resourceInterface = Common::m_interface;
     uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
     try
     {
         result = OCPlatform::registerResource//
-                 ( handle,
-                   resourceUri, resourceType,
-                   resourceInterface, //
-                   handler, resourceFlag);
+            ( handle,
+              resourceUri, resourceType,
+              resourceInterface, //
+              handler, resourceFlag);
 
         if (result != OC_STACK_OK)
-            cerr << "Could not create " << type << " resource" << endl;
+            cerr << "error: Could not create " << type << " resource" << endl;
         else
-            cerr << "Successfully created " << type << " resource" << endl;
+            cerr << "log: Successfully created " << type << " resource" << endl;
     }
 
     catch (OC::OCException &e)
     {
-        cerr << "OCException " <<  e.reason().c_str() << " " << hex << e.code();
-        cerr << "@" << __PRETTY_FUNCTION__ << endl;
+        cerr << "error: OCException " <<  e.reason().c_str() << " " << hex << e.code();
+        cerr << "error: @" << __PRETTY_FUNCTION__ << endl;
         result = OC_STACK_ERROR;
     }
 
@@ -132,98 +128,98 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 
 void IoTServer::putResourceRepresentation()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-    int state = 0;
-    m_Representation.getValue(Config::m_key, state);
-    SetOnboardLed(state);
+    LOG();
+    bool value = 0;
+    m_Representation.getValue(Common::m_propname, value);
     OCStackResult result = OCPlatform::notifyAllObservers(m_Resource);
-    if (state == 0)
-        cout << "Turned off GPIO" << endl;
-    else if (state == 1)
-        cout << "Turned on GPIO" << endl;
+}
+
+OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
+{
+    OCStackResult result =  OC_STACK_ERROR;
+    LOG();
+
+    if (response)
+    {
+        response->setErrorCode(200);
+        response->setResponseResult(OC_EH_OK);
+        response->setResourceRepresentation(m_Representation);
+        result = OCPlatform::sendResponse(response);
+        cerr<<STR(OC_EH_OK)<<"="<<OC_EH_OK<<endl;
+    }
+    return result;
+}
+
+OCStackResult IoTServer::handlePut(shared_ptr<OCResourceRequest> request)
+{    
+    LOG();
+
+    OCStackResult result = OC_STACK_OK;
+
+    OCRepresentation requestRep = request->getResourceRepresentation();
+    if (requestRep.hasAttribute(Common::m_propname))
+    {
+        try
+        {
+            bool value = requestRep.getValue<bool>(Common::m_propname);
+            Platform::setValue(value);
+        }
+        catch (...)
+        {
+            cerr << "error: Client sent invalid resource value type" << endl;
+            return result;
+        }
+    }
     else
-        cerr << "Invalid request value" << endl;
+    {
+        cerr << "error: Client sent invalid resource property" << endl;
+        return result;
+    }
+    m_Representation = requestRep;
+    putResourceRepresentation();
+
+    return result;
 }
 
-
-OCRepresentation IoTServer::getResourceRepresentation()
+OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-    return m_Representation;
-}
-
-
-OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> Request)
-{
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
 
     OCEntityHandlerResult result = OC_EH_ERROR;
-    if (Request)
+    if (request)
     {
-        string requestType = Request->getRequestType();
-        int requestFlag = Request->getRequestHandlerFlag();
+        string requestType = request->getRequestType();
+        int requestFlag = request->getRequestHandlerFlag();
         if (requestFlag & RequestHandlerFlag::RequestFlag)
         {
-            auto Response = std::make_shared<OC::OCResourceResponse>();
-            Response->setRequestHandle(Request->getRequestHandle());
-            Response->setResourceHandle(Request->getResourceHandle());
+            auto response = std::make_shared<OC::OCResourceResponse>();
+            response->setRequestHandle(request->getRequestHandle());
+            response->setResourceHandle(request->getResourceHandle());
+
             if (requestType == "PUT")
             {
-                cerr << "PUT request for platform Resource" << endl;
-                OCRepresentation requestRep = Request->getResourceRepresentation();
-                if (requestRep.hasAttribute(Config::m_key))
+                if (handlePut(request) == OC_STACK_OK)
                 {
-                    try
+                    if (respond(response) == OC_STACK_OK)
                     {
-                        requestRep.getValue<int>(Config::m_key);
-                    }
-                    catch (...)
-                    {
-                        Response->setResponseResult(OC_EH_ERROR);
-                        OCPlatform::sendResponse(Response);
-                        cerr << "Client sent invalid resource value type" << endl;
-                        return result;
+                        result = OC_EH_OK;
                     }
                 }
                 else
                 {
-                    Response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(Response);
-                    cerr << "Client sent invalid resource key" << endl;
-                    return result;
+                    response->setResponseResult(OC_EH_ERROR);
+                    OCPlatform::sendResponse(response);
                 }
-                m_Representation = requestRep;
-                putResourceRepresentation();
-                if (Response)
+                ;;
+            } else if (requestType == "GET") {
+                if ( respond(response) == OC_STACK_OK )
                 {
-                    Response->setErrorCode(200);
-                    Response->setResourceRepresentation(getResourceRepresentation());
-                    Response->setResponseResult(OC_EH_OK);
-                    if (OCPlatform::sendResponse(Response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
+                    result = OC_EH_OK;
                 }
-            }
-            else if (requestType == "GET")
-            {
-                cerr << "GET request for platform Resource" << endl;
-                if (Response)
-                {
-                    Response->setErrorCode(200);
-                    Response->setResponseResult(OC_EH_OK);
-                    Response->setResourceRepresentation(getResourceRepresentation());
-                    if (OCPlatform::sendResponse(Response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
-                }
-            }
-            else
-            {
-                Response->setResponseResult(OC_EH_ERROR);
-                OCPlatform::sendResponse(Response);
-                cerr << "Unsupported request type" << endl;
+            } else {
+                cerr<<"error: unsupported "<<requestType<<endl;
+                response->setResponseResult(OC_EH_ERROR);
+                OCPlatform::sendResponse(response);
             }
         }
     }
@@ -233,29 +229,26 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> Requ
 
 void IoTServer::handle_signal(int signal)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     IoTServer::m_over = true;
 }
 
 
 int IoTServer::main(int argc, char *argv[])
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     struct sigaction sa;
     sigfillset(&sa.sa_mask);
     sa.sa_flags = 0;
     sa.sa_handler = IoTServer::handle_signal;
     sigaction(SIGINT, &sa, nullptr);
 
-    cerr << "Server: " << endl
+    cerr << "log: Server: " << endl
          << "Press Ctrl-C to quit...." << endl;
 
-    if (argc > 1 && argv[1])
-    {
-        Config::m_gpio  = atoi(argv[1]);
-    }
+    Platform::setup(argc, argv);
 
-    IoTServer server(Config::m_gpio, Config::m_key);
+    IoTServer server(Common::m_propname);
     try
     {
 
