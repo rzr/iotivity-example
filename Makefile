@@ -62,13 +62,11 @@ V=1
 
 CXXFLAGS+=-std=c++0x
 
-srcs?=common.cpp
+srcs?=platform.cpp  common.cpp
 objs?=${srcs:.cpp=.o}
 
-client_objs?=platform.o
 client?=${local_bindir}/client
 
-server_objs?=platform.o
 server?=${local_bindir}/server
 
 observer?=${local_bindir}/observer
@@ -83,6 +81,10 @@ ${local_bindir}/server: server.o ${server_objs} ${objs}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
 ${local_bindir}/client: client.o ${client_objs} ${objs}
+	@-mkdir -p ${@D}
+	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+
+${local_bindir}/observer: observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
