@@ -30,8 +30,6 @@
 #define PACKAGE "Example"
 #endif
 
-
-
 /** Pseudo singleton class to store common configuration variables **/
 class Common
 {
