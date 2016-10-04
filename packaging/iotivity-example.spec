@@ -14,7 +14,7 @@ BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
-
+Requires:  iotivity
 
 %description
 Mimimal client/server application
