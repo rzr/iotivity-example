@@ -60,19 +60,12 @@ class Logger
     const char* mMessage;
 public:
 
-    Logger(const char * message)
-        {
-            mMessage = message;
-            std::cerr<<"log: { " << mMessage<<std::endl;
-        }
-    ~Logger()
-        {
-            std::cerr<<"log: } " << mMessage<<std::endl;
-        }
+    Logger(const char * message);
+    ~Logger();
 };
 
 #define LOG()                                   \
-    Logger loggerObject(__PRETTY_FUNCTION__)
+    Logger localLoggerObject ## __LINE__ (__PRETTY_FUNCTION__)
 
 
 //TODO: << " @"<< __FILE__<<":"<<__LINE__<<":"<<
