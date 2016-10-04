@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <ctime>
 #include "client.h"
+#include "platform.h"
 
 using namespace std;
 using namespace OC;
@@ -50,8 +51,8 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
                      int errCode)
 {
     LOG();
-   if(errCode == OC_STACK_OK \
-      || errCode == OC_STACK_RESOURCE_CHANGED)
+    if(errCode == OC_STACK_OK \
+       || errCode == OC_STACK_RESOURCE_CHANGED)
     {
         bool value;
         representation.getValue(Common::m_propname, value);
@@ -69,12 +70,12 @@ void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation 
 {
     LOG();
     if (errCode == OC_STACK_OK \
-      || errCode == OC_STACK_RESOURCE_CREATED \
-      || errCode == OC_STACK_RESOURCE_CHANGED)
+        || errCode == OC_STACK_RESOURCE_CREATED \
+        || errCode == OC_STACK_RESOURCE_CHANGED)
     {
         bool value;
         representation.getValue(Common::m_propname, value);
-        cout<<value<<endl;
+        Platform::setValue(value);
     }
     else
     {
