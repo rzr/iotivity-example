@@ -29,3 +29,18 @@ std::string Common::m_type = "oic.r.switch.binary";
 std::string Common::m_endpoint = "/switch";
 std::string Common::m_propname = "value";
 std::string Common::m_link(OC::LINK_INTERFACE);
+
+
+Logger::Logger(const char * message)
+{
+    mMessage = message;
+    std::cerr<<"log: { " << mMessage<<std::endl;
+}
+
+Logger::~Logger()
+
+{
+    std::cerr<<"log: } " << mMessage<<std::endl;
+}
+
+// 	Common::log(__PRETTY_FUNCTION__);
