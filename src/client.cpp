@@ -60,6 +60,8 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
     }
     else
     {
+        Common::log("error:");
+        Common::log( STR( __PRETTY_FUNCTION__) );
         cerr <<"errror:: in GET response from Resource resource" << endl;
     }
     IoTClient::DisplayMenu();
@@ -73,12 +75,15 @@ void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation 
         || errCode == OC_STACK_RESOURCE_CREATED \
         || errCode == OC_STACK_RESOURCE_CHANGED)
     {
+        Common::log( __PRETTY_FUNCTION__ );
         bool value;
         representation.getValue(Common::m_propname, value);
         Platform::setValue(value);
     }
     else
     {
+        Common::log( "error: ");
+        Common::log( __PRETTY_FUNCTION__ );
         cerr << "error: in PUT response: " << errCode<<  endl;
     }
     IoTClient::DisplayMenu();
@@ -178,6 +183,8 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     }
     catch (OCException &ex)
     {
+        Common::log( "error: ");
+        Common::log(__PRETTY_FUNCTION__ );
         cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
     }
 }
