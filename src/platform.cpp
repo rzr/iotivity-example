@@ -27,7 +27,6 @@
 using namespace std;
 
 
-
 void Platform::setValue(bool value)
 {
     LOG();
@@ -37,4 +36,5 @@ void Platform::setValue(bool value)
 
 void Platform::setup(int argc, char *argv[])
 {
+    LOG();
 }
