@@ -24,8 +24,8 @@
 #include "common.h"
 #include <iotivity/resource/OCApi.h>
 
-std::string Common::m_interface = "oic.if.baseline";
+std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline" 
 std::string Common::m_type = "oic.r.switch.binary";
 std::string Common::m_endpoint = "/switch";
-std::string Common::m_propname = "switch";
+std::string Common::m_propname = "value";
 std::string Common::m_link(OC::LINK_INTERFACE);
