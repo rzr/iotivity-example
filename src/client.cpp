@@ -68,12 +68,12 @@ void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation 
 }
 
 void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation &representation,
-                     int errCode)
+                     int eCode)
 {
     LOG();
-    if (errCode == OC_STACK_OK \
-        || errCode == OC_STACK_RESOURCE_CREATED \
-        || errCode == OC_STACK_RESOURCE_CHANGED)
+    if (eCode == OC_STACK_OK \
+        || eCode == OC_STACK_RESOURCE_CREATED \
+        || eCode == OC_STACK_RESOURCE_CHANGED)
     {
         Common::log( __PRETTY_FUNCTION__ );
         bool value;
@@ -84,7 +84,7 @@ void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation 
     {
         Common::log( "error: ");
         Common::log( __PRETTY_FUNCTION__ );
-        cerr << "error: in PUT response: " << errCode<<  endl;
+        cerr << "error: in PUT response: " << eCode<<  endl;
     }
     IoTClient::DisplayMenu();
 }
