@@ -201,7 +201,7 @@ main_()
         || home="${tmpdir}/out/${package}/${version}/${profile}"
 
     [ "" != "${version}" ] \
-        || version="1.2.0+RC2"
+        || version="1.2.0+RC3"
     #  version="1.1.1"
 
     [ "" != "${arch}" ] || arch="armv7l"
