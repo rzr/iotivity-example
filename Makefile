@@ -137,6 +137,8 @@ xterm/% : ${local_bindir}/%
 	sleep 5
 
 run: run/server
+	xterm -e ${MAKE} run/${@F} &
+	sleep 5
 
 run/client-auto:  ${local_bindir}/client
 	-while true ; do echo 2 ; sleep 5 ;  done | $<
