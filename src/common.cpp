@@ -21,7 +21,40 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#include "config.h"
-#include "sensors.h"
+#include "common.h"
+#include <iotivity/resource/OCApi.h>
+#include "platform.h"
 
-mraa_gpio_context Sensors::gpio = NULL;
+std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
+std::string Common::m_type = "oic.r.switch.binary";
+std::string Common::m_endpoint = "/BinarySwitchResURI";
+std::string Common::m_propname = "value";
+
+int Common::m_logLevel = 0;
+int Common::m_period = 5;
+
+void Common::log(char const *const message)
+{
+    if (Common::m_logLevel)
+    {
+        std::cerr<<"log: " << message<<std::endl;
+    }
+}
+
+
+Logger::Logger(const char *message)
+{
+    mMessage = message;
+    if (Common::m_logLevel)
+    {
+        std::cerr << "log: { " << mMessage << std::endl;
+    }
+}
+
+Logger::~Logger()
+{
+    if (Common::m_logLevel)
+    {
+        std::cerr << "log: } " << mMessage << std::endl;
+    }
+}

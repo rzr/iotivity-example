@@ -34,15 +34,15 @@
 
 class Resource
 {
-        std::shared_ptr<OC::OCResource> m_resourceHandle;
+        std::shared_ptr<OC::OCResource> m_OCResource;
         OC::OCRepresentation m_Representation;
         OC::GetCallback m_GETCallback;
-        OC::PutCallback m_PUTCallback;
+        OC::PostCallback m_POSTCallback;
         void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
-        void onPut(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+        void onPost(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
     public:
         void get();
-        void put(int);
+        void post(bool);
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
 };
@@ -50,25 +50,37 @@ class Resource
 
 class IoTClient
 {
-        std::shared_ptr<Resource> m_platformResource;
+        std::shared_ptr<Resource> m_Resource;
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::FindCallback m_FindCallback;
         void init();
         void onFind(std::shared_ptr<OC::OCResource>);
+
     public:
+        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+
+        static void onObserve(const OC::HeaderOptions /*headerOptions*/,
+                              const OC::OCRepresentation &rep,
+                              const int &eCode, const int &sequenceNumber);
+
         void print(std::shared_ptr<OC::OCResource> resource);
 
-        static  int main(int argc, char *argv[]);
+        static int main(int argc, char *argv[]);
+        bool toggle();
+        bool setValue(bool value);
+
     public:
-        std::shared_ptr<Resource> getPlatformResource();
+        std::shared_ptr<Resource> getResource();
         void start();
         IoTClient();
         virtual ~IoTClient();
 
-        static void DisplayMenu();
+        static void menu();
 
         static IoTClient *getInstance();
         static IoTClient *mInstance;
+    private:
+        bool m_value;
 };
 
 #endif /* CLIENT_H_ */

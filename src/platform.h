@@ -21,35 +21,24 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef PLATFORM_H_
+#define PLATFORM_H_
 
-#include <string>
-
-#if !defined(PACKAGE)
-#define PACKAGE "Example"
-#endif
-
-
-
-/** Pseudo singleton class to store common configuration variables **/
-class Config
+class Platform
 {
     public:
-        /** public interface (used both sides) **/
-        static std::string  m_interface;
-        /** type of resource (used both sides) **/
-        static std::string  m_type;
-        /** url's path (used both sides) **/
-        static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_key;
-        /** network interface**/
-        static std::string m_link;
-        /** polling period**/
-        static const int m_period = 5;
-        /** gpio logical pin (only used in server) **/
-        static unsigned int m_gpio;
-};
 
-#endif /* CONFIG_H_ */
+        Platform() {}
+
+        ~Platform();
+
+        static Platform &getInstance() { static Platform instance; return instance; }
+
+        void setup(int argc = 0, char *argv[] = 0);
+
+        void setValue(bool value);
+
+        static void log(char const *const message);
+
+};
+#endif // PLATFORM_H_
