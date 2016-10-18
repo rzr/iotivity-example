@@ -19,8 +19,6 @@ LOCAL_OPT_DIR_D = "${D}${LOCAL_OPT_DIR}"
 DEPENDS += " iotivity "
 BDEPENDS += " iotivity-dev "
 
-DEPENDS += "iotivity "
-
 DEPENDS_${PN} += "iotivity-resource-dev iotivity-resource-thin-staticdev iotivity-service-dev iotivity-service-staticdev"
 
 BBCLASSEXTEND = "native nativesdk"
@@ -28,8 +26,8 @@ RDEPENDS_${PN} += " iotivity-resource "
 
 SYSTEMD_SERVICE_${PN} = "${PN}.service"
 EXTRA_OEMAKE = " package=${PN} "
-EXTRA_OEMAKE += " config_pkgconfig=1 "
 
+EXTRA_OEMAKE += " config_pkgconfig=0 "
 # TODO: remove this workaround for iotivity-1.1.1
 EXTRA_OEMAKE += " iotivity_dir=${PKG_CONFIG_SYSROOT_DIR}/usr/include/iotivity "
 EXTRA_OEMAKE += " iotivity_out=${PKG_CONFIG_SYSROOT_DIR}/usr/include/iotivity "
