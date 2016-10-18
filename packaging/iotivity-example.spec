@@ -1,5 +1,5 @@
-Name:           iotivity-example-mraa
-Version:        1.0.0
+Name:           iotivity-example
+Version:        1.1.0
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
@@ -13,13 +13,14 @@ BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
-BuildRequires:  mraa-devel
 BuildRequires:  pkgconfig(dlog)
+BuildRequires:  systemd
+Requires:  iotivity
 
 
 %description
-Mimimal client/server application
-that share a single gpio output as IoTivity resource.
+Mimimal client/server application,
+that share an IoTivity resource.
 
 %prep
 %setup -q
@@ -33,8 +34,19 @@ that share a single gpio output as IoTivity resource.
 %install
 %__make install \
     DESTDIR=%{buildroot}/ \
+    name=%{name} \
     PLATFORM=TIZEN \
     #eol
+
+make %{name}.service
+
+install -d %{buildroot}%{_unitdir}
+
+install extra/iotivity-example.service \
+  %{buildroot}%{_unitdir}/%{name}.service
+
+%install_service network.target.wants %{name}.service
+
 
 %fdupes %{buildroot}
 
@@ -46,3 +58,5 @@ that share a single gpio output as IoTivity resource.
 %files
 %defattr(-,root,root)
 /opt/%{name}/*
+%{_unitdir}/%{name}.service
+%{_unitdir}/network.target.wants/%{name}.service
