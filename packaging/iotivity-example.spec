@@ -1,5 +1,5 @@
-Name:           iotivity-example-mraa
-Version:        1.0.0
+Name:           iotivity-example
+Version:        1.1.0
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
@@ -13,13 +13,14 @@ BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
-BuildRequires:  mraa-devel
 BuildRequires:  pkgconfig(dlog)
+BuildRequires:  systemd
+Requires:  iotivity
 
 
 %description
-Mimimal client/server application
-that share a single gpio output as IoTivity resource.
+Mimimal client/server application,
+that share a binrry switch value as IoTivity resource.
 
 %prep
 %setup -q
@@ -28,17 +29,36 @@ that share a single gpio output as IoTivity resource.
 
 %__make %{?_smp_mflags} \
     PLATFORM=TIZEN \
+    config_pkgconfig=0 \
     #eol
 
 %install
 %__make install \
-    DEST_LIB_DIR=%{buildroot}/opt/%{name}/ \
+    name=%{name} \
+    DESTDIR=%{buildroot} \
     PLATFORM=TIZEN \
+    config_pkgconfig=0 \
     #eol
+
+make %{name}.service
+
+install -d %{buildroot}%{_unitdir}
+
+install extra/iotivity-example.service \
+  %{buildroot}%{_unitdir}/%{name}.service
+
+#install -d %{buildroot}%{_unitdir}/network.target.wants
+
+
+#ln -s ../%{name}.service \
+#  %{buildroot}%{_unitdir}/network.target.wants/%{name}.service
+%install_service network.target.wants %{name}.service
+
 
 %fdupes %{buildroot}
 
 %post -p /sbin/ldconfig
+
 
 %postun -p /sbin/ldconfig
 
@@ -46,3 +66,5 @@ that share a single gpio output as IoTivity resource.
 %files
 %defattr(-,root,root)
 /opt/%{name}/*
+%{_unitdir}/%{name}.service
+%{_unitdir}/network.target.wants/%{name}.service
