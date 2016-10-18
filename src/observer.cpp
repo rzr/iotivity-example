@@ -19,7 +19,7 @@
 // limitations under the License.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-#include "config.h"
+#include "common.h"
 #include <cstdio>
 
 #include "observer.h"
@@ -92,7 +92,7 @@ void IoTObserver::onFind(shared_ptr<OC::OCResource> resource)
         {
             print(resource);
 
-            if (resource->uri() == Config::m_endpoint)
+            if (resource->uri() == Common::m_endpoint)
             {
                 QueryParamsMap test;
                 resource->observe(OBSERVE_TYPE_TO_USE, test, &IoTObserver::onObserve);
@@ -155,13 +155,13 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 
 
     cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
-    for (auto & resourceTypes : resource->getResourceTypes())
+    for (auto &resourceTypes : resource->getResourceTypes())
     {
         cerr << "\t" << resourceTypes << endl;
     }
 
     cerr << "Resource Interfaces: " << endl;
-    for (auto & resourceInterfaces : resource->getResourceInterfaces())
+    for (auto &resourceInterfaces : resource->getResourceInterfaces())
     {
         cerr << "\t" << resourceInterfaces << endl;
     }
@@ -175,10 +175,11 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
                          const int &eCode, const int &sequenceNumber)
 {
 
-    int state = 0;
-    rep.getValue( Config::m_key, state);
+    bool value = false;
+    rep.getValue(Common::m_propname, value);
 
-    std::cout << Config::m_key << "=" << state << std::endl;
+    std::cerr << Common::m_propname << "=" << value << std::endl;
+    std::cout << value << std::endl;
 }
 
 
@@ -202,7 +203,8 @@ int IoTObserver::main(int argc, char *argv[])
     return 0;
 }
 
-#if 1
+
+#ifdef CONFIG_OBSERVER_MAIN
 int main(int argc, char *argv[])
 {
     return IoTObserver::main(argc, argv);

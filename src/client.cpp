@@ -21,10 +21,11 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#include "config.h"
+#include "common.h"
 #include <unistd.h>
 #include <ctime>
 #include "client.h"
+#include "platform.h"
 
 using namespace std;
 using namespace OC;
@@ -32,10 +33,13 @@ using namespace OC;
 
 Resource::Resource(shared_ptr<OCResource> resource)
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
-    m_resourceHandle = resource;
-    m_GETCallback = bind(&Resource::onGet, this, placeholders::_1, placeholders::_2, placeholders::_3);
-    m_PUTCallback = bind(&Resource::onPut, this, placeholders::_1, placeholders::_2, placeholders::_3);
+    LOG();
+    m_OCResource = resource;
+    m_GETCallback = bind(&Resource::onGet, this,
+                         placeholders::_1, placeholders::_2, placeholders::_3);
+
+    m_POSTCallback = bind(&Resource::onPost, this,
+                          placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
@@ -43,68 +47,67 @@ Resource::~Resource()
 }
 
 
-void Resource::onGet(const HeaderOptions &headerOptions, const OCRepresentation &representation,
-                     int errCode)
+void Resource::onGet(const HeaderOptions &headerOptions,
+                     const OCRepresentation &representation, int eCode)
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
-    if (errCode == OC_STACK_OK)
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
     {
-        int value;
-        representation.getValue(Config::m_key, value);
-        cout << endl << endl << "GPIO switch state is: " << value << endl;
+        bool value;
+        representation.getValue(Common::m_propname, value);
+        cout << value << endl;
     }
     else
     {
-        cerr << endl << endl << "Error in GET response from Resource resource" << endl;
+        cerr << "errror:: in GET response:" << eCode << endl;
     }
-    IoTClient::DisplayMenu();
+    IoTClient::menu();
 }
 
-void Resource::onPut(const HeaderOptions &headerOptions, const OCRepresentation &representation,
-                     int errCode)
+void Resource::onPost(const HeaderOptions &headerOptions,
+                      const OCRepresentation &representation, int eCode)
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
-    if (errCode == OC_STACK_OK)
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
     {
-        int value;
-        representation.getValue(Config::m_key, value);
-        cout << endl << endl << "Set GPIO switch to: " << value << endl;
+        bool value;
+        representation.getValue(Common::m_propname, value);
+        Platform::getInstance().setValue(value);
     }
     else
     {
-        cerr << endl << endl << "Error in PUT response from GPIO resource" << endl;
+        cerr << "error: in POST response: " << eCode <<  endl;
     }
-    IoTClient::DisplayMenu();
+    IoTClient::menu();
 }
+
 
 void Resource::get()
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
     QueryParamsMap params;
-    assert(m_resourceHandle); //TODO display alert if not ready
-    m_resourceHandle->get(params, m_GETCallback);
+    m_OCResource->get(params, m_GETCallback);
 }
 
-void Resource::put(int Switch)
+void Resource::post(bool value)
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
     QueryParamsMap params;
     OCRepresentation rep;
-    rep.setValue(Config::m_key, Switch);
-    m_resourceHandle->put(rep, params, m_PUTCallback);
+    rep.setValue(Common::m_propname, value);
+    m_OCResource->post(rep, params, m_POSTCallback);
 }
-
 
 
 IoTClient::IoTClient()
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
     init();
 }
 
 IoTClient::~IoTClient()
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
 }
 
 
@@ -112,24 +115,23 @@ IoTClient *IoTClient::mInstance = nullptr;
 
 IoTClient *IoTClient::getInstance()
 {
-    if ( IoTClient::mInstance == 0 )
+    if (!IoTClient::mInstance)
     {
         mInstance = new IoTClient;
     }
     return mInstance;
 }
 
-
 void IoTClient::init()
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
 
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
                         ModeType::Client, //
                         "0.0.0.0", //
                         0, //
-                        OC::QualityOfService::HighQos //
+                        OC::QualityOfService::LowQos //
                        );
     OCPlatform::Configure(*m_platformConfig);
     m_FindCallback = bind(&IoTClient::onFind, this, placeholders::_1);
@@ -138,76 +140,164 @@ void IoTClient::init()
 
 void IoTClient::start()
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
+
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("", //
                              coap_multicast_discovery.c_str(),
                              connectivityType,
                              m_FindCallback,
-                             OC::QualityOfService::HighQos);
+                             OC::QualityOfService::LowQos);
 }
 
-
-shared_ptr<Resource> IoTClient::getPlatformResource()
+shared_ptr<Resource> IoTClient::getResource()
 {
-    return m_platformResource;
+    return m_Resource;
 }
 
 
 void IoTClient::onFind(shared_ptr<OCResource> resource)
 {
-    cerr << __PRETTY_FUNCTION__ << std::endl;
+    LOG();
     try
     {
         if (resource)
         {
             print(resource);
+
             string resourceUri = resource->uri();
-            if (resourceUri == Config::m_endpoint)
+            if (Common::m_endpoint == resourceUri)
             {
-                m_platformResource = make_shared<Resource>(resource);
+                cerr << "resourceUri=" << resourceUri << endl;
+                m_Resource = make_shared<Resource>(resource);
+
+                if (true)   // multi client need observe (for flip/flop)
+                {
+                    QueryParamsMap test;
+                    resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
+                }
+                else     // simple client can only use get once
+                {
+                    m_Resource->get();
+                }
+                menu();
             }
+
         }
-        IoTClient::DisplayMenu();
     }
     catch (OCException &ex)
     {
-        cerr << "Caught exception in discoveredResource: " << ex.reason() << endl;
+        cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
     }
 }
 
 
 void IoTClient::print(shared_ptr<OCResource> resource)
 {
-    string resourceUri = resource->uri();
-    string hostAddress = resource->host();
+    cerr << "log: Resource: uri: " << resource->uri() << endl;
+    cerr << "log: Resource: host: " << resource->host() << endl;
 
-    cerr << "Resource uri: " << resourceUri << endl;
-    cerr << "Resource host: " << hostAddress << endl;
-
-    cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
-    for (auto & resourceTypes : resource->getResourceTypes())
+    for (auto &type : resource->getResourceTypes())
     {
-        cerr << "\t" << resourceTypes << endl;
+        cerr << "log: Resource: type: " << type << endl << endl;
     }
 
-    cerr << "Resource Interfaces: " << endl;
-    for (auto & resourceInterfaces : resource->getResourceInterfaces())
+    for (auto &interface : resource->getResourceInterfaces())
     {
-        cerr << "\t" << resourceInterfaces << endl;
+        cerr << "log: Resource: interface: " << interface << endl;
     }
 }
 
-
-void IoTClient::DisplayMenu()
+void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                          const int &eCode, const int &sequenceNumber)
 {
-    cout << "\nEnter:" << endl
-         << "*) Display this menu" << endl
-         << "0) Turn GPIO OFF" << endl
-         << "1) Turn GPIO ON" << endl
-         << "2) Toggle GPIO" << endl
-         << "9) Quit" << endl;
+    LOG();
+    try
+    {
+        if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
+        {
+            if (sequenceNumber == OC_OBSERVE_REGISTER)
+            {
+                cerr << "Observe registration action is successful" << endl;
+            }
+            else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
+            {
+                cerr << "Observe De-registration action is successful" << endl;
+            }
+            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
+
+            bool value;
+            rep.getValue(Common::m_propname, value);
+            cerr << "log: " << Common::m_propname << "=" << value << endl;
+            IoTClient::getInstance()->m_value = value;
+        }
+        else
+        {
+            if (sequenceNumber == OC_OBSERVE_NO_OPTION)
+            {
+                cerr << "warning: Observe registration or de-registration action is failed" << endl;
+            }
+            else
+            {
+                cerr << "error: onObserve Response error=" << eCode << endl;
+                //exit(-1);
+            }
+        }
+    }
+    catch (exception &e)
+    {
+        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
+    }
+
+}
+
+void IoTClient::menu()
+{
+    cerr << endl << "menu: "
+         << "  0) Set value off"
+         << "  1) Set value on"
+         << "  2) Toggle value"
+         << "  9) Quit"
+         << "  *) Display this menu"
+         << endl;
+}
+
+
+bool IoTClient::toggle()
+{
+    Common::log(__PRETTY_FUNCTION__);
+
+    bool value = m_value;
+    if (m_Resource)
+    {
+        m_Resource->post(!value);
+    }
+    else
+    {
+        cerr << "log: resource not yet discovered" << endl;
+        Common::log("log: resource not yet discovered");
+    }
+
+    return value;
+}
+
+
+bool IoTClient::setValue(bool value)
+{
+    Common::log(__PRETTY_FUNCTION__);
+
+    if (m_Resource)
+    {
+        m_Resource->post(value);
+    }
+    else
+    {
+        cerr << "log: resource not yet discovered" << endl;
+        Common::log("log: resource not yet discovered");
+    }
+
+    return m_value;
 }
 
 
@@ -215,44 +305,42 @@ int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
 
+    for (int i = 1; i < argc; i++)
+    {
+        if (0 == strcmp("-v", argv[i]))
+        {
+            Common::m_logLevel++;
+        }
+    }
+
     int choice;
-    bool state = false;
     do
     {
         cin >> choice;
         switch (choice)
         {
             case 0:
-                state = false;
+                IoTClient::getInstance()->setValue(false);
                 break;
             case 1:
-                state = true;
+                IoTClient::getInstance()->setValue(true);
                 break;
-
             case 2:
-                state = !state;
+                IoTClient::getInstance()->toggle();
                 break;
-
             case 9:
                 return 0;
-
             default:
-                IoTClient::DisplayMenu();
+                IoTClient::menu();
                 break;
         }
-
-        if (IoTClient::getInstance()->getPlatformResource())
-            IoTClient::getInstance()->getPlatformResource()->put(state);
-        else
-            cout << "LED resource not yet discovered" << endl;
-
     }
     while (choice != 9);
     return 0;
 }
 
 
-#if 1
+#ifdef CONFIG_CLIENT_MAIN
 int main(int argc, char *argv[])
 {
     return IoTClient::main(argc, argv);

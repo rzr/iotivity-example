@@ -21,7 +21,24 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#include "config.h"
-#include "sensors.h"
+#ifndef PLATFORM_H_
+#define PLATFORM_H_
 
-mraa_gpio_context Sensors::gpio = NULL;
+class Platform
+{
+    public:
+
+        Platform() {}
+
+        ~Platform();
+
+        static Platform &getInstance() { static Platform instance; return instance; }
+
+        void setup(int argc = 0, char *argv[] = 0);
+
+        void setValue(bool value);
+
+        static void log(char const *const message);
+
+};
+#endif // PLATFORM_H_

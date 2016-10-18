@@ -21,35 +21,40 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#include "common.h"
+#include <iotivity/resource/OCApi.h>
+#include "platform.h"
 
-#include <string>
+std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
+std::string Common::m_type = "oic.r.switch.binary";
+std::string Common::m_endpoint = "/BinarySwitchResURI";
+std::string Common::m_propname = "value";
 
-#if !defined(PACKAGE)
-#define PACKAGE "Example"
-#endif
+int Common::m_logLevel = 0;
+int Common::m_period = 5;
 
-
-
-/** Pseudo singleton class to store common configuration variables **/
-class Config
+void Common::log(char const *const message)
 {
-    public:
-        /** public interface (used both sides) **/
-        static std::string  m_interface;
-        /** type of resource (used both sides) **/
-        static std::string  m_type;
-        /** url's path (used both sides) **/
-        static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_key;
-        /** network interface**/
-        static std::string m_link;
-        /** polling period**/
-        static const int m_period = 5;
-        /** gpio logical pin (only used in server) **/
-        static unsigned int m_gpio;
-};
+    if (Common::m_logLevel)
+    {
+        std::cerr << "log: " << message << std::endl;
+    }
+}
 
-#endif /* CONFIG_H_ */
+
+Logger::Logger(const char *message)
+{
+    mMessage = message;
+    if (Common::m_logLevel)
+    {
+        std::cerr << "log: { " << mMessage << std::endl;
+    }
+}
+
+Logger::~Logger()
+{
+    if (Common::m_logLevel)
+    {
+        std::cerr << "log: } " << mMessage << std::endl;
+    }
+}

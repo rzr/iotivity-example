@@ -34,7 +34,7 @@
 class IoTServer
 {
     public:
-        IoTServer(int pin = 0, std::string key = "switch");
+        IoTServer(std::string propname = Common::m_propname, bool value = false);
         virtual ~IoTServer();
 
     public:
@@ -43,20 +43,22 @@ class IoTServer
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::OCRepresentation m_Representation;
-        OCResourceHandle m_Resource;
+        OCResourceHandle m_ResourceHandle;
 
         void init();
         void setup();
         OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
 
         OC::OCRepresentation getResourceRepresentation();
-        void putResourceRepresentation();
+        void postResourceRepresentation();
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
+        OCStackResult handlePost(std::shared_ptr<OC::OCResourceRequest> request);
+        OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
+        OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
 
         static void handle_signal(int signal);
 
         static bool m_over;
-
 };
 
 #endif /* SERVER_H_ */

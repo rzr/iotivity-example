@@ -21,40 +21,31 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-#ifndef SENSORS_H_
-#define SENSORS_H_
+#include "common.h"
+#include "platform.h"
+#include <iostream>
+using namespace std;
 
-#include <mraa.h>
 
-namespace Sensors
+Platform::~Platform()
 {
-    extern mraa_gpio_context gpio;
-
-    inline void SetupPins(int pin)
-    {
-        gpio = mraa_gpio_init(pin);
-        if (gpio != NULL) // Set direction to OUTPUT
-            mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
-    }
-
-    inline void ClosePins()
-    {
-        mraa_gpio_close(gpio);
-    }
-
-    inline void SetOnboardLed(int on)
-    {
-        if (gpio == NULL)
-        {
-            gpio = mraa_gpio_init(Config::m_gpio);
-            if (gpio != NULL)  // Set direction to OUTPUT
-                mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
-            else
-                exit(-1);
-        }
-        if (gpio != NULL) // Writes into GPIO
-            mraa_gpio_write(gpio, on);
-    }
-
+    LOG();
 }
-#endif // SENSORS_H_
+
+
+void Platform::setValue(bool value)
+{
+    LOG();
+    cout << value << endl;
+}
+
+
+void Platform::setup(int argc, char *argv[])
+{
+    LOG();
+}
+
+
+void Platform::log(char const *const message)
+{
+}
