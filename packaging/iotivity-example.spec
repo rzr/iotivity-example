@@ -19,8 +19,7 @@ Requires:  iotivity
 
 
 %description
-Mimimal client/server application,
-that share a binrry switch value as IoTivity resource.
+Mimimal client/server application that share an IoTivity resource
 
 %prep
 %setup -q
