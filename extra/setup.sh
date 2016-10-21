@@ -148,10 +148,14 @@ build_()
             url="https://git.tizen.org/cgit/contrib/${package}"
             branch="tizen"
             #TODO
+#           url="http://github.com/iotivity/${package}"
+#           branch="master"
             url="http://github.com/tizenteam/${package}"
-            branch="sandbox/pcoval/on/latest/tizen"
+            branch="sandbox/pcoval/on/previous/tizen"
+            args=" -b "${branch}""
+#           args=" $args --depth 1"
             ls "$package" || \
-                $git clone --depth 1 -b "${branch}" "${url}"
+                $git clone $args -- "${url}"
             $make -C "${package}"
         fi
     done
