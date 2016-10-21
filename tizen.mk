@@ -10,8 +10,8 @@ gbsdir?=${CURDIR}/tmp/out/iotivity-example/${profile}/tmp/gbs/tmp-GBS-${profile}
 gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${profile}_${arch}/"
 rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
 rpmdir="${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/"
-devel_rpm?=$(shell ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm  )
-rpm?=$(shell ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm  )
+devel_rpm?=$(shell ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm)
+rpm?=$(shell ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm)
 srcs?=$(shell find src lib)
 tizen?=${HOME}/tizen-studio/tools/ide/bin/tizen
 compiler?=gcc
@@ -23,7 +23,7 @@ iotivity_logo_url?=https://www.iotivity.org/sites/all/themes/iotivity/logo.png
 
 all?=shared/res/logo.png 
 all+=tmp/512x512.png
-
+all+=rpm
 
 all: ${all}
 
@@ -73,8 +73,18 @@ shared/res/logo.png: tmp/117x177/docs/logo.png
 
 setup: rpm
 
+${rpm}: ${rpmdir}
+
 rpm: ${rpm}
 	ls -l $<
+	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+ls:
+	ls ${rpmdir}
+	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+${rpmdir}: extra/setup.sh
+	${SHELL} -x $<
 
 import: ${rpm} ${rpm_devel}
 	ls .tproject 
