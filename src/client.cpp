@@ -122,6 +122,7 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     catch (OCException &ex)
     {
         cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
+        Common::log( "error: Caught exception in discovery");
     }
 }
 

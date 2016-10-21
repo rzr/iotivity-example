@@ -24,6 +24,19 @@
 #include "common.h"
 #include "platform.h"
 #include <iostream>
+
+#ifdef __TIZEN__
+#include <dlog.h>
+extern void printlog(char const *const message);
+extern void handleValue(bool value);
+#else
+#define dlog_print(type,tag,message) \
+    printf(message)
+extern void printlog(char const *const message)
+{ printf("%s", message); }
+void handleValue(bool value) {}
+#endif
+
 using namespace std;
 
 
@@ -36,10 +49,17 @@ Platform::~Platform()
 void Platform::setup(int argc, char *argv[])
 {
     LOG();
+    log(__PRETTY_FUNCTION__);
 }
 
 
 void Platform::log(char const *const message)
 {
-    cerr << message << endl;
+    LOG();
+    cout<<"geolocation: "<<lat<<","<<lon<<endl;
+    char const *const LOGTAG = "LOG";
+#ifdef __TIZEN__
+    dlog_print(DLOG_INFO, LOGTAG, message);
+#endif
+    printlog(message);
 }
