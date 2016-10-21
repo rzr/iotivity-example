@@ -124,6 +124,14 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
     return result;
 }
 
+void IoTServer::postResourceRepresentation()
+{
+    LOG();
+    m_Representation.getValue(Common::m_propname, m_Line);
+    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
+    cout << m_Line << endl;
+}
+
 
 OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
 {
@@ -139,6 +147,57 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+            if (requestType == "POST")
+            {
+                cerr << "POST request for platform Resource" << endl;
+                OCRepresentation requestRep = request->getResourceRepresentation();
+                if (requestRep.hasAttribute(Common::m_propname))
+                {
+                    try
+                    {
+                        requestRep.getValue<string>(Common::m_propname);
+                    }
+                    catch (...)
+                    {
+                        response->setResponseResult(OC_EH_ERROR);
+                        OCPlatform::sendResponse(response);
+                        cerr << "Client sent invalid resource value type" << endl;
+                        return result;
+                    }
+                }
+                else
+                {
+                    response->setResponseResult(OC_EH_ERROR);
+                    OCPlatform::sendResponse(response);
+                    cerr << "Client sent invalid resource key" << endl;
+                    return result;
+                }
+                m_Representation = requestRep;
+                postResourceRepresentation();
+                if (response)
+                {
+                    response->setResourceRepresentation(m_Representation);
+                    response->setResponseResult(OC_EH_OK);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else if (requestType == "GET")
+            {
+                cerr << "GET request for platform Resource" << endl;
+                if (response)
+                {
+                    response->setResponseResult(OC_EH_OK);
+                    response->setResourceRepresentation(m_Representation);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
@@ -147,6 +206,17 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
         }
     }
     return result;
+}
+
+
+void IoTServer::update()
+{
+    LOG();
+    istream *stream = &std::cin;
+    std::string line;
+    std::getline(*stream, line);
+    m_Representation.setValue(Common::m_propname, line);
+    postResourceRepresentation();
 }
 
 
@@ -160,6 +230,7 @@ void IoTServer::handle_signal(int signal)
 int IoTServer::main(int argc, char *argv[])
 {
     LOG();
+    int delay = Common::m_period;
     struct sigaction sa;
     sigfillset(&sa.sa_mask);
     sa.sa_flags = 0;
@@ -181,6 +252,10 @@ int IoTServer::main(int argc, char *argv[])
             argc--;
             subargv++;
         }
+        else
+        {
+            delay = atoi(argv[i]);
+        }
     }
 
     Platform::getInstance().setup(subargc, subargv);
@@ -188,9 +263,9 @@ int IoTServer::main(int argc, char *argv[])
     IoTServer server;
     try
     {
-        int delay = Common::m_period;
         do
         {
+            server.update();
             sleep(delay);
         }
         while (!IoTServer::m_over );

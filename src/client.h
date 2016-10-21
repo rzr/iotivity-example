@@ -35,11 +35,14 @@
 class Resource
 {
     public:
+        void get();
+        void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
     protected:
         std::shared_ptr<OC::OCResource> m_OCResource;
         OC::OCRepresentation m_Representation;
+        OC::GetCallback m_GETCallback;
 };
 
 
@@ -47,8 +50,13 @@ class IoTClient
 {
     public:
         static int main(int argc, char *argv[]);
-
-        static void input();
+        static void onObserve(const OC::HeaderOptions /*headerOptions*/,
+                              const OC::OCRepresentation &rep,
+                              const int &eCode, const int &sequenceNumber);
+        static void menu();
+        static void handle(const OC::HeaderOptions /*headerOptions*/,
+                           const OC::OCRepresentation &rep,
+                           const int &eCode, const int &sequenceNumber);
 
     public:
         std::shared_ptr<Resource> getResource();
