@@ -59,6 +59,11 @@ class IoTServer
         static bool m_over;
 
         std::string m_Line;
+        static double m_lat;
+        static double m_lon;
+        static double m_latmax;
+        static double m_latmin;
+        static double m_offset;
 };
 
 #endif /* SERVER_H_ */
