@@ -179,8 +179,8 @@ deploy_()
     rm -rf usr lib
     mkdir -p usr lib
 
-    unp ${rpmdir}/iotivity-${version}-*.${arch}.rpm
-    unp ${rpmdir}/iotivity-devel-${version}-*${arch}.rpm
+    unp ${rpmdir}/iotivity-[0-9]*-*.${arch}.rpm
+    unp ${rpmdir}/iotivity-devel-[0-9]*-*${arch}.rpm
 
     ln -fs ${rootfs}/usr/include/boost usr/include/
     # TODO
@@ -207,8 +207,7 @@ main_()
         || home="${tmpdir}/out/${package}/${version}/${profile}"
 
     [ "" != "${version}" ] \
-        || version="1.2.0+RC2"
-    #  version="1.1.1"
+        || version="version"
 
     [ "" != "${arch}" ] || arch="armv7l"
     git="git"
@@ -244,7 +243,7 @@ main_()
     # checking tools
     setup_
 
-    ls ${rpmdir}/iotivity-devel-${version}-*${arch}.rpm \
+    ls ${rpmdir}/iotivity-devel-[0-9]*-*${arch}.rpm \
         || build_ "${profile}" ;
 
     cd "${thisdir}"
