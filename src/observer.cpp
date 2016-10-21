@@ -177,6 +177,20 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
     std::string value;
     rep.getValue( Common::m_propname, value);
     std::cout << value << std::endl;
+
+    double lat = 0;
+    double lon = 0;
+
+    if (rep.hasAttribute("lat"))
+    {
+        lat = rep.getValue<double>("lat");
+    }
+    if (rep.hasAttribute("lon"))
+    {
+        lon = rep.getValue<double>("lon");
+    }
+
+    cout << "location: " << lat << ", " << lon<<endl;
 }
 
 
