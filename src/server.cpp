@@ -34,12 +34,13 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer(string property, bool value)
+IoTServer::IoTServer(string property, string value)
 {
     LOG();
     init();
     setup();
     m_Representation.setValue(property, value);
+    m_Line = value;
 }
 
 IoTServer::~IoTServer()
@@ -112,63 +113,12 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 void IoTServer::postResourceRepresentation()
 {
     LOG();
-    bool value = 0;
-    m_Representation.getValue(Common::m_propname, value);
+    m_Representation.getValue(Common::m_propname, m_Line);
     OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
+    cout << m_Line << endl;
 }
 
-OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
-{
-    OCStackResult result =  OC_STACK_ERROR;
-    LOG();
 
-    if (response)
-    {
-        response->setErrorCode(200);
-        response->setResponseResult(OC_EH_OK);
-        response->setResourceRepresentation(m_Representation);
-        result = OCPlatform::sendResponse(response);
-    }
-    return result;
-}
-
-OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
-    OCRepresentation requestRep = request->getResourceRepresentation();
-    if (requestRep.hasAttribute(Common::m_propname))
-    {
-        try
-        {
-            bool value = requestRep.getValue<bool>(Common::m_propname);
-            Platform::getInstance().setValue(value);
-        }
-        catch (...)
-        {
-            cerr << "error: Client sent invalid resource value type" << endl;
-            return result;
-        }
-    }
-    else
-    {
-        cerr << "error: Client sent invalid resource property" << endl;
-        return result;
-    }
-    m_Representation = requestRep;
-    postResourceRepresentation();
-
-    return result;
-}
-
-OCStackResult IoTServer::handleGet(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
-    return result;
-}
 
 OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
 {
@@ -184,38 +134,57 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
-
             if (requestType == "POST")
             {
-                if (handlePost(request) == OC_STACK_OK)
+                cerr << "POST request for platform Resource" << endl;
+                OCRepresentation requestRep = request->getResourceRepresentation();
+                if (requestRep.hasAttribute(Common::m_propname))
                 {
-                    if (respond(response) == OC_STACK_OK)
+                    try
                     {
-                        result = OC_EH_OK;
+                        requestRep.getValue<string>(Common::m_propname);
+                    }
+                    catch (...)
+                    {
+                        response->setResponseResult(OC_EH_ERROR);
+                        OCPlatform::sendResponse(response);
+                        cerr << "Client sent invalid resource value type" << endl;
+                        return result;
                     }
                 }
                 else
                 {
                     response->setResponseResult(OC_EH_ERROR);
                     OCPlatform::sendResponse(response);
+                    cerr << "Client sent invalid resource key" << endl;
+                    return result;
                 }
-                ;;
+                m_Representation = requestRep;
+                postResourceRepresentation();
+                if (response)
+                {
+                    response->setErrorCode(200);
+                    response->setResourceRepresentation(m_Representation);
+                    response->setResponseResult(OC_EH_OK);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
             }
             else if (requestType == "GET")
             {
-                if (handleGet(request) == OC_STACK_OK)
+                cerr << "GET request for platform Resource" << endl;
+                if (response)
                 {
-                    if (respond(response) == OC_STACK_OK)
+                    response->setErrorCode(200);
+                    response->setResponseResult(OC_EH_OK);
+                    response->setResourceRepresentation(m_Representation);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
                     {
                         result = OC_EH_OK;
                     }
                 }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                }
-
             }
             else
             {
@@ -226,6 +195,17 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
         }
     }
     return result;
+}
+
+
+void IoTServer::update()
+{
+    LOG();
+    istream *stream = &std::cin;
+    std::string line;
+    std::getline(*stream, line);
+    m_Representation.setValue(Common::m_propname, line);
+    postResourceRepresentation();
 }
 
 
@@ -261,9 +241,16 @@ int IoTServer::main(int argc, char *argv[])
     IoTServer server;
     try
     {
+        int delay = Common::m_period;
+        if ((argc > 1) && argv[1])
+        {
+            delay = atoi(argv[1]);
+        }
+
         do
         {
-            usleep(2000000);
+            server.update();
+            sleep(delay);
         }
         while (!IoTServer::m_over );
     }

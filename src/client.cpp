@@ -37,14 +37,23 @@ Resource::Resource(shared_ptr<OCResource> resource)
     m_OCResource = resource;
     m_GETCallback = bind(&Resource::onGet, this,
                          placeholders::_1, placeholders::_2, placeholders::_3);
-
-    m_POSTCallback = bind(&Resource::onPost, this,
-                          placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
 {
 }
+
+// TODO: overide with your business logic
+void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                       const int &eCode, const int &sequenceNumber)
+{
+    LOG();
+    std::string line;
+    rep.getValue(Common::m_propname, line);
+
+    std::cout << line << std::endl;
+}
+
 
 
 void Resource::onGet(const HeaderOptions &headerOptions,
@@ -53,32 +62,13 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     LOG();
     if (eCode < OC_STACK_INVALID_URI)
     {
-        bool value;
-        representation.getValue(Common::m_propname, value);
-        cout << value << endl;
+        IoTClient::handle(headerOptions, representation, eCode, 0);
     }
     else
     {
         cerr << "errror:: in GET response:" << eCode << endl;
     }
-    IoTClient::menu();
-}
 
-void Resource::onPost(const HeaderOptions &headerOptions,
-                      const OCRepresentation &representation, int eCode)
-{
-    LOG();
-    if (eCode < OC_STACK_INVALID_URI)
-    {
-        bool value;
-        representation.getValue(Common::m_propname, value);
-        Platform::getInstance().setValue(value);
-    }
-    else
-    {
-        cerr << "error: in POST response: " << eCode <<  endl;
-    }
-    IoTClient::menu();
 }
 
 
@@ -87,15 +77,6 @@ void Resource::get()
     LOG();
     QueryParamsMap params;
     m_OCResource->get(params, m_GETCallback);
-}
-
-void Resource::post(bool value)
-{
-    LOG();
-    QueryParamsMap params;
-    OCRepresentation rep;
-    rep.setValue(Common::m_propname, value);
-    m_OCResource->post(rep, params, m_POSTCallback);
 }
 
 
@@ -171,17 +152,6 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
                 m_Resource = make_shared<Resource>(resource);
-
-                if (true)   // multi client need observe (for flip/flop)
-                {
-                    QueryParamsMap test;
-                    resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
-                }
-                else     // simple client can only use get once
-                {
-                    m_Resource->get();
-                }
-                menu();
             }
 
         }
@@ -209,101 +179,11 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     }
 }
 
-void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
-                          const int &eCode, const int &sequenceNumber)
-{
-    LOG();
-    try
-    {
-        if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
-        {
-            if (sequenceNumber == OC_OBSERVE_REGISTER)
-            {
-                cerr << "Observe registration action is successful" << endl;
-            }
-            else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
-            {
-                cerr << "Observe De-registration action is successful" << endl;
-            }
-            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
-
-            bool value;
-            rep.getValue(Common::m_propname, value);
-            cerr << "log: " << Common::m_propname << "=" << value << endl;
-            IoTClient::getInstance()->m_value = value;
-        }
-        else
-        {
-            if (sequenceNumber == OC_OBSERVE_NO_OPTION)
-            {
-                cerr << "warning: Observe registration or de-registration action is failed" << endl;
-            }
-            else
-            {
-                cerr << "error: onObserve Response error=" << eCode << endl;
-                //exit(-1);
-            }
-        }
-    }
-    catch (exception &e)
-    {
-        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
-    }
-
-}
-
-void IoTClient::menu()
-{
-    cerr << endl << "menu: "
-         << "  0) Set value off"
-         << "  1) Set value on"
-         << "  2) Toggle value"
-         << "  9) Quit"
-         << "  *) Display this menu"
-         << endl;
-}
-
-
-bool IoTClient::toggle()
-{
-    Common::log(__PRETTY_FUNCTION__);
-
-    bool value = m_value;
-    if (m_Resource)
-    {
-        m_Resource->post(!value);
-    }
-    else
-    {
-        cerr << "log: resource not yet discovered" << endl;
-        Common::log("log: resource not yet discovered");
-    }
-
-    return value;
-}
-
-
-bool IoTClient::setValue(bool value)
-{
-    Common::log(__PRETTY_FUNCTION__);
-
-    if (m_Resource)
-    {
-        m_Resource->post(value);
-    }
-    else
-    {
-        cerr << "log: resource not yet discovered" << endl;
-        Common::log("log: resource not yet discovered");
-    }
-
-    return m_value;
-}
-
 
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
+    int delay = 5;
 
     for (int i = 1; i < argc; i++)
     {
@@ -312,30 +192,12 @@ int IoTClient::main(int argc, char *argv[])
             Common::m_logLevel++;
         }
     }
-
-    int choice;
-    do
+    while (delay >= 0)
     {
-        cin >> choice;
-        switch (choice)
-        {
-            case 0:
-                IoTClient::getInstance()->setValue(false);
-                break;
-            case 1:
-                IoTClient::getInstance()->setValue(true);
-                break;
-            case 2:
-                IoTClient::getInstance()->toggle();
-                break;
-            case 9:
-                return 0;
-            default:
-                IoTClient::menu();
-                break;
-        }
+        sleep(delay);
+        shared_ptr<Resource> resource = IoTClient::getInstance()->getResource();
+        if (resource) resource->get();;
     }
-    while (choice != 9);
     return 0;
 }
 
