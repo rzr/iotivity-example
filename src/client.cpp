@@ -75,6 +75,7 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     else
     {
         cerr << "errror: in GET response: " << eCode << endl;
+        Common::log( "error: in GET response");
     }
 }
 
@@ -166,6 +167,7 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     catch (OCException &ex)
     {
         cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
+        Common::log( "error: Caught exception in discovery");
     }
 }
 
