@@ -24,11 +24,16 @@
 #ifndef PLATFORM_H_
 #define PLATFORM_H_
 
+#include <mraa.h>
+
 class Platform
 {
     public:
 
-        Platform() {}
+        /**
+         * Minnowboard Max pin21 is GPIO_S5_0 Signal mapped on GPIO 82/338/.. (calamari's LED3 : Red)
+         **/
+        Platform(): m_pin {21}, m_mraa {NULL}, m_direction(OUTPUT) {}
 
         ~Platform();
 
@@ -40,5 +45,21 @@ class Platform
 
         static void log(char const *const message);
 
+        static const bool INPUT = true;
+
+        static const bool OUTPUT = false;
+
+    private:
+
+        unsigned int m_pin;
+
+        bool m_direction;
+
+        /** @param: mode : true for INPUT (RO), false for OUTPUT (WO) **/
+        bool pinMode(int gpio, bool direction);
+
+        bool digitalPinWrite(int gpio, bool value);
+
+        mraa_gpio_context m_mraa;
 };
 #endif // PLATFORM_H_

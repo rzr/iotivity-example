@@ -27,22 +27,67 @@
 using namespace std;
 
 
-Platform::~Platform()
-{
-    LOG();
-}
-
-
 void Platform::setValue(bool value)
 {
     LOG();
     cout << value << endl;
+    digitalPinWrite(Platform::m_pin, value);
 }
 
 
 void Platform::setup(int argc, char *argv[])
 {
     LOG();
+    if (argc > 1 && argv[1])
+    {
+        m_pin = atoi(argv[1]);
+    }
+    pinMode(m_pin, Platform::OUTPUT);
+}
+
+
+bool Platform::pinMode(int pin, bool direction)
+{
+    LOG();
+    cout << direction << endl;
+    m_direction = direction;
+    if (m_mraa)
+    {
+        mraa_gpio_close(m_mraa);
+    }
+    m_pin = pin;
+    m_mraa = mraa_gpio_init(m_pin);
+    if (m_mraa)
+    {
+        mraa_gpio_dir(m_mraa, (m_direction ? MRAA_GPIO_IN : MRAA_GPIO_OUT));
+        return true;
+    }
+    return false;
+}
+
+
+bool Platform::digitalPinWrite(int pin, bool value)
+{
+    LOG();
+    if (m_mraa == NULL)
+    {
+        if (!pinMode(pin, Platform::OUTPUT) )
+        {
+            return false;
+        }
+    }
+    if (m_mraa)
+    {
+        mraa_gpio_write(m_mraa, (int) value);
+        return true;
+    }
+    return false;
+}
+
+Platform::~Platform()
+{
+    if (m_mraa)
+        mraa_gpio_close(m_mraa);
 }
 
 

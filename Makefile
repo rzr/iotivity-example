@@ -23,10 +23,15 @@
 
 default: all
 
-package?=iotivity-example
+package?=iotivity-example-mraa
 name?=${package}
 config_pkgconfig?=1
 export config_pkgconfig
+
+config_mraa?=1
+ifeq (${config_mraa},1)
+LIBS+=-lmraa
+endif
 
 #TODO: workaround missing /usr/include/iotivity namespace
 iotivity_dir?=iotivity
