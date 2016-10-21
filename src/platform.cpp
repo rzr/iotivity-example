@@ -24,6 +24,19 @@
 #include "common.h"
 #include "platform.h"
 #include <iostream>
+
+#ifdef __TIZEN__
+#include <dlog.h>
+extern void printlog(char const *const message);
+extern void handleValue(bool value);
+#else
+#define dlog_print(type,tag,message) \
+    printf(message)
+extern void printlog(char const *const message)
+{ printf("%s", message); }
+void handleValue(bool value) {}
+#endif
+
 using namespace std;
 
 
@@ -37,6 +50,10 @@ void Platform::setValue(bool value)
 {
     LOG();
     cout << value << endl;
+    handleValue(value);
+    log(__PRETTY_FUNCTION__);
+    log("\n");
+    log((value) ? "change: 1\n" : "change: 0\n");
 }
 
 
@@ -48,4 +65,9 @@ void Platform::setup(int argc, char *argv[])
 
 void Platform::log(char const *const message)
 {
+    char const *const LOGTAG = "LOG";
+#ifdef __TIZEN__
+    dlog_print(DLOG_INFO, LOGTAG, message);
+#endif
+    printlog(message);
 }
