@@ -37,12 +37,9 @@ class Resource
         std::shared_ptr<OC::OCResource> m_OCResource;
         OC::OCRepresentation m_Representation;
         OC::GetCallback m_GETCallback;
-        OC::PostCallback m_POSTCallback;
         void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
-        void onPost(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
     public:
         void get();
-        void post(bool);
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
 };
@@ -57,6 +54,9 @@ class IoTClient
                               const OC::OCRepresentation &rep,
                               const int &eCode, const int &sequenceNumber);
         static void menu();
+        static void handle(const OC::HeaderOptions /*headerOptions*/,
+                           const OC::OCRepresentation &rep,
+                           const int &eCode, const int &sequenceNumber);
 
         static int main(int argc, char *argv[]);
     public:

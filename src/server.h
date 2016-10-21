@@ -34,7 +34,7 @@
 class IoTServer
 {
     public:
-        IoTServer(std::string propname = Common::m_propname, bool value = false);
+        IoTServer(std::string propname = Common::m_propname, std::string value = "");
         virtual ~IoTServer();
 
     public:
@@ -52,13 +52,13 @@ class IoTServer
         OC::OCRepresentation getResourceRepresentation();
         void postResourceRepresentation();
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
-        OCStackResult handlePost(std::shared_ptr<OC::OCResourceRequest> request);
-        OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
-        OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
 
         static void handle_signal(int signal);
+        void update();
 
         static bool m_over;
+
+        std::string m_Line;
 };
 
 #endif /* SERVER_H_ */
