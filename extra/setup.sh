@@ -210,7 +210,7 @@ main_()
     thisdir=$(dirname -- "$0")
     thisdir=$(realpath -- "$thisdir/..")
 
-    [ "" != "${profile}" ] || profile="tizen_common"
+    [ "" != "${profile}" ] || profile="tizen_2_4_mobile"
 
     [ "" != "${tmpdir}" ] \
         || tmpdir="${PWD}/tmp"
