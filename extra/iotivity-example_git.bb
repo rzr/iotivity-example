@@ -6,6 +6,7 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://COPYING;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRCREV = "master"
+SRCREV = "sandbox/pcoval/mraa"
 SRC_URI = "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobranch=1"
 
 S = "${WORKDIR}/git"
@@ -24,6 +25,10 @@ RDEPENDS_${PN} += " iotivity-resource "
 
 SYSTEMD_SERVICE_${PN} = "${PN}.service"
 EXTRA_OEMAKE = " package=${PN} "
+
+DEPENDS += "mraa"
+RDEPENDS_${PN} += "mraa"
+EXTRA_OEMAKE += "config_mraa=1 "
 
 do_configure() {
 }
