@@ -1,4 +1,4 @@
-Name:           iotivity-example
+Name:           iotivity-example-mraa
 Version:        1.1.0
 Release:        0
 License:        Apache-2.0
@@ -15,6 +15,7 @@ BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  systemd
+BuildRequires:  mraa-devel
 Requires:  iotivity
 
 
