@@ -5,8 +5,8 @@ SECTION = "apps"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-branch ?= "switch/master"
-basesurl ?= "git://git.s-osg.org/iotivity-example;protocol=http"
+branch ?= "sandbox/pcoval/line"
+basesurl ?= "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobranch=1"
 SRC_URI = "${basesurl};branch=${branch}"
 # TODO: Override for local development ie:
 # SRC_URI = "git:///home/user/mnt/iotivity-example;nobranch=1;protocol=file"
