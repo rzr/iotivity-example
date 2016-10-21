@@ -41,6 +41,55 @@ Resource::~Resource()
 {
 }
 
+// TODO: overide with your business logic
+void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                       const int &eCode, const int &sequenceNumber)
+{
+    LOG();
+    std::string line;
+    rep.getValue(Common::m_propname, line);
+
+    std::cout << line << std::endl;
+
+    double lat = 0;
+    double lon = 0;
+
+    if (rep.hasAttribute("lat"))
+    {
+        lat = rep.getValue<double>("lat");
+    }
+    if (rep.hasAttribute("lon"))
+    {
+        lon = rep.getValue<double>("lon");
+    }
+
+    cout << "location: " << lat << ", " << lon << std::endl;
+}
+
+
+
+void Resource::onGet(const HeaderOptions &headerOptions,
+                     const OCRepresentation &representation, int eCode)
+{
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
+    {
+        IoTClient::handle(headerOptions, representation, eCode, 0);
+    }
+    else
+    {
+        cerr << "errror:: in GET response:" << eCode << endl;
+    }
+
+}
+
+
+void Resource::get()
+{
+    LOG();
+    QueryParamsMap params;
+    m_OCResource->get(params, m_GETCallback);
+}
 
 IoTClient::IoTClient()
 {
