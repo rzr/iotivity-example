@@ -59,6 +59,8 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     }
     else
     {
+        Common::log( __PRETTY_FUNCTION__);
+        Common::log("errror:: in GET response");
         cerr << "errror:: in GET response:" << eCode << endl;
     }
     IoTClient::menu();
@@ -76,6 +78,8 @@ void Resource::onPost(const HeaderOptions &headerOptions,
     }
     else
     {
+        Common::log( __PRETTY_FUNCTION__);
+        Common::log( "error: in POST response");
         cerr << "error: in POST response: " << eCode <<  endl;
     }
     IoTClient::menu();
@@ -92,6 +96,9 @@ void Resource::get()
 void Resource::post(bool value)
 {
     LOG();
+    char const *const message
+        = (value) ? "log: about to post 1" : "log: about to post 0";
+    Common::log(message);
     QueryParamsMap params;
     OCRepresentation rep;
     rep.setValue(Common::m_propname, value);
@@ -142,7 +149,6 @@ void IoTClient::start()
 {
     LOG();
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
-
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("", //
                              coap_multicast_discovery.c_str(),
@@ -189,6 +195,8 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
     catch (OCException &ex)
     {
         cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
+        Common::log( "error: Caught exception in discoveredResource");
+        Common::log(__PRETTY_FUNCTION__ );
     }
 }
 
@@ -229,7 +237,7 @@ void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentat
 
             bool value;
             rep.getValue(Common::m_propname, value);
-            cerr << "log: " << Common::m_propname << "=" << value << endl;
+            Platform::getInstance().setValue(value);
             IoTClient::getInstance()->m_value = value;
         }
         else
@@ -268,10 +276,11 @@ bool IoTClient::toggle()
 {
     Common::log(__PRETTY_FUNCTION__);
 
-    bool value = m_value;
+    bool value = !m_value;
+    Common::log(value ? "1" : "0");
     if (m_Resource)
     {
-        m_Resource->post(!value);
+        m_Resource->post(value);
     }
     else
     {
@@ -279,7 +288,7 @@ bool IoTClient::toggle()
         Common::log("log: resource not yet discovered");
     }
 
-    return value;
+    return m_value;
 }
 
 
