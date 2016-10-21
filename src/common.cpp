@@ -30,7 +30,7 @@ std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline
 std::string Common::m_type = "oic.r.geolocation";
 std::string Common::m_endpoint = "/GeolocationResURI";
 
-int Common::m_logLevel = 0;
+int Common::m_logLevel = 1;
 int Common::m_period = 5;
 
 void Common::log(char const *const message)
@@ -39,6 +39,7 @@ void Common::log(char const *const message)
     {
         std::cerr << "log: " << message << std::endl;
     }
+    Platform::log(message);
 }
 
 
@@ -47,7 +48,12 @@ Logger::Logger(const char *message)
     mMessage = message;
     if (Common::m_logLevel)
     {
+#ifdef __TIZEN__
+        Platform::log("log: {");
+        Platform::log(mMessage);
+#else
         std::cerr << "log: { " << mMessage << std::endl;
+#endif
     }
 }
 
@@ -55,6 +61,11 @@ Logger::~Logger()
 {
     if (Common::m_logLevel)
     {
+#ifdef __TIZEN__
+        Platform::log(mMessage);
+        Platform::log("log: }");
+#else
         std::cerr << "log: } " << mMessage << std::endl;
+#endif
     }
 }
