@@ -1,0 +1,119 @@
+#! /usr/bin/make -f
+
+default: bootstrap local/all
+	date
+
+
+### Configuration ###
+
+gbs_profile?=tizen_2_4_mobile
+gbs_arch?=armv7l
+project_name?=iotivity-example
+app_package_exe?=iotivityexample
+package_version?=1.0.0
+app_package_name?=org.example.${app_package_exe}
+srcs+=lib
+iotivity_logo_url?=https://www.iotivity.org/sites/all/themes/iotivity/logo.png
+all?=shared/res/logo.png
+all+=tmp/512x512.png
+all+=rpm
+srcs+=lib
+srcs+=usr
+
+
+### Default ###
+
+self?=$(lastword $(MAKEFILE_LIST))
+thisdir:=$(shell dirname $(realpath ${self}))
+make=${MAKE} -f ${self}
+export make
+tmpdir?=${CURDIR}/tmp
+gbsdir?=${tmpdir}/out/${project_name}/${profile}/tmp/gbs/tmp-GBS-${gbs_profile}_${arch}/
+gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${gbs_profile}_${arch}/"
+rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
+rpmdir="${gbsdir}/local/repos/${gbs_profile}_${arch}/${arch}/RPMS/"
+devel_rpm?=$(shell \
+ ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm 2>/dev/null \
+ || echo TODO)
+rpm?=$(shell \
+ ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm 2>/dev/null\
+ || echo TODO)
+srcs?=$(shell find src lib)
+
+tizen_helper_dir?=tmp/tizen-helper
+-include ${tizen_helper_dir}/bin/mk-tizen-app.mk
+
+
+### Rules ###
+
+local/%:
+	${make} ${@F}
+
+distclean: clean
+	rm -f *.wgt
+	rm -rf Debug Release
+	rm -rf .package-stamp .settings .sign
+	rm -rf lib usr tmp
+
+clean:
+	rm -f *~
+
+docs/logo.jpg:
+	mkdir -p $@{D}
+	wget -O $@.tmp ${iotivity_logo_url}
+	convert $@.tmp $@
+
+${rpm}: ${rpmdir}
+	ls $@
+
+rpm: ${rpm}
+	ls -l $<
+	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+rpms: ${rpmdir} ${rpm} ${rpm_devel}
+
+ls:
+	ls ${rpmdir}
+	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+
+${rpmdir}: tmp/rule/bootstrap
+
+tmp/rule/bootstrap: extra/setup.sh
+	profile="${gbs_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
+	echo 'include ${tizen_helper_dir}/bin/mk-tizen-app.mk' > local.mk
+	mkdir -p ${@D}
+	touch $@
+
+bootstrap: tmp/rule/bootstrap
+	ls -l $<
+
+rule/import: rpms
+	ls .tproject
+	rm -rf usr lib
+	mkdir -p usr/include lib
+	rpm -qip ${rpm}
+	unp ${rpm}
+	unp ${devel_rpm}
+	ln -fs ${rootfs}/usr/include/boost usr/include/
+	@echo "# TODO: fix this upstream"
+	cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||: #TODO might not be needed
+	cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||: #TODO might not be needed
+	rm -rf lib
+
+lib: usr/lib
+	ln -fs $< $@
+
+usr/lib usr/include: usr
+	ls -l $@
+
+usr:
+	ls -l $@ || ${make} rule/import
+
+rule/setup/debian: /etc/debian_version
+	sudo apt-get install \
+ git \
+ graphicsmagick-imagemagick-compat \
+ rpm \
+ unp \
+ #eol
