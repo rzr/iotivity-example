@@ -40,8 +40,6 @@ class Common
         static std::string  m_type;
         /** url's path (used both sides) **/
         static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_propname;
         /** polling period**/
         static int m_period;
         /** log enabled if positive **/
