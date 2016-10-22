@@ -29,6 +29,7 @@
 #include <dlog.h>
 extern void printlog(char const *const message);
 extern void handleValue(bool value);
+#include "main_view.h"
 #else
 #define dlog_print(type,tag,message) \
     printf(message)
@@ -46,14 +47,14 @@ Platform::~Platform()
 }
 
 
-void Platform::setValue(bool value)
+void Platform::setValue(float lat, float lon)
 {
     LOG();
-    cout << value << endl;
-    handleValue(value);
-    log(__PRETTY_FUNCTION__);
-    log("\n");
-    log((value) ? "change: 1\n" : "change: 0\n");
+#ifdef __TIZEN__
+    map_region_show(lon,lat);
+#else
+    cout<<"geolocation: "<<lat<<","<<lon<<endl;
+#endif
 }
 
 
