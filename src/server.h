@@ -34,7 +34,7 @@
 class IoTServer
 {
     public:
-        IoTServer(std::string propname = Common::m_propname, std::string value = "");
+        IoTServer();
         virtual ~IoTServer();
 
     public:
@@ -58,7 +58,6 @@ class IoTServer
 
         static bool m_over;
 
-        std::string m_Line;
         static double m_lat;
         static double m_lon;
         static double m_latmax;
