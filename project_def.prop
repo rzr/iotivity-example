@@ -1,6 +1,6 @@
 
 # Project Name
-APPNAME = iotivityexample
+APPNAME = iotivityexamplegeolocation
 
 # Project Type
 type = app
@@ -10,9 +10,12 @@ profile = mobile-2.4
 
 # C/CPP Sources
 USER_SRCS = src/observer.cpp src/client.cpp src/common.cpp src/main.cpp src/platform.cpp 
+USER_SRCS += src/util.cpp
+USER_SRCS += src/main_view.cpp
+
 
 # EDC Sources
-USER_EDCS =  
+USER_EDCS =  res/edje/mainview.edc
 
 # PO Sources
 USER_POS = 
