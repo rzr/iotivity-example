@@ -36,7 +36,7 @@ class Platform
 
         void setup(int argc = 0, char *argv[] = 0);
 
-        void setValue(bool value);
+        static void setValue(float latitude, float longitude);
 
         static void log(char const *const message);
 
