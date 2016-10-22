@@ -2,7 +2,7 @@
 
 default:all
 
-package?=iotivityexample
+package?=iotivityexamplegeolocation
 package_name?=org.example.${package}
 arch?=armv7l
 profile?=tizen_2_4_mobile
@@ -82,6 +82,8 @@ rpm: ${rpm}
 ls:
 	ls ${rpmdir}
 	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+rpmdir: ${rpmdir}
 
 ${rpmdir}: extra/setup.sh
 	${SHELL} -x $<
