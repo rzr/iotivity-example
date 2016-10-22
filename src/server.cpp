@@ -42,13 +42,11 @@ double IoTServer::m_offset = 0.001;
 double IoTServer::m_latmax = 49;
 double IoTServer::m_latmin = 48;
 
-IoTServer::IoTServer(string property, string value)
+IoTServer::IoTServer()
 {
     LOG();
     init();
     setup();
-    m_Representation.setValue(property, value);
-    m_Line = value;
 }
 
 IoTServer::~IoTServer()
@@ -121,9 +119,7 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 void IoTServer::postResourceRepresentation()
 {
     LOG();
-    m_Representation.getValue(Common::m_propname, m_Line);
     OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
-    cout << m_Line << endl;
 }
 
 
@@ -146,27 +142,6 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             {
                 cerr << "POST request for platform Resource" << endl;
                 OCRepresentation requestRep = request->getResourceRepresentation();
-                if (requestRep.hasAttribute(Common::m_propname))
-                {
-                    try
-                    {
-                        requestRep.getValue<string>(Common::m_propname);
-                    }
-                    catch (...)
-                    {
-                        response->setResponseResult(OC_EH_ERROR);
-                        OCPlatform::sendResponse(response);
-                        cerr << "Client sent invalid resource value type" << endl;
-                        return result;
-                    }
-                }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                    cerr << "Client sent invalid resource key" << endl;
-                    return result;
-                }
                 m_Representation = requestRep;
                 postResourceRepresentation();
                 if (response)
@@ -210,14 +185,6 @@ void IoTServer::update()
 {
     LOG();
     {
-        string line = "";
-        time_t const now = time(0);
-        char *dt = ctime(&now);
-        line = string(dt);
-        m_Representation.setValue(Common::m_propname, line);
-    }
-
-    {
         m_lat += m_offset;
         m_lon += m_offset;
 
@@ -230,8 +197,8 @@ void IoTServer::update()
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
 
-        m_Representation.setValue("lat", m_lat);
-        m_Representation.setValue("lon", m_lon);
+        m_Representation.setValue("latitude", m_lat);
+        m_Representation.setValue("longitude", m_lon);
 
         cerr << "location: " << std::fixed << m_lat << "," << std::fixed << m_lon << endl;
     }
