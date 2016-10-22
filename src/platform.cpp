@@ -24,6 +24,20 @@
 #include "common.h"
 #include "platform.h"
 #include <iostream>
+
+#ifdef __TIZEN__
+#include <dlog.h>
+extern void printlog(char const *const message);
+extern void handleValue(bool value);
+#include "main_view.h"
+#else
+#define dlog_print(type,tag,message) \
+    printf(message)
+extern void printlog(char const *const message)
+{ printf("%s", message); }
+void handleValue(bool value) {}
+#endif
+
 using namespace std;
 
 
@@ -33,10 +47,15 @@ Platform::~Platform()
 }
 
 
-void Platform::setValue(bool value)
+void Platform::setValue(float lat, float lon)
 {
     LOG();
-    cout << value << endl;
+
+#ifdef __TIZEN__
+    map_region_show(lon,lat);
+#else
+    cout<<"geolocation: "<<lat<<","<<lon<<endl;
+#endif
 }
 
 
