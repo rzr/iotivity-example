@@ -111,8 +111,10 @@ build: usr/lib usr/include ${srcs}
 
 
 lib usr/lib usr/include: usr
+	ls -l $@
 
 usr: import
+	ls -l $@
 
 run: tpk
 	ls ${build_dir}/${package_name}-${package_version}-${arch_familly}.tpk
@@ -120,7 +122,7 @@ run: tpk
 	${tizen} run --pkgid ${package_name} -- .
 
 check: build run
-
+	echo "$@: OK"
 
 tpk: build
 	-rm -rf usr/lib/*.a lib/*.a lib/pkgconfig bin
