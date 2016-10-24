@@ -29,7 +29,7 @@ std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline
 std::string Common::m_type = "geolocation";
 std::string Common::m_endpoint = "/geolocationResURI";
 
-int Common::m_logLevel = 1;
+int Common::m_logLevel = 0;
 int Common::m_period = 5;
 
 void Common::log(char const *const message)
