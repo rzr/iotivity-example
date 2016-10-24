@@ -129,6 +129,18 @@ build_()
         fi
     done
 
+
+    for t in $deps; do
+        if [ "$t" = "libx11" ] ; then
+            package="libx11"
+            branch="master"
+            url="https://git.tizen.org/cgit/framework/uifw/xorg/lib/libx11"
+            ls "$package" || \
+                $git clone -b "${branch}" "${url}"
+            $make -C "${package}"
+        fi
+    done
+
     for t in $deps; do
         if [ "$t" = "iotivity" ] ; then
 
@@ -228,7 +240,7 @@ main_()
 
     case "$profile" in
         "tizen_2_3_1_wearable")
-            deps="scons boost iotivity"
+            deps="scons boost libx11 iotivity"
             ;;
         "tizen_2_4_mobile")
             deps="iotivity"
