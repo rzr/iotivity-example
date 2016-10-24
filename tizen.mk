@@ -7,9 +7,9 @@ package_name?=org.example.${package}
 arch?=armv7l
 profile?=tizen_2_4_mobile
 gbsdir?=${CURDIR}/tmp/out/iotivity-example/${profile}/tmp/gbs/tmp-GBS-${profile}_${arch}/
-gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${profile}_${arch}/"
-rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
-rpmdir="${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/"
+gbsdir?=${HOME}/tmp/gbs/tmp-GBS-${profile}_${arch}/
+rootfs=${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/
+rpmdir=${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/
 devel_rpm?=$(shell ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm)
 rpm?=$(shell ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm)
 srcs?=$(shell find src)
@@ -90,7 +90,7 @@ rpmdir: ${rpmdir}
 ${rpmdir}: extra/setup.sh
 	profile=${profile} ${SHELL} -x $<
 
-import: ${rpm} ${rpm_devel}
+import: ${rpmdir} ${rpm} ${rpm_devel}
 	ls .tproject 
 	rm -rf usr lib
 	mkdir -p usr/include lib
