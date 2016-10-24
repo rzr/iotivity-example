@@ -12,7 +12,8 @@ rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
 rpmdir="${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/"
 devel_rpm?=$(shell ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm)
 rpm?=$(shell ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm)
-srcs?=$(shell find src lib)
+srcs?=$(shell find src)
+srcs+=$(shell find lib)
 tizen?=${HOME}/tizen-studio/tools/ide/bin/tizen
 compiler?=gcc
 arch_familly?=arm
@@ -86,7 +87,7 @@ ls:
 rpmdir: ${rpmdir}
 
 ${rpmdir}: extra/setup.sh
-	${SHELL} -x $<
+	profile=${profile} ${SHELL} -x $<
 
 import: ${rpm} ${rpm_devel}
 	ls .tproject 
@@ -102,14 +103,13 @@ import: ${rpm} ${rpm_devel}
 	ln -fs usr/lib lib
 
 
-
 build: usr/lib usr/include ${srcs}
 	@rm -rf ${build_dir}
 	${tizen} cli-config -l
 	${tizen} build-native -a ${arch_familly} -c ${compiler} -- .
 
 
-usr/lib usr/include: usr
+lib usr/lib usr/include: usr
 
 usr: import
 
