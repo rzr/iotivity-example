@@ -75,10 +75,11 @@ shared/res/logo.png: tmp/117x177/docs/logo.png
 setup: rpm
 
 ${rpm}: ${rpmdir}
-
-rpm: ${rpm}
-	ls -l $<
 	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
+
+rpm: ${rpmdir} ${rpm}
+	ls -l $<
+
 
 ls:
 	ls ${rpmdir}
