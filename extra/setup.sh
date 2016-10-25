@@ -129,6 +129,18 @@ build_()
         fi
     done
 
+
+    for t in $deps; do
+        if [ "$t" = "libx11" ] ; then
+            package="libx11"
+            branch="master"
+            url="https://git.tizen.org/cgit/framework/uifw/xorg/lib/libx11"
+            ls "$package" || \
+                $git clone -b "${branch}" "${url}"
+            $make -C "${package}"
+        fi
+    done
+
     for t in $deps; do
         if [ "$t" = "iotivity" ] ; then
 
@@ -179,8 +191,8 @@ deploy_()
     rm -rf usr lib
     mkdir -p usr lib
 
-    unp ${rpmdir}/iotivity-${version}-*.${arch}.rpm
-    unp ${rpmdir}/iotivity-devel-${version}-*${arch}.rpm
+    unp ${rpmdir}/iotivity-${version}[0-9]*-*.${arch}.rpm
+    unp ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm
 
     ln -fs ${rootfs}/usr/include/boost usr/include/
     # TODO
@@ -207,8 +219,7 @@ main_()
         || home="${tmpdir}/out/${package}/${version}/${profile}"
 
     [ "" != "${version}" ] \
-        || version="1.2.0+RC2"
-    #  version="1.1.1"
+        || version=""
 
     [ "" != "${arch}" ] || arch="armv7l"
     git="git"
@@ -229,7 +240,7 @@ main_()
 
     case "$profile" in
         "tizen_2_3_1_wearable")
-            deps="scons boost iotivity"
+            deps="scons boost libx11 iotivity"
             ;;
         "tizen_2_4_mobile")
             deps="iotivity"
@@ -244,7 +255,7 @@ main_()
     # checking tools
     setup_
 
-    ls ${rpmdir}/iotivity-devel-${version}-*${arch}.rpm \
+    ls ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm \
         || build_ "${profile}" ;
 
     cd "${thisdir}"
