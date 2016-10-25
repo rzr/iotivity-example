@@ -19,3 +19,4 @@ crash-info
 iotivity
 build*
 log*
+src/servercxx.cpp
