@@ -1,6 +1,8 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2014 Intel Mobile Communications GmbH All Rights Reserved.
+// Copyright 2016 Samsung Electronics France SAS All Rights Reserved.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -18,81 +20,205 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
 #include <stdbool.h>
+
 #include <ocstack.h>
-#include <logger.h>
+#include <ocpayload.h>
 
-#define TAG ("ocserver")
+#include "common.h"
 
-int gQuitFlag = 0;
-OCStackResult createLightResource();
+OCStackResult server_setup();
+OCStackResult server_loop();
+OCStackResult server_finish();
 
-typedef struct LIGHTRESOURCE{
-    OCResourceHandle handle;
-    bool power;
-} LightResource;
+void platform_log(char const *);
+void platform_setup();
+void platform_loop();
+void platform_setValue(bool value);
 
-static LightResource Light;
+OCStackResult createSwitchResource();
 
-/* SIGINT handler: set gQuitFlag to 1 for graceful termination */
-void handleSigInt(int signum) {
-    if (signum == SIGINT) {
-        gQuitFlag = 1;
-    }
+
+OCStackResult setValue(bool value)
+{
+    OCStackResult result;
+    LOGf("%d", value);
+    gSwitch.value = value;
+    platform_setValue(gSwitch.value);
+    result = OCNotifyAllObservers(gSwitch.handle, gQos);
+    return result;
 }
 
-int main() {
-    OIC_LOG_V(INFO, TAG, "Starting ocserver on address %s:%d",addr,port);
-    if (OCInit(NULL, 0, OC_SERVER) != OC_STACK_OK) {
-        OIC_LOG(ERROR, TAG, "OCStack init error");
-        return 0;
-    }
 
-    /*
-     * Declare and create the example resource: Light
-     */
-    if(createLightResource() != OC_STACK_OK)
+OCRepPayload *createPayload()
+{
+    OCRepPayload *payload = OCRepPayloadCreate();
+
+    LOGf("%p", payload);
+    if (!payload)
     {
-        OIC_LOG(ERROR, TAG, "OCStack cannot create resource...");
+        exit(1);
     }
+    //OCRepPayloadAddResourceType(payload, gIface);
+    //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
 
-    // Break from loop with Ctrl-C
-    OIC_LOG(INFO, TAG, "Entering ocserver main loop...");
-    signal(SIGINT, handleSigInt);
-    while (!gQuitFlag) {
+    LOGf("%d (payload)", gSwitch.value);
+    OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
 
-        if (OCProcess() != OC_STACK_OK) {
-            OIC_LOG(ERROR, TAG, "OCStack process error");
-            return 0;
+    return payload;
+}
+
+
+OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
+                                 OCEntityHandlerRequest *entityHandlerRequest,
+                                 void *callbackParam)
+{
+    OCEntityHandlerResult result = OC_EH_OK;
+    OCStackResult res = OC_STACK_OK;
+    OCRepPayload *payload = NULL;
+    OCEntityHandlerResponse response = {0};
+    memset(&response,0,sizeof response);
+
+    LOGf("%p", entityHandlerRequest);
+    LOGf("%d (current)", gSwitch.value);
+
+    if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
+    {
+        LOGf("%d", entityHandlerRequest->method);
+        OCRepPayload* input = NULL;
+        switch (entityHandlerRequest->method)
+        {
+        case OC_REST_POST:
+        case OC_REST_PUT:
+            input = (OCRepPayload*) entityHandlerRequest->payload;
+            OCRepPayloadGetPropBool(input, "value", &gSwitch.value);
+            LOGf("%d (update)", gSwitch.value);
+            res = setValue(gSwitch.value);
+            break;
+        case OC_REST_GET:
+            OCRepPayloadSetUri(payload, gUri);
+            OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
+            break;
+        default:
+            break;
         }
+        payload = (OCRepPayload *) createPayload();
+        if (!payload)
+        {
+            LOGf("%p (error)", payload);
+            return OC_EH_ERROR;
+        }
+        response.payload = (OCPayload *) payload;
 
-        sleep(1);
+        response.ehResult = result;
+        response.numSendVendorSpecificHeaderOptions = 0;
+        memset(response.sendVendorSpecificHeaderOptions, 0,
+               sizeof response.sendVendorSpecificHeaderOptions);
+
+        memset(response.resourceUri, 0, sizeof response.resourceUri);
+        response.persistentBufferFlag = 0;
+        response.requestHandle = entityHandlerRequest->requestHandle;
+        response.resourceHandle = entityHandlerRequest->resource;
+        LOGf("%p (note request infos are copied)", response.resourceHandle);
+
+        res = OCDoResponse(&response);
+        if (res != OC_STACK_OK)
+        {
+            LOGf("%d (error)", res);
+            result = OC_EH_ERROR;
+        }
+        OCRepPayloadDestroy(payload);
     }
-
-    OIC_LOG(INFO, TAG, "Exiting ocserver main loop...");
-
-    if (OCStop() != OC_STACK_OK) {
-        OIC_LOG(ERROR, TAG, "OCStack process error");
-    }
-
-    return 0;
+    return result;
 }
 
-OCStackResult createLightResource() {
-    Light.power = false;
-    OCStackResult res = OCCreateResource(&Light.handle,
-                    "core.light",
-                    "core.rw",
-                    "/a/light",
-                    0,
-                    NULL,
-                    OC_DISCOVERABLE|OC_OBSERVABLE);
-    return res;
+
+OCStackResult createSwitchResource()
+{
+    OCStackResult result = OCCreateResource(&(gSwitch.handle),
+                                            gName,
+                                            gIface,
+                                            gUri,
+                                            onOCEntity,
+                                            NULL,
+                                            OC_DISCOVERABLE|OC_OBSERVABLE);
+    LOGf("%s", gIface );
+    LOGf("%d", result);
+    return result;
 }
 
+
+OCStackResult server_loop()
+{
+    LOGf("%d (iterate)", gSwitch.value);
+    OCStackResult result = OCProcess();
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+        return result;
+    }
+
+    sleep(gDelay);
+    return result;
+}
+
+
+OCStackResult server_setup()
+{
+    OCStackResult result;
+    result = OCInit(NULL, 0, OC_SERVER);
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+        return result;
+    }
+
+    result = createSwitchResource();
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+        return result;
+    }
+
+    LOGf("%d", result);
+    return result;
+}
+
+
+OCStackResult server_finish()
+{
+    OCStackResult result = OCStop();
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+    }
+    return result;
+}
+
+
+int server_main(int argc, char* argv[])
+{
+    OCStackResult result;    
+    if (argc>1 && (0 == strcmp("-v", argv[1])))
+    {
+        gVerbose++;
+    }
+    result = server_setup();
+
+    if (result != 0)
+    {
+        return result;
+    }
+
+    while (!gOver)
+    {
+        result = server_loop();
+    }
+
+    server_finish();
+
+    return (int) result ;
+}

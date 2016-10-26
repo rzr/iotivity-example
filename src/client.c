@@ -1,6 +1,8 @@
+// -*-c-*-
 //******************************************************************
 //
 // Copyright 2014 Intel Mobile Communications GmbH All Rights Reserved.
+// Copyright 2016 Samsung Electronics France SAS All Rights Reserved.
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -18,75 +20,387 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
-#include <unistd.h>
+#include <octypes.h>
 #include <ocstack.h>
-#include <logger.h>
+#include <ocpayload.h>
 
-#define TAG ("occlient")
+#ifdef __linux__
+#ifndef HAVE_UNISTD_H
+#define HAVE_UNISTD_H
+#endif
+#define HAVE_SIGNAL_H
+#endif
 
-int gQuitFlag = 0;
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
-/* SIGINT handler: set gQuitFlag to 1 for graceful termination */
-void handleSigInt(int signum) {
-    if (signum == SIGINT) {
-        gQuitFlag = 1;
+#include <sys/ioctl.h>
+#include <termios.h>
+
+#include "common.h"
+
+
+OCStackResult client_setup();
+OCStackResult post();
+
+
+unsigned int gDiscovered = 0;
+static OCDevAddr gDestination;
+
+
+OCRepPayload *createPayload()
+{
+    OCRepPayload *payload = OCRepPayloadCreate();
+
+    LOGf("%p", payload);
+    if (!payload)
+    {
+        exit(1);
     }
+
+    LOGf("%d (changing)", gSwitch.value);
+    OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
+
+    LOGf("%d", gSwitch.value);
+    return payload;
 }
 
-// This is a function called back when a device is discovered
-OCStackApplicationResult applicationDiscoverCB(
-        OCClientResponse * clientResponse) {
-    OIC_LOG(INFO, TAG, "Entering applicationDiscoverCB (Application Layer CB)");
-    OIC_LOG_V(INFO, TAG, "Device =============> Discovered %s @ %s:%d",
-                                    clientResponse->resJSONPayload,
-                                    clientResponse->devAddr.addr,
-                                    clientResponse->devAddr.port);
-    //return OC_STACK_DELETE_TRANSACTION;
+
+OCStackApplicationResult handleResponse(void *ctx,
+                                        OCDoHandle handle,
+                                        OCClientResponse *clientResponse)
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackApplicationResult result = OC_STACK_DELETE_TRANSACTION;
+
+    if (!clientResponse)
+    {
+        LOGf("%p (error)", clientResponse);
+        return result;
+    }
+    OCRepPayload *payload = (OCRepPayload *)(clientResponse->payload);
+    if (!payload)
+    {
+        LOGf("%p (error)", payload);
+        return result;
+    }
+
+    if (!OCRepPayloadGetPropBool(payload, "value", &gSwitch.value))
+    {
+        LOGf("%d (error)", gSwitch.value);
+    }
+
+    printf("%d\n", gSwitch.value);
+
+    LOGf("%d }", gSwitch.value);
+    return OC_STACK_DELETE_TRANSACTION;
+}
+
+
+OCStackApplicationResult onGet(void *ctx,
+                               OCDoHandle handle,
+                               OCClientResponse *clientResponse)
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
+
+    LOGf("%p", clientResponse);
+    if (!true)
+        result = handleResponse(ctx, handle, clientResponse);
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+    }
+    LOGf("%d }", gSwitch.value);
+    return OC_STACK_DELETE_TRANSACTION;
+}
+
+
+OCStackResult get()
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackResult result = OC_STACK_OK;
+    OCMethod method = OC_REST_GET;
+    OCRepPayload *payload = NULL;
+    OCCallbackData callback = {NULL, NULL, NULL};
+    callback.cb = onGet;
+
+    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
+                          (OCPayload *) payload,
+                          gConnectivityType, gQos, &callback, NULL, 0);
+
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d", result);
+    }
+    LOGf("%d }", gSwitch.value);
+    return result;
+}
+
+
+OCStackApplicationResult onPost(void *ctx,
+                                OCDoHandle handle,
+                                OCClientResponse *clientResponse)
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
+
+    LOGf("%p", clientResponse);
+    result = handleResponse(ctx, handle, clientResponse);
+
+    LOGf("%d", result);
+    LOGf("%d }", gSwitch.value);
+    return OC_STACK_DELETE_TRANSACTION;
+}
+
+
+OCStackResult post()
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackResult result = OC_STACK_OK;
+    OCMethod method = OC_REST_POST;
+    OCRepPayload *payload = NULL;
+    OCCallbackData callback = {NULL, NULL, NULL};
+    callback.cb = onPost;
+
+    LOGf("%d", gSwitch.value);
+    gSwitch.value = !gSwitch.value;
+    payload = createPayload();
+
+    result = OCDoResource(&gSwitch.handle, method, gUri, &gDestination,
+                          (OCPayload *) payload,
+                          gConnectivityType, gQos, &callback, NULL, 0);
+
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d", result);
+    }
+    LOGf("%d }", gSwitch.value);
+    return result;
+}
+
+OCStackApplicationResult onObserve(void* ctx, 
+                                       OCDoHandle handle,
+                                       OCClientResponse * clientResponse)
+{
+    LOGf("%d {", gSwitch.value);
+    OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
+
+    LOGf("%p", clientResponse);
+    result = handleResponse(ctx, handle, clientResponse);
+
+    LOGf("%d", result);
+    LOGf("%d }", gSwitch.value);
     return OC_STACK_KEEP_TRANSACTION;
 }
 
-int main() {
-    OIC_LOG_V(INFO, TAG, "Starting occlient on address %s",addr);
+// This is a function called back when a device is discovered
+OCStackApplicationResult onDiscover(void *ctx,
+                                    OCDoHandle handle,
+                                    OCClientResponse *clientResponse)
+{
+    OCStackResult result = OC_STACK_OK;
 
-    /* Initialize OCStack*/
-    if (OCInit(NULL, 0, OC_CLIENT) != OC_STACK_OK) {
-        OIC_LOG(ERROR, TAG, "OCStack init error");
-        return 0;
+    LOGf("%p", ctx);
+    LOGf("%p", clientResponse);
+
+    if (!clientResponse)
+    {
+        return OC_STACK_DELETE_TRANSACTION;
     }
 
-    /* Start a discovery query*/
-    char szQueryUri[64] = { 0 };
-    strcpy(szQueryUri, OC_MULTICAST_DISCOVERY_URI);
-    if (OCDoResource(NULL, OC_REST_GET, szQueryUri, 0, 0, CT_DEFAULT, OC_LOW_QOS,
-            0, 0, 0) != OC_STACK_OK) {
-        OIC_LOG(ERROR, TAG, "OCStack resource error");
-        return 0;
+    LOGf("%p", clientResponse->devAddr.addr);
+    LOGf("%d", clientResponse->sequenceNumber);
+    LOGf("%p", clientResponse->payload);
+    OCDiscoveryPayload *payload = (OCDiscoveryPayload *) clientResponse->payload;
+    LOGf("%p", payload);
+    gDiscovered++;
+    if (!payload)
+    {
+        return OC_STACK_DELETE_TRANSACTION;
     }
 
-    // Break from loop with Ctrl+C
-    OIC_LOG(INFO, TAG, "Entering occlient main loop...");
-    signal(SIGINT, handleSigInt);
-    while (!gQuitFlag) {
+    OCResourcePayload *resource = (OCResourcePayload *) payload->resources;
 
-        if (OCProcess() != OC_STACK_OK) {
-            OIC_LOG(ERROR, TAG, "OCStack process error");
-            return 0;
+    while (resource)
+    {
+        LOGf("%p", resource);
+        if (resource->uri)
+        {
+            LOGf("%s", resource->uri);
+            if (0 == strcmp(gUri, resource->uri))
+            {
+                gDestination = clientResponse->devAddr;
+                LOGf("%s", gDestination.addr);
+                gConnectivityType = clientResponse->connType;
+                gSwitch.handle = handle;
+    
+                OCCallbackData callback = {NULL, NULL, NULL};
+                callback.cb = onObserve;
+                
+                OCStackResult ret;
+                ret = OCDoResource(&gSwitch.handle, OC_REST_OBSERVE,
+                                   gUri, &gDestination, NULL,
+                                   gConnectivityType, gQos, &callback, NULL, 0);
+            }
+        }
+        resource = resource->next;
+    }
+
+    return OC_STACK_KEEP_TRANSACTION;
+}
+
+
+int kbhit()
+{
+    struct termios term, oterm;
+    int fd = 0;
+    int c = 0;
+    tcgetattr(fd, &oterm);
+    memcpy(&term, &oterm, sizeof(term));
+    term.c_lflag = term.c_lflag & (!ICANON);
+    term.c_cc[VMIN] = 0;
+    term.c_cc[VTIME] = 1;
+    tcsetattr(fd, TCSANOW, &term);
+    c = getchar();
+    tcsetattr(fd, TCSANOW, &oterm);
+    return (c);
+}
+
+
+OCStackResult client_loop()
+{
+    OCStackResult result;
+    LOGf("%d (iterate)", gSwitch.value);
+
+    result = OCProcess();
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
+        return result;
+    }
+
+    static int once = 1;
+    if (gDiscovered && once-- > 0)
+    {
+        sleep(4 * gDelay);
+        result = post();
+        LOGf("%d (post)", result);
+    }
+    int c = 0;
+    if (gDiscovered && ((c = kbhit()) > 0))
+    {
+        LOGf("%d (post on kbhit)", c);
+        result = post();
+    }
+    sleep(gDelay);
+    LOGf("%d", gOver);
+    return result;
+}
+
+
+OCStackResult client_setup()
+{
+    int i = 0;
+    OCStackResult result;
+    static int gInit = 0;
+    if (gInit++ == 0)
+    {
+        result = OCInit1(OC_CLIENT, // or OC_CLIENT_SERVER,
+                         OC_DEFAULT_FLAGS, OC_DEFAULT_FLAGS);
+
+        if (result != OC_STACK_OK)
+        {
+            LOGf("%d (error)", result);
+            return result;
+        }
+    }
+
+    OCCallbackData cbData = {NULL, NULL, NULL};
+    cbData.cb = onDiscover;
+    LOGf("%p", cbData.cb);
+    char queryUri[MAX_QUERY_LENGTH] = { 0 };
+    snprintf(queryUri, sizeof (queryUri), "%s", OC_RSRVD_WELL_KNOWN_URI);
+    LOGf("%s", queryUri);
+
+    for (i = 0; !gDiscovered && i < 2; i++)
+    {
+        LOGf("%d", gDiscovered);
+
+        result = OCDoResource(NULL, // handle
+                              OC_REST_DISCOVER, // method
+                              queryUri, //requestUri: /oic/res
+                              NULL, // destination
+                              NULL,  // opayload
+                              gConnectivityType, //
+                              gQos, // OC_LOW_QOS
+                              &cbData, //
+                              NULL, // options
+                              0 // numOptions
+                             );
+
+        if (result != OC_STACK_OK)
+        {
+            LOGf("%d (error)", result);
         }
 
-        sleep(1);
+        sleep(1 * gDelay);
     }
+    LOGf("%d", result);
+    return result;
+}
 
-    OIC_LOG(INFO, TAG, "Exiting occlient main loop...");
 
-    if (OCStop() != OC_STACK_OK) {
-        OIC_LOG(ERROR, TAG, "OCStack stop error");
+void client_finish()
+{
+    OCStackResult result = OCStop();
+
+    if (result != OC_STACK_OK)
+    {
+        LOGf("%d (error)", result);
     }
+}
 
+
+/* SIGINT handler: set gOver to 1 for graceful termination */
+void onSignal(int signum)
+{
+    if (signum == SIGINT)
+    {
+        gOver = 1;
+    }
+}
+
+
+int client_main(int argc, char *argv[])
+{
+    if (argc>1 && (0 == strcmp("-v", argv[1])))
+    {
+        gVerbose++;
+    }
+    LOGf("%d", gVerbose);
+    LOGf("%s", "Break from loop with Ctrl+C");
+    signal(SIGINT, onSignal);
+
+    client_setup();
+
+    for (; !gOver;)
+    {
+        client_loop();
+    }
+    client_finish();
     return 0;
 }
 
+
+int main(int argc, char *argv[])
+{
+    return client_main(argc, argv);
+}
