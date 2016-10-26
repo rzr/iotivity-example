@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 //#include <iotivity_config.h> //1.2.0+
 #include <octypes.h>
 #include <ocstack.h>
@@ -365,7 +366,6 @@ void handleSigInt(int signum)
 int main(int argc, char* argv[])
 {
     client_setup();
-    sleep(gDelay);
 
     // Break from loop with Ctrl+C
     signal(SIGINT, handleSigInt);
