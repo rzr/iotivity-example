@@ -45,15 +45,13 @@ static const char * gName = "oic.r.switch.binary";
 static const char * gUri = "/switch";
 
 static char const * gIface = //
-    OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline" //TODO
-    //"oc.mi.def"
+    OC_RSRVD_INTERFACE_DEFAULT //"oic.if.baseline"
     ;
 
 static OCDevAddr gDestination;
 
 static OCConnectivityType gConnectivityType =//
-    //CT_DEFAULT
-    CT_ADAPTER_IP//
+    CT_ADAPTER_IP//    //CT_DEFAULT
     ;
 static OCQualityOfService gQos = OC_HIGH_QOS;
 
