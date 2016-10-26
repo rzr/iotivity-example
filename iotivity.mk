@@ -6,7 +6,7 @@ iotivity_version?=1.1.1
 #iotivity_version=1.1.0
 
 #overide here
-#iotivity_version=master
+iotivity_version=master
 #iotivity_version=1.2-rel
 
 export iotivity_version
@@ -36,11 +36,12 @@ ${iotivity_dir}/resource/csdk/logger/include \
  #eol
 
 #TODO
-iotivity_includedirs_cflags?=\
+iotivity_cppflags?=\
 -I${iotivity_dir}/resource/c_common/ \
 -I${iotivity_dir}/resource/csdk/stack/include \
 -I${iotivity_dir}/resource/csdk/logger/include \
  #eol
+iotivity_cppflags+=-I${iotivity_dir}/extlibs/tinycbor/tinycbor/src
 
 iotivity_libs?=\
 ${iotivity_out}/resource/csdk/liboctbstack.a \
@@ -52,8 +53,8 @@ ${iotivity_out}/resource/c_common/libc_common.a \
 ${iotivity_out}/libcoap.a \
  #eol
 
-CFLAGS+=-DTB_LOG=1 -DROUTING_GATEWAY=1
-
+iotivity_cppflags+=-DTB_LOG=1 -DROUTING_GATEWAY=1
+CPPFLAGS+=${iotivity_cppflags}
 
 ${iotivity_out}: ${iotivity_dir}
 #	cd ${<} && ./auto_build.sh ${platform}_unsecured_with_rd
@@ -108,7 +109,7 @@ all+=iotivity_out
 #scons_flags+=LOGGING=1 
 #scons_flags+=RELEASE=1
 #scons_flags+=DEBUG=0
-scons_flags+=LOGGING=1
+scons_flags+=LOGGING=0
 scons_flags+=RELEASE=0
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
