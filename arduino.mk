@@ -126,5 +126,3 @@ $(TARGET_ELF): $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
 	${CC} ${LDFLAGS} -o $@ ${^}
 	ls -l ${@}
-
-
