@@ -53,6 +53,7 @@ OCStackResult post();
 
 unsigned int gDiscovered = 0;
 static OCDevAddr gDestination;
+int gObversable= 1;
 
 
 OCRepPayload *createPayload()
@@ -241,14 +242,15 @@ OCStackApplicationResult onDiscover(void *ctx,
                 LOGf("%s", gDestination.addr);
                 gConnectivityType = clientResponse->connType;
                 gSwitch.handle = handle;
-    
-                OCCallbackData callback = {NULL, NULL, NULL};
-                callback.cb = onObserve;
-                
-                OCStackResult ret;
-                ret = OCDoResource(&gSwitch.handle, OC_REST_OBSERVE,
-                                   gUri, &gDestination, NULL,
-                                   gConnectivityType, gQos, &callback, NULL, 0);
+                if (gObversable)
+                {
+                    OCCallbackData callback = {NULL, NULL, NULL};
+                    callback.cb = onObserve;
+                    OCStackResult ret;
+                    ret = OCDoResource(&gSwitch.handle, OC_REST_OBSERVE,
+                                       gUri, &gDestination, NULL,
+                                       gConnectivityType, gQos, &callback, NULL, 0);
+                }
             }
         }
         resource = resource->next;
