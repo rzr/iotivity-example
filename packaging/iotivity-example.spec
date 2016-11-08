@@ -28,7 +28,7 @@ Mimimal client/server application that share an IoTivity resource
 
 %__make %{?_smp_mflags} \
     PLATFORM=TIZEN \
-    config_pkgconfig=0 \
+    config_pkgconfig=1 \
     #eol
 
 %install
@@ -36,7 +36,7 @@ Mimimal client/server application that share an IoTivity resource
     name=%{name} \
     DESTDIR=%{buildroot} \
     PLATFORM=TIZEN \
-    config_pkgconfig=0 \
+    config_pkgconfig=1 \
     #eol
 
 make %{name}.service
