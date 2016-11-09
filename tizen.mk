@@ -6,9 +6,9 @@ rule/default: local/rpm local/usr local/lib local/all
 
 ### Configuration ###
 
-app_profile?=mobile
+app_profile?=wearable
 app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
-app_profile_version?=2.4
+app_profile_version?=2.3.1
 app_profile_version_alpha?=$(shell echo ${app_profile_version} | tr '.' '_')
 tizen_studio_package?=${app_profile_upcase}-${app_profile_version}-NativeAppDevelopment-CLI
 tizen_profile?=tizen_${app_profile_version_alpha}_${app_profile}
