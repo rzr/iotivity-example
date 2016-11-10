@@ -5,9 +5,15 @@ default: bootstrap local/all
 
 
 ### Configuration ###
-
-gbs_profile?=tizen_2_4_mobile
+app_profile?=mobile
+app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
+app_profile_version?=2.4
+app_profile_version_alpha?=$(shell echo ${app_profile_version} | tr '.' '_')
+tizen_studio_package?=${app_profile_upcase}-${app_profile_version}-NativeAppDevelopment-CLI
+tizen_profile?=tizen_${app_profile_version_alpha}_${app_profile}
 gbs_arch?=armv7l
+gbs_profile?=tizen_${app_profile_version_alpha}_${gbs_arch}
+#
 project_name?=iotivity-example
 app_package_exe?=iotivityexample
 package_version?=1.0.0
@@ -22,16 +28,16 @@ srcs+=usr
 
 
 ### Default ###
-
 self?=$(lastword $(MAKEFILE_LIST))
 thisdir:=$(shell dirname $(realpath ${self}))
 make=${MAKE} -f ${self}
 export make
+MAKEFLAGS=-j1
 tmpdir?=${CURDIR}/tmp
-gbsdir?=${tmpdir}/out/${project_name}/${profile}/tmp/gbs/tmp-GBS-${gbs_profile}_${arch}/
-gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${gbs_profile}_${arch}/"
+gbsdir?=${tmpdir}/out/${project_name}/${profile}/tmp/gbs/tmp-GBS-${gbs_profile}/
+gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${gbs_profile}/"
 rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
-rpmdir="${gbsdir}/local/repos/${gbs_profile}_${arch}/${arch}/RPMS/"
+rpmdir="${gbsdir}/local/repos/${gbs_profile}/${arch}/RPMS/"
 devel_rpm?=$(shell \
  ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm 2>/dev/null \
  || echo TODO)
@@ -80,13 +86,15 @@ ls:
 ${rpmdir}: tmp/rule/bootstrap
 
 tmp/rule/bootstrap: extra/setup.sh
-	profile="${gbs_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
+	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
 	echo 'include ${tizen_helper_dir}/bin/mk-tizen-app.mk' > local.mk
 	mkdir -p ${@D}
 	touch $@
 
 bootstrap: tmp/rule/bootstrap
 	ls -l $<
+	@echo "# $@: done"
+	exit 0
 
 rule/import: rpms
 	ls .tproject
@@ -109,11 +117,3 @@ usr/lib usr/include: usr
 
 usr:
 	ls -l $@ || ${make} rule/import
-
-rule/setup/debian: /etc/debian_version
-	sudo apt-get install \
- git \
- graphicsmagick-imagemagick-compat \
- rpm \
- unp \
- #eol
