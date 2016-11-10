@@ -45,6 +45,45 @@ die_()
 }
 
 
+setup_debian_()
+{
+    which apt-get \
+        || die_ "TODO: port to non debian systen"
+
+    which sudo \
+        || die_ "TODO: install sudo"
+
+    sudo apt-get install \
+        curl \
+        file \
+        git \
+        make \
+        realpath \
+        rpm \
+        rpm2cpio \
+        unp \
+        wget \
+        zip \
+        || die_ "TODO: missing tools"
+
+    sudo apt-get install gbs \
+        || die_ "TODO: missing tools"
+}
+
+
+setup_fedora_()
+{
+    sudo yum install \
+        curl \
+        file \
+        git \
+        make \
+        realpath \
+        wget \
+        zip \
+        || die_ "TODO: missing tools"
+}
+
 setup_()
 {
     which dirname \
@@ -52,21 +91,14 @@ setup_()
         && which git \
         && which gbs \
         && which make \
-        && return 0
+        && return 0 \
+        || echo "installing: "
 
-    which apt-get \
-        || die_ "TODO: port to non debian systen"
-
-    sudo apt-get install \
-        curl \
-        git \
-        make \
-        realpath \
-        wget \
-        || die_ "TODO: missing tools"
-
-    sudo apt-get install gbs \
-        || die_ "TODO: missing tools"
+    if [ -f /etc/debian_version ]; then
+        setup_debian_
+    elif [ -f /etc/fedora_release ]; then
+        setup_fedora_
+    fi
 }
 
 
@@ -188,6 +220,12 @@ build_()
 }
 
 
+unp_()
+{
+    # TODO: use unp if present
+    rpm2cpio "$1" | cpio -idmv
+}
+
 deploy_()
 {
     ls .tproject || die_ "TODO"
@@ -195,8 +233,8 @@ deploy_()
     rm -rf usr lib
     mkdir -p usr lib
 
-    unp ${rpmdir}/iotivity-${version}[0-9]*-*.${arch}.rpm
-    unp ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm
+    unp_ ${rpmdir}/iotivity-${version}[0-9]*-*.${arch}.rpm
+    unp_ ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm
 
     ln -fs ${rootfs}/usr/include/boost usr/include/
     # TODO
