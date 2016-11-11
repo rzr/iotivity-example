@@ -247,6 +247,13 @@
 								<option id="gnu.cpp.link.option.paths.642235681" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/lib}&quot;"/>
 								</option>
+								<option id="gnu.cpp.link.option.libs.1557516303" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="oc_logger"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="octbstack"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="uuid1"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="connectivity_abstraction"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="oc"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2046835259" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -519,6 +526,13 @@
 								</option>
 								<option id="gnu.cpp.link.option.paths.321300323" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/lib}&quot;"/>
+								</option>
+								<option id="gnu.cpp.link.option.libs.1564008991" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="oc_logger"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="octbstack"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="uuid1"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="connectivity_abstraction"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="oc"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.804142101" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
