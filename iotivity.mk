@@ -35,10 +35,13 @@ iotivity_mode?=release
 export iotivity_version
 
 tinycbor_url?=https://github.com/01org/tinycbor.git
+tinycbor_version?=v0.3.1
+
+ifeq (${iotivity_version}, 1.2.1)
+tinycbor_version?=v0.4
+endif
 ifeq (${iotivity_version}, 1.1.1)
 tinycbor_version?=v0.2.1
-else
-tinycbor_version?=v0.3.1
 endif
 
 gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8ccdf5c46b05ba54a9fd1d130d7/gtest-1.7.0.zip
