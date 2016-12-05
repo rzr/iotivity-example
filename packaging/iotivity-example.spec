@@ -11,7 +11,7 @@ Source:         %{name}-%{version}.tar.gz
 
 BuildRequires:  make
 BuildRequires:  fdupes
-BuildRequires:  iotivity-devel
+BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  systemd
