@@ -185,10 +185,15 @@ build_()
             url="http://github.com/tizenteam/${package}"
             branch="sandbox/pcoval/on/next/tizen"
             args=" -b "${branch}""
+            [ "" = "${iotivity_secured}" ] || iotivity_secured=0
 #           args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}"
-            $make -C "${package}"
+#           $make -C "${package}"
+            cd "${package}"
+            gbs_args=" --include-all --define SECURED ${iotivity_secured}"
+            gbs build -P profile.${profile} --arch ${arch} ${gbs_args}
+            cd -
         fi
     done
 
