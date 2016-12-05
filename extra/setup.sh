@@ -185,7 +185,7 @@ build_()
             url="http://github.com/tizenteam/${package}"
             branch="sandbox/pcoval/on/next/tizen"
             args=" -b "${branch}""
-            [ "" = "${iotivity_secured}" ] || iotivity_secured=0
+            [ "" != "${iotivity_secured}" ] || iotivity_secured=0
 #           args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}"
