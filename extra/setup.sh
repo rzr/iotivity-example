@@ -191,7 +191,7 @@ build_()
                 $git clone $args -- "${url}"
 #           $make -C "${package}"
             cd "${package}"
-            gbs_args=" --include-all --define SECURED ${iotivity_secured}"
+            gbs_args=" --include-all --define 'SECURED ${iotivity_secured}'"
             gbs build -P profile.${profile}_${arch} --arch ${arch} ${gbs_args}
             cd -
         fi
