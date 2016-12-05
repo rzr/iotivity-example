@@ -192,7 +192,7 @@ build_()
 #           $make -C "${package}"
             cd "${package}"
             gbs_args=" --include-all --define SECURED ${iotivity_secured}"
-            gbs build -P profile.${profile} --arch ${arch} ${gbs_args}
+            gbs build -P profile.${profile}_${arch} --arch ${arch} ${gbs_args}
             cd -
         fi
     done
