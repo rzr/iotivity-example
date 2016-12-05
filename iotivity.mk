@@ -111,8 +111,8 @@ iotivity/setup: iotivity/setup/debian
 ${iotivity_out}: ${iotivity_dir}
 	cd ${<} && scons resource ${scons_flags}
 
-iotivity_out: 
-	ls ${iotivity_out} || ${MAKE} platform?=${platform} deps ${iotivity_out}
+iotivity_out:
+	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
 	@echo "# $@: $^"
 
 ${iotivity_dir}:
