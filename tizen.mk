@@ -8,11 +8,11 @@ default: local/rpm local/usr local/lib local/all
 
 app_profile?=wearable
 app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
-app_profile_version?=2.3.1
+app_profile_version?=2.3.2
 app_profile_version_alpha?=$(shell echo ${app_profile_version} | tr '.' '_')
 tizen_studio_package?=${app_profile_upcase}-${app_profile_version}-NativeAppDevelopment-CLI
 tizen_profile?=tizen_${app_profile_version_alpha}_${app_profile}
-gbs_arch?=armv7l
+gbs_arch?=i586
 gbs_profile?=tizen_${app_profile_version_alpha}_${app_profile}_${gbs_arch}
 #
 project_name?=iotivity-example
