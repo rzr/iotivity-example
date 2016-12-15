@@ -6,7 +6,7 @@ APPNAME = iotivityexample
 type = app
 
 # Project Profile
-profile = wearable-2.3.1
+profile = wearable-2.3.2
 
 # C/CPP Sources
 USER_SRCS = src/observer.cpp src/client.cpp src/common.cpp src/main.cpp src/platform.cpp 
