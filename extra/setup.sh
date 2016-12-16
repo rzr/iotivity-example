@@ -139,9 +139,12 @@ build_()
             $make -C "${package}"
 
             package="boost"
-            branch="tizen"
             url="https://git.tizen.org/cgit/platform/upstream/${package}"
             url="https://github.com/tizenorg/platform.upstream.${package}"
+            if [ "tizen_2_3_1_wearable" = "$profile" ] ; then
+                branch="sandbox/pcoval/tizen_2.3.1"
+                url="https://github.com/tizenteam/platform.upstream.${package}"
+            fi
             package=$(basename -- "${url}")
             ls "$package" || \
                 $git clone -b "${branch}" "${url}"
@@ -282,7 +285,7 @@ main_()
 
     case "$profile" in
         "tizen_2_3_1_wearable")
-            deps="scons boost libx11 iotivity"
+            deps="scons libx11 iotivity"
             ;;
         "tizen_2_4_mobile")
             deps="iotivity"
