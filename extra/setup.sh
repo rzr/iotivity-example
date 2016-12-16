@@ -285,7 +285,7 @@ main_()
 
     case "$profile" in
         "tizen_2_3_1_wearable")
-            deps="scons libx11 iotivity"
+            deps="scons iotivity"
             ;;
         "tizen_2_4_mobile")
             deps="iotivity"
