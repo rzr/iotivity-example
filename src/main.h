@@ -28,13 +28,15 @@
 #include <efl-extension/efl_extension.h>
 #include <dlog.h>
 
-#ifdef  LOG_TAG
-#undef  LOG_TAG
-#endif
-#define LOG_TAG "iotivityexample"
 
 #if !defined(PACKAGE)
 #define PACKAGE "org.example.iotivityexample"
 #endif
+
+#ifdef  LOG_TAG
+#undef  LOG_TAG
+#endif
+#define LOG_TAG PACKAGE
+
 
 #endif /* __iotivityexample_H__ */

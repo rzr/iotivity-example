@@ -23,6 +23,7 @@
 #include <Evas.h>
 
 #include "main.h"
+#include "common.h"
 #include "observer.h"
 #include "client.h"
 
