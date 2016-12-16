@@ -191,7 +191,15 @@ build_()
 #           args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}"
-            $make -C "${package}"
+#           $make -C "${package}"
+            cd "${package}"
+
+            gbs_arch=${arch}
+            gbs_profile=${profile}_${gbs_arch}
+            cd tmp/iotivity/ # relative to iotivity-example
+            gbs build -P $gbs_profile -A $gbs_arch --include-all \
+                --define 'LOGGING 1' --define 'RELEASE False'
+            cd -
         fi
     done
 
