@@ -25,6 +25,7 @@
 #include "platform.h"
 #include <iostream>
 
+
 #ifdef __TIZEN__
 #include <dlog.h>
 extern void printlog(char const *const message);
