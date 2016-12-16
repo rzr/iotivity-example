@@ -25,10 +25,12 @@
 #include "platform.h"
 #include <iostream>
 
+
 #ifdef __TIZEN__
 #include <dlog.h>
 extern void printlog(char const *const message);
 extern void handleValue(bool value);
+#include "main.h"
 #else
 #define dlog_print(type,tag,message) \
     printf(message)
@@ -65,9 +67,8 @@ void Platform::setup(int argc, char *argv[])
 
 void Platform::log(char const *const message)
 {
-    char const *const LOGTAG = "LOG";
 #ifdef __TIZEN__
-    dlog_print(DLOG_INFO, LOGTAG, message);
+    dlog_print(DLOG_INFO, LOG_TAG, message);
 #endif
     printlog(message);
 }
