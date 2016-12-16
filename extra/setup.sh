@@ -145,7 +145,7 @@ build_()
                 branch="sandbox/pcoval/tizen_2.3.1"
                 url="https://github.com/tizenteam/platform.upstream.${package}"
             fi
-
+            package=$(basename -- "${url}")
             ls "$package" || \
                 $git clone -b "${branch}" "${url}"
             $make -C "${package}"
