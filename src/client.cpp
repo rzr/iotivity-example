@@ -102,8 +102,13 @@ void Resource::post(bool value)
     QueryParamsMap params;
     OCRepresentation rep;
     rep.setValue(Common::m_propname, value);
+    std::cerr<<"\nTODO:"<<std::endl;  
+    std::vector<std::string> v = { "1" , "2" };
+    for (auto i: v)
+        std::cout<<"v: "<<i<<std::endl;
+    rep.setValue("vector", v);
     m_OCResource->post(rep, params, m_POSTCallback);
-}
+ }
 
 
 IoTClient::IoTClient()
