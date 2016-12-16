@@ -139,10 +139,13 @@ build_()
             $make -C "${package}"
 
             package="boost"
-            branch="tizen"
             url="https://git.tizen.org/cgit/platform/upstream/${package}"
             url="https://github.com/tizenorg/platform.upstream.${package}"
-            package=$(basename -- "${url}")
+            if [ "tizen_2_3_1_wearable" = "$profile" ] ; then
+                branch="sandbox/pcoval/tizen_2.3.1"
+                url="https://github.com/tizenteam/platform.upstream.${package}"
+            fi
+
             ls "$package" || \
                 $git clone -b "${branch}" "${url}"
             $make -C "${package}"
