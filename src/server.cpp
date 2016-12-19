@@ -40,6 +40,8 @@ IoTServer::IoTServer(string property, bool value)
     init();
     setup();
     m_Representation.setValue(property, value);
+    vector<string> v { "one", "two" };
+    m_Representation.setValue("vector", v);
 }
 
 IoTServer::~IoTServer()
@@ -144,6 +146,19 @@ OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
         {
             bool value = requestRep.getValue<bool>(Common::m_propname);
             Platform::getInstance().setValue(value);
+        }
+        catch (...)
+        {
+            cerr << "error: Client sent invalid resource value type" << endl;
+            return result;
+        }
+
+
+        try
+        {
+            vector<std::string> v = requestRep.getValue<vector<std::string>>("vector");
+            for (auto i: v)
+                std::cout<<"v: "<<i<<std::endl;
         }
         catch (...)
         {
