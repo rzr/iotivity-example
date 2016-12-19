@@ -107,7 +107,7 @@ build_()
     local config_all=true
     local package="tizen-helper"
     local url="https://notabug.org/tizen/${package}"
-    local branch="sandbox/pcoval/on/master/devel"
+    local branch="master"
 
     ls "$package" || \
         $git clone --depth 1 -b "${branch}" "${url}"
