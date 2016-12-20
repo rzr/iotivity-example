@@ -12,7 +12,7 @@ app_profile_version?=2.3.2
 app_profile_version_alpha?=$(shell echo ${app_profile_version} | tr '.' '_')
 tizen_studio_package?=${app_profile_upcase}-${app_profile_version}-NativeAppDevelopment-CLI
 tizen_profile?=tizen_${app_profile_version_alpha}_${app_profile}
-gbs_arch?=i586
+gbs_arch?=armv7l
 gbs_profile?=tizen_${app_profile_version_alpha}_${app_profile}_${gbs_arch}
 #
 project_name?=iotivity-example
