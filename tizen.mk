@@ -2,9 +2,10 @@
 
 default: local/rpm local/usr local/lib local/all
 	date
-
+	-ls lib/*.so
 
 ### Configuration ###
+
 app_profile?=mobile
 app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
 app_profile_version?=2.4
