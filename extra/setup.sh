@@ -108,7 +108,6 @@ build_()
     local package="tizen-helper"
     local url="https://notabug.org/tizen/${package}"
     local branch="master"
-    branch="sandbox/pcoval/on/master/devel"
 
     ls "$package" || \
         $git clone --depth 1 -b "${branch}" "${url}"
