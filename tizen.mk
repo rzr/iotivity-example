@@ -120,3 +120,11 @@ usr/lib usr/include: usr
 
 usr:
 	ls -l $@ || ${make} rule/import
+
+dist_files?=\
+ lib Release src inc packaging docs README.md *.prop *.xml tizen.mk COPYING extra res shared \
+ .project .cproject .tproject .exportMap Makefile
+
+dist: ${dist_files}
+	${make} clean
+	zip -r9 ${project_name}.zip $^
