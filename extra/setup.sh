@@ -210,7 +210,7 @@ build_()
 
             # Checking
             package="iotivity-example"
-            url="https://notabug.org/tizen/${package}"
+            url="http://github.com/tizenteam/${package}"
             branch="tizen"
             ls "$package" || \
                 $git clone -b "${branch}" "${url}"
