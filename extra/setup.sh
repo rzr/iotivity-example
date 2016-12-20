@@ -205,7 +205,6 @@ build_()
 
     for t in $deps; do
         if [ "$t" = "mraa" ] ; then
-
             # Only for example
             package="mraa"
             branch="sandbox/pcoval/tizen"
