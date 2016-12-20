@@ -1,10 +1,11 @@
 #! /usr/bin/make -f
 
-default: local/rpm local/usr local/lib local/all
-	date
-
+rule/default: local/rpm local/usr local/lib local/all
+	-ls lib/*.so
+	@date
 
 ### Configuration ###
+
 app_profile?=mobile
 app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
 app_profile_version?=2.4
@@ -26,9 +27,9 @@ srcs+=usr
 
 
 ### Default ###
-self?=$(lastword $(MAKEFILE_LIST))
-thisdir:=$(shell dirname $(realpath ${self}))
-make=${MAKE} -f ${self}
+self?=tizen.mk
+thisdir?=$(shell dirname $(realpath ${self}))
+make?=${MAKE} -f ${self}
 export make
 MAKEFLAGS=-j1
 tmpdir?=${CURDIR}/tmp
@@ -49,6 +50,9 @@ tizen_helper_dir?=tmp/tizen-helper
 
 
 ### Rules ###
+
+%: local/%
+	@echo "# $@: $^"
 
 local/%: bootstrap
 	${make} ${@F}
@@ -105,9 +109,9 @@ rule/import: rpms
 	unp ${devel_rpm}
 	ln -fs ${rootfs}/usr/include/boost usr/include/
 	@echo "# TODO: fix this upstream"
-	#TODO might not be needed
+	@echo "# TODO: might not be needed"
 	cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||:
-	#TODO might not be needed
+	@echo "# TODO might not be needed"
 	cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||:
 	rm -rf lib
 
