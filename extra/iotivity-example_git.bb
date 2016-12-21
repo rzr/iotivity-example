@@ -24,7 +24,6 @@ RDEPENDS_${PN} += " iotivity-resource "
 
 SYSTEMD_SERVICE_${PN} = "${PN}.service"
 EXTRA_OEMAKE = " package=${PN} "
-EXTRA_OEMAKE += " config_pkgconfig=0 "
 
 do_configure() {
 }
