@@ -5,7 +5,7 @@ Minimal IoTivity example
 
 ## Usage: ##
 
-It has been tested with IoTivity 1.1.0 and later (up to 1.2.0+RC4 at least),
+It has been tested with IoTivity 1.2.0
 on various OS (Tizen, Yocto, Debian).
 
 ## Resources: ##
