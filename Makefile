@@ -133,7 +133,7 @@ run/%: ${local_bindir}/%
 	${<D}/${<F}
 
 xterm/% : ${local_bindir}/%
-	xterm -e ${MAKE} run/${@F} &
+	xterm -T "${@F}" -e ${MAKE} run/${@F} &
 	sleep 5
 
 run: xterm/server xterm/client
