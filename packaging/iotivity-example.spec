@@ -46,11 +46,13 @@ install extra/iotivity-example.service \
 
 #install -d %{buildroot}%{_unitdir}/network.target.wants
 
-
-#ln -s ../%{name}.service \
-#  %{buildroot}%{_unitdir}/network.target.wants/%{name}.service
+%if ! %{?install_service:1}
 %install_service network.target.wants %{name}.service
-
+%else
+install -d  %{buildroot}%{_unitdir}/network.target.wants/
+ln -s ../%{name}.service \
+  %{buildroot}%{_unitdir}/network.target.wants/%{name}.service
+%endif
 
 %fdupes %{buildroot}
 
