@@ -1,53 +1,60 @@
 #! /usr/bin/make -f
 
-default:all
+default: bootstrap local/all
+	date
 
-package?=iotivityexamplegeolocation
-package_name?=org.example.${package}
-arch?=armv7l
-profile?=tizen_2_4_mobile
-gbsdir?=${CURDIR}/tmp/out/iotivity-example/${profile}/tmp/gbs/tmp-GBS-${profile}_${arch}/
-gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${profile}_${arch}/"
-rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
-rpmdir="${gbsdir}/local/repos/${profile}_${arch}/${arch}/RPMS/"
-devel_rpm?=$(shell ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm)
-rpm?=$(shell ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm)
-srcs?=$(shell find src lib)
-tizen?=${HOME}/tizen-studio/tools/ide/bin/tizen
-compiler?=gcc
-arch_familly?=arm
-cert?=tizen
-build_dir?=./Debug
+project_name?=iotivityexamplegeolocation
+
+### Configuration ###
+app_profile?=mobile
+app_profile_upcase?=$(shell echo $(app_profile) | tr a-z A-Z)
+app_profile_version?=2.4
+app_profile_version_alpha?=$(shell echo ${app_profile_version} | tr '.' '_')
+tizen_studio_package?=${app_profile_upcase}-${app_profile_version}-NativeAppDevelopment-CLI
+tizen_profile?=tizen_${app_profile_version_alpha}_${app_profile}
+gbs_arch?=armv7l
+gbs_profile?=tizen_${app_profile_version_alpha}_${gbs_arch}
+#
+project_name?=iotivity-example
+app_package_exe?=iotivityexample
 package_version?=1.0.0
+app_package_name?=org.example.${app_package_exe}
+srcs+=lib
 iotivity_logo_url?=https://www.iotivity.org/sites/all/themes/iotivity/logo.png
-
-all?=shared/res/logo.png 
+all?=shared/res/logo.png
 all+=tmp/512x512.png
 all+=rpm
-
-all: ${all}
-
-icon.png: docs/logo.png Makefile
-	convert -resize 117x117! $< $@
-
-docs/screenshot.png: docs/logo.png
-	echo cp $< $@
-
-tmp/screenshot.jpg: docs/screenshot.png
-	convert $< $@
-
-tmp/117x177/%: %
-	mkdir -p ${@D}
-	convert -resize '117x117!' $< $@
+srcs+=lib
+srcs+=usr
 
 
-tmp/512x512.png: docs/logo.png
-	mkdir -p ${@D}
-	convert -resize '512x512!' $< $@
+### Default ###
+self?=$(lastword $(MAKEFILE_LIST))
+thisdir:=$(shell dirname $(realpath ${self}))
+make=${MAKE} -f ${self}
+export make
+MAKEFLAGS=-j1
+tmpdir?=${CURDIR}/tmp
+gbsdir?=${tmpdir}/out/${project_name}/${profile}/tmp/gbs/tmp-GBS-${gbs_profile}/
+gbsdir?="${HOME}/tmp/gbs/tmp-GBS-${gbs_profile}/"
+rootfs="${gbsdir}/local/BUILD-ROOTS/scratch.${arch}.0/"
+rpmdir="${gbsdir}/local/repos/${gbs_profile}/${arch}/RPMS/"
+devel_rpm?=$(shell \
+ ls ${rpmdir}/iotivity-devel-${version}*-*${arch}.rpm 2>/dev/null \
+ || echo TODO)
+rpm?=$(shell \
+ ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm 2>/dev/null\
+ || echo TODO)
+srcs?=$(shell find src lib)
 
-tmp/512x512.jpg: docs/logo.png
-	mkdir -p ${@D}
-	convert -resize '512x512!' $< $@
+tizen_helper_dir?=tmp/tizen-helper
+-include ${tizen_helper_dir}/bin/mk-tizen-app.mk
+
+
+### Rules ###
+
+local/%:
+	${make} ${@F}
 
 distclean: clean
 	rm -f *.wgt
@@ -63,35 +70,38 @@ docs/logo.jpg:
 	wget -O $@.tmp ${iotivity_logo_url}
 	convert $@.tmp $@
 
-
-docs/logo.png: docs/logo.svg
-	convert $< $@
-
-shared/res/logo.png: tmp/117x177/docs/logo.png
-	mkdir -p ${@D}
-	cp $< $@
-
-setup: rpm
-
 ${rpm}: ${rpmdir}
+	ls $@
 
 rpm: ${rpm}
 	ls -l $<
 	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 
+rpms: ${rpmdir} ${rpm} ${rpm_devel}
+
 ls:
 	ls ${rpmdir}
 	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 
-rpmdir: ${rpmdir}
 
-${rpmdir}: extra/setup.sh
-	${SHELL} -x $<
+${rpmdir}: tmp/rule/bootstrap
 
-import: ${rpm} ${rpm_devel}
-	ls .tproject 
+tmp/rule/bootstrap: extra/setup.sh
+	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
+	echo 'include ${tizen_helper_dir}/bin/mk-tizen-app.mk' > local.mk
+	mkdir -p ${@D}
+	touch $@
+
+bootstrap: tmp/rule/bootstrap
+	ls -l $<
+	@echo "# $@: done"
+	exit 0
+
+rule/import: rpms
+	ls .tproject
 	rm -rf usr lib
 	mkdir -p usr/include lib
+	rpm -qip ${rpm}
 	unp ${rpm}
 	unp ${devel_rpm}
 	ln -fs ${rootfs}/usr/include/boost usr/include/
@@ -99,30 +109,12 @@ import: ${rpm} ${rpm_devel}
 	cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||: #TODO might not be needed
 	cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||: #TODO might not be needed
 	rm -rf lib
-	ln -fs usr/lib lib
 
-
-
-build: usr/lib usr/include ${srcs}
-	@rm -rf ${build_dir}
-	${tizen} cli-config -l
-	${tizen} build-native -a ${arch_familly} -c ${compiler} -- .
-
+lib: usr/lib
+	ln -fs $< $@
 
 usr/lib usr/include: usr
+	ls -l $@
 
-usr: import
-
-run: tpk
-	ls ${build_dir}/${package_name}-${package_version}-${arch_familly}.tpk
-	${tizen} install -n ${package_name}-${package_version}-${arch_familly}.tpk -- ${build_dir}
-	${tizen} run --pkgid ${package_name} -- .
-
-check: build run
-
-
-tpk: build
-	-rm -rf usr/lib/*.a lib/*.a lib/pkgconfig bin
-	${tizen} package -t $@ -s "${cert}" -- "${build_dir}"
-	ls "${build_dir}/"*.$@
-
+usr:
+	ls -l $@ || ${make} rule/import
