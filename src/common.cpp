@@ -27,7 +27,7 @@
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 std::string Common::m_type = "line";
-std::string Common::m_endpoint = "/lineResURI";
+std::string Common::m_endpoint = "/LineResURI";
 std::string Common::m_propname = "value";
 
 int Common::m_logLevel = 0;
