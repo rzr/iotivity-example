@@ -27,12 +27,6 @@ RDEPENDS_${PN} += " iotivity-resource "
 SYSTEMD_SERVICE_${PN} = "${PN}.service"
 EXTRA_OEMAKE = " package=${PN} "
 
-EXTRA_OEMAKE += " config_pkgconfig=0 "
-# TODO: remove this workaround for iotivity-1.1.1
-EXTRA_OEMAKE += " iotivity_dir=${PKG_CONFIG_SYSROOT_DIR}/usr/include/iotivity "
-EXTRA_OEMAKE += " iotivity_out=${PKG_CONFIG_SYSROOT_DIR}/usr/include/iotivity "
-EXTRA_OEMAKE += " iotivity_cppflags=-I${PKG_CONFIG_SYSROOT_DIR}/usr/include/iotivity/resource/stack "
-
 do_configure() {
 }
 
