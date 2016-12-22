@@ -185,7 +185,7 @@ build_()
             url="http://github.com/tizenteam/${package}"
             branch="sandbox/pcoval/on/previous/tizen"
             args=" -b "${branch}""
-#           args=" $args --depth 1"
+            args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}"
             $make -C "${package}"
