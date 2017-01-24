@@ -69,9 +69,9 @@ EOF
 
 clients_()
 {
-    tls_mode=0
+    tls_mode=0 # TODO double check
 
-    #   url=137.116.207.78:5683 #@ondrejtomcik
+    # url=137.116.207.78:5683 #@ondrejtomcik
     iface=docker0
     host=$(/sbin/ifconfig $iface \
         | awk '/inet addr/{split($2,a,":"); print a[2]}' \
@@ -108,7 +108,9 @@ clients_()
             RELEASE=yes \
             TARGET_TRANSPORT=IP \
             WITH_CLOUD=yes \
-            WITH_MQ=PUB,SUB
+            WITH_MQ=PUB,SUB \
+            # SECURED=1
+        
     fi
 
     cd ./out/linux/${arch}/release/cloud/samples/client/ || exit 1
@@ -128,14 +130,15 @@ EOF
     cat $pwd/aircon_controlee-auth.sh.log
 
     pid=$?
-
-    if false ; then
+    
+    controlee=true
+    if $controlee ; then
         sleep 10
         killall aircon_controlee
 
-        uuid=$(grep "uid:" aircon_controlee-auth.sh.log \
+        uuid=$(grep "uid:" $pwd/aircon_controlee-auth.sh.log \
             | awk '{ print $2 }' )
-        token=$(grep "accesstoken:" aircon_controlee-auth.sh.log \
+        token=$(grep "accesstoken:" $pwd/aircon_controlee-auth.sh.log \
             | awk '{ print $2 }' )
 
         cat<<EOF>$pwd/aircon_controlee-control.sh
@@ -159,13 +162,14 @@ EOF
 
         sleep 10
 
-        uuid=$(grep "uid:" aircon_controller-auth.sh.log \
+        uuid=$(grep "uid:" $pwd/aircon_controller-auth.sh.log \
             | awk '{ print $2 }' )
-        token=$(grep "accesstoken:" aircon_controller-auth.sh.log \
+        token=$(grep "accesstoken:" $pwd/aircon_controller-auth.sh.log \
             | awk '{ print $2 }' )
     fi
     
-    if false ; then
+    controller=true
+    if $controler ; then
         killall aircon_controller
 
         cat<<EOF>$pwd/aircon_controller-control.sh
