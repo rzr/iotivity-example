@@ -1,84 +1,110 @@
-setup_()
+#!/bin/sh
+
+set -e
+set -x
+
+arch=$(arch)
+
+sources_()
 {
-    url=https://github.com/tizenteam/iotivity
+    sudo apt-get install git scons
+    url="https://github.com/tizenteam/iotivity"
     git clone $url 
-    cd iotivity
+}
+
+servers_()
+{
+
+    cat<<EOF
+https://docs.docker.com/compose/gettingstarted/
+EOF
+    #git.sh op rm
+    # app.sh -e docker_
+    sudo apt-get install docker-engine # upstream
+    which docker
+
+    # make 80 port free to be used
+    sudo service apache2 stop ||:
+
+    sudo service docker restart
+    sudo service docker status
+
+    sudo docker version # > 1.13
+
+    branch=sandbox/pcoval/on/cloud-interface/devel
+    git checkout $branch \
+        || git checkout -b $branch remotes/origin/$branch
+
+    ls $PWD/cloud || exit 1
+
+    cat<<EOF | tee iotivity-cloud.sh
+#!/bin/sh
+cd cloud
+sudo /usr/local/bin/docker-compose up 
+| tee "$pwd/docker-compose-up.log" \
+2>&1 
+
+EOF
+    xterm -e "bash ./iotivity-cloud.sh" &
 }
 
 
-cloud_()
+clients_()
 {
-    pwd=$PWD
-
-    server=true
-    [ "" = "$1" ] || server=false
-
-    if $server ; then
-        git checkout sandbox/pcoval/on/cloud-interface/devel
-        #git.sh op rm
-        
-        app.sh -e docker_
-        sudo apt-get install docker-engine # upstream
-        
-        sudo service apache2 stop
-        sudo service docker restart
-        sudo service docker status
-        
-        cd cloud && \
-            sudo /usr/local/bin/docker-compose up 2>&1 \
-            | tee "docker-compose-up.log"
-    fi
-
-    cd $pwd
- 
-    killall xterm ||:
-
     build=false
-    find . -iname '*controller' || build=true
-
-    build=true
+    cd $pwd/iotivity
+    find out -iname '*controller' || build=true
 
     if $build ; then
-        git.sh op rm
-        git fetch --all
-        git checkout sandbox/pcoval/on/master/upstream
-    
+        branch=sandbox/pcoval/on/master/upstream
+        git checkout $branch \
+            || git checkout -b $branch remotes/origin/$branch
+        
         rm -rfv extlibs/tinycbor/tinycbor 
         cborRevision='v0.3.2'
         cborRevision='v0.4'
         
-        git clone https://github.com/01org/tinycbor.git extlibs/tinycbor/tinycbor -b ${cborRevision}
+        git clone https://github.com/01org/tinycbor.git \
+            extlibs/tinycbor/tinycbor -b ${cborRevision}
 
-        git clone https://github.com/ARMmbed/mbedtls.git extlibs/mbedtls/mbedtls 
+        git clone https://github.com/ARMmbed/mbedtls.git \
+            extlibs/mbedtls/mbedtls 
 
         scons \
             cloud/samples/client/ \
             WITH_TCP=yes \
             RELEASE=yes \
-            TARGET_TRANSPORT=IP WITH_CLOUD=yes WITH_MQ=PUB,SUB
+            TARGET_TRANSPORT=IP \
+            WITH_CLOUD=yes \
+            WITH_MQ=PUB,SUB
     fi
 
-    auth_url='https://github.com/login?return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3Dea9c18f540323b0213d0%26redirect_uri%3Dhttp%253A%252F%252Fwww.example.com%252Foauth_callback%252F'
-    x-www-browser $auth_url
+    cd ./out/linux/${arch}/release/cloud/samples/client/ || exit 1
 
-    echo "? code from url code=?[deadbeef]"
-    read code
-
-#   url=137.116.207.78:5683 #@ondrejtomcik
+    #   url=137.116.207.78:5683 #@ondrejtomcik
     iface=docker0
     host=$(/sbin/ifconfig $iface \
         | awk '/inet addr/{split($2,a,":"); print a[2]}' \
         || echo 127.0.0.1)
     port=5683
     url=$host:$port
-
-    cd ./out/linux/x86_64/release/cloud/samples/client/
     auth=github
+    tls_mode=0
 
-    cat<<EOF>aircon_controlee-auth.sh
-./aircon_controlee $url $auth $code 2>&1 | tee "\$0.log"
+    auth_url='https://github.com/login?return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3Dea9c18f540323b0213d0%26redirect_uri%3Dhttp%253A%252F%252Fwww.example.com%252Foauth_callback%252F'
+    x-www-browser $auth_url
+
+    ./aircon_controlee
+
+    echo "? code from url code=..  just type value (ie: 02d960d841569d0da36c)"
+    read code    
+
+    cat<<EOF>$pwd/aircon_controlee-auth.sh
+./aircon_controlee $url $auth $code $tls_mode 2>&1 | tee "\$0.log"
 EOF
-    xterm -e "bash ./aircon_controlee-auth.sh" &
+    xterm -e "bash $pwd/aircon_controlee-auth.sh" &
+    sleep 10;
+    cat $pwd/aircon_controlee-auth.sh.log
 
     pid=$?
 
@@ -91,22 +117,24 @@ EOF
         token=$(grep "accesstoken:" aircon_controlee-auth.sh.log \
             | awk '{ print $2 }' )
 
-        cat<<EOF>aircon_controlee-control.sh
-./aircon_controlee $url $uuid $token 1 2>&1 | tee "\$0.log"
+        cat<<EOF>$pwd/aircon_controlee-control.sh
+set -x
+./aircon_controlee $url $uuid $token $tls_mode  2>&1 | tee "\$0.log"
 EOF
-    xterm -e "bash ./aircon_controlee-control.sh" &
-    sleep 10
-   fi
+        xterm -e "bash $pwd/aircon_controlee-control.sh" &
+        sleep 10
+    fi
 
     if true ; then
         x-www-browser "$auth_url"
-        echo "? code"
+        echo "? code again"
         read code
 
-        cat<<EOF>aircon_controller-auth.sh
-./aircon_controller $url $auth $code 2>&1 | tee "\$0.log"
+        cat<<EOF>$pwd/aircon_controller-auth.sh
+set -x
+./aircon_controller $url $auth $code $tls_mode   2>&1 | tee "\$0.log"
 EOF
-        xterm -e "$SHELL ./aircon_controller-auth.sh" &
+        xterm -e "$SHELL $pwd/aircon_controller-auth.sh" &
 
         sleep 10
 
@@ -119,34 +147,23 @@ EOF
     if false ; then
         killall aircon_controller
 
-        cat<<EOF>aircon_controller-control.sh
-./aircon_controller $url $uuid $token 1 2>&1 | tee "\$0.log"
+        cat<<EOF>$pwd/aircon_controller-control.sh
+set -x
+./aircon_controller $url $uuid $token $tls_mode  2>&1 | tee "\$0.log"
 EOF
-        xterm -e "$SHELL aircon_controller-control.sh" &
+        xterm -e "$SHELL $pwd/aircon_controller-control.sh" &
     fi
+}
 
-    exit 0
+
+build_()
+{
+    exit 1
     
     which mvn || sudo apt-get install maven
     # sudo apt-get install mongodb mongodb-dev libboost-dev
 
-# https://wiki.iotivity.org/doku.php?id=iotivity_cloud_-_programming_guide
-
-    cd ~/mnt/iotivity
-    git checkout sandbox/pcoval/on/next/tizen
-
-
-    sudo docker pull opencf/iotivity-resourcedirectory
-    sudo docker pull opencf/iotivity-accountserver
-    sudo docker pull opencf/iotivity-messagequeue
-    sudo docker pull opencf/iotivity-interface
-
-    sudo docker run opencf/iotivity-accountserver
-
-    sudo 
-    exit 0
-
-https://docs.docker.com/compose/gettingstarted/
+    # https://wiki.iotivity.org/doku.php?id=iotivity_cloud_-_programming_guide
 
 
     projectdir="$PWD"
@@ -187,7 +204,7 @@ https://docs.docker.com/compose/gettingstarted/
 
 
 
-http://www.example.com/oauth_callback/?code=c03b2439f9f3c9b23731
+    http://www.example.com/oauth_callback/?code=c03b2439f9f3c9b23731
 
     cd ${projectdir}/out/linux/${arch}/release/cloud/samples/client
     ./aircon_controlee
@@ -202,7 +219,45 @@ http://www.example.com/oauth_callback/?code=c03b2439f9f3c9b23731
     sudo chmod +x /usr/local/bin/docker-compose
 }
 
+docker_()
+{
+    exit 1;
 
-ls iotivity || setup_
-cloud_
+    cd ~/mnt/iotivity
+    git checkout sandbox/pcoval/on/next/tizen
 
+    sudo docker pull opencf/iotivity-resourcedirectory
+    sudo docker pull opencf/iotivity-accountserver
+    sudo docker pull opencf/iotivity-messagequeue
+    sudo docker pull opencf/iotivity-interface
+
+    sudo docker run opencf/iotivity-accountserver
+}
+
+pwd=$PWD
+
+main_()
+{
+killall xterm ||:
+
+sudo sync
+
+ls iotivity || sources_
+cd iotivity # && git fetch --all
+servers_
+sleep 10
+cat<<EOF
+wait servers to be started, please return once ready:
+iotivity-interface_1          | press 'q' to terminate
+
+EOF
+
+read t 
+
+clients_ 
+}
+
+
+[ "" != "$1" ] || main_
+
+$@
