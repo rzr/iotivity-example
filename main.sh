@@ -5,6 +5,21 @@ set -x
 
 arch=$(arch)
 
+
+usage_()
+{
+cat<<EOF
+https://wiki.iotivity.org/docker
+
+https://docs.docker.com/compose/gettingstarted/
+
+sudo addgroup $USER docker && su -l $USER
+
+
+EOF
+}
+
+
 sources_()
 {
     sudo apt-get install git scons
@@ -16,53 +31,70 @@ servers_()
 {
 
     cat<<EOF
-https://docs.docker.com/compose/gettingstarted/
+
 EOF
     #git.sh op rm
     # app.sh -e docker_
-    sudo apt-get install docker-engine # upstream
-    which docker
+    which docker || sudo apt-get install docker-engine # upstream
+    which docker-compose || exit 1
 
     # make 80 port free to be used
     sudo service apache2 stop ||:
 
     sudo service docker restart
     sudo service docker status
+    
+    sudo=""
+    groups | grep docker || sudo=sudo
 
-    sudo docker version # > 1.13
+    $sudo docker version # > 1.13
 
     branch=sandbox/pcoval/on/cloud-interface/devel
     git checkout $branch \
         || git checkout -b $branch remotes/origin/$branch
 
-    ls $PWD/cloud || exit 1
+    ls $pwd/iotivity/cloud/docker-compose.yml || exit 1
 
-    cat<<EOF | tee iotivity-cloud.sh
+    cat<<EOF | tee $pwd/iotivity-cloud.sh
 #!/bin/sh
-cd cloud
-sudo /usr/local/bin/docker-compose up 
+cd $pwd/iotivity/cloud
+$sudo /usr/local/bin/docker-compose up \
 | tee "$pwd/docker-compose-up.log" \
 2>&1 
 
 EOF
-    xterm -e "bash ./iotivity-cloud.sh" &
+    xterm -e "bash $pwd/iotivity-cloud.sh" &
 }
 
 
 clients_()
 {
+    tls_mode=0
+
+    #   url=137.116.207.78:5683 #@ondrejtomcik
+    iface=docker0
+    host=$(/sbin/ifconfig $iface \
+        | awk '/inet addr/{split($2,a,":"); print a[2]}' \
+        || echo 127.0.0.1)
+    port=5683
+    url=$host:$port
+    auth=github
+
+    auth_url='https://github.com/login?return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3Dea9c18f540323b0213d0%26redirect_uri%3Dhttp%253A%252F%252Fwww.example.com%252Foauth_callback%252F'
+
     build=false
     cd $pwd/iotivity
     find out -iname '*controller' || build=true
 
     if $build ; then
         branch=sandbox/pcoval/on/master/upstream
+        cborRevision='v0.3.2'
+        cborRevision='v0.4'
+
         git checkout $branch \
             || git checkout -b $branch remotes/origin/$branch
         
         rm -rfv extlibs/tinycbor/tinycbor 
-        cborRevision='v0.3.2'
-        cborRevision='v0.4'
         
         git clone https://github.com/01org/tinycbor.git \
             extlibs/tinycbor/tinycbor -b ${cborRevision}
@@ -81,17 +113,6 @@ clients_()
 
     cd ./out/linux/${arch}/release/cloud/samples/client/ || exit 1
 
-    #   url=137.116.207.78:5683 #@ondrejtomcik
-    iface=docker0
-    host=$(/sbin/ifconfig $iface \
-        | awk '/inet addr/{split($2,a,":"); print a[2]}' \
-        || echo 127.0.0.1)
-    port=5683
-    url=$host:$port
-    auth=github
-    tls_mode=0
-
-    auth_url='https://github.com/login?return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3Dea9c18f540323b0213d0%26redirect_uri%3Dhttp%253A%252F%252Fwww.example.com%252Foauth_callback%252F'
     x-www-browser $auth_url
 
     ./aircon_controlee
@@ -234,27 +255,27 @@ docker_()
     sudo docker run opencf/iotivity-accountserver
 }
 
-pwd=$PWD
+
 
 main_()
 {
-killall xterm ||:
+    pwd=$PWD
+    usage_
+    killall xterm ||:
+    
+    sudo sync
 
-sudo sync
-
-ls iotivity || sources_
-cd iotivity # && git fetch --all
-servers_
-sleep 10
-cat<<EOF
+    ls iotivity || sources_
+    cd iotivity # && git fetch --all
+    servers_
+    sleep 10
+    cat<<EOF
 wait servers to be started, please return once ready:
-iotivity-interface_1          | press 'q' to terminate
-
+# iotivity-interface_1          | press 'q' to terminate
 EOF
+    read t 
 
-read t 
-
-clients_ 
+    clients_ 
 }
 
 
