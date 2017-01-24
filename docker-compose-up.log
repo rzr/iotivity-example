@@ -1,0 +1,333 @@
+Attaching to cloud_kafka-zookeeper_1, cloud_mongodb_1, cloud_iotivity-messagequeue_1, cloud_iotivity-resourcedirectory_1, cloud_iotivity-accountserver_1, cloud_iotivity-interface_1
+[36mkafka-zookeeper_1             |[0m /usr/lib/python2.7/dist-packages/supervisor/options.py:296: UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations (including its current working directory); you probably want to specify a "-c" argument specifying an absolute path to a configuration file for improved security.
+[36mkafka-zookeeper_1             |[0m   'Supervisord is running as root and it is searching '
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] MongoDB starting : pid=1 port=27017 dbpath=/data/db 64-bit host=66634039c025
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] db version v3.4.1
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] git version: 5e103c4f5583e2566a45d740225dc250baacfbd7
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.1t  3 May 2016
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] modules: none
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] build environment:
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten]     distmod: debian81
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten]     distarch: x86_64
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.369+0000 I CONTROL  [initandlisten] options: {}
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.379+0000 I -        [initandlisten] Detected data files in /data/db created by the 'wiredTiger' storage engine, so setting the active storage engine to 'wiredTiger'.
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.379+0000 I STORAGE  [initandlisten] 
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.379+0000 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.379+0000 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+[33mmongodb_1                     |[0m 2017-01-24T17:08:19.379+0000 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=7482M,session_max=20000,eviction=(threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),checkpoint=(wait=60,log_size=2GB),statistics_log=(wait=0),
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.802+0000 I CONTROL  [initandlisten] 
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.802+0000 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.802+0000 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.802+0000 I CONTROL  [initandlisten] 
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.803+0000 I CONTROL  [initandlisten] 
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.803+0000 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.803+0000 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.803+0000 I CONTROL  [initandlisten] 
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.808+0000 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/data/db/diagnostic.data'
+[33mmongodb_1                     |[0m 2017-01-24T17:08:20.809+0000 I NETWORK  [thread1] waiting for connections on port 27017
+[33mmongodb_1                     |[0m 2017-01-24T17:08:21.761+0000 I NETWORK  [thread1] connection accepted from 172.19.0.5:50858 #1 (1 connection now open)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:21.792+0000 I NETWORK  [thread1] connection accepted from 172.19.0.5:50860 #2 (2 connections now open)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:21.800+0000 I COMMAND  [conn2] dropDatabase RD_DB starting
+[33mmongodb_1                     |[0m 2017-01-24T17:08:21.835+0000 I NETWORK  [thread1] connection accepted from 172.19.0.6:37916 #3 (3 connections now open)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:21.858+0000 I NETWORK  [thread1] connection accepted from 172.19.0.6:37918 #4 (4 connections now open)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:22.221+0000 I COMMAND  [conn2] dropDatabase RD_DB finished
+[33mmongodb_1                     |[0m 2017-01-24T17:08:22.221+0000 I COMMAND  [conn4] dropDatabase ACCOUNTSERVER_DB starting
+[33mmongodb_1                     |[0m 2017-01-24T17:08:22.221+0000 I COMMAND  [conn2] command RD_DB command: dropDatabase { dropDatabase: 1 } numYields:0 reslen:56 locks:{ Global: { acquireCount: { r: 2, w: 1, W: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 420ms
+[32miotivity-messagequeue_1       |[0m -----MQ SERVER-----log4j:WARN No appenders could be found for logger (org.iotivity.cloud.util.Log).
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,368 CRIT Supervisor running as root (no user in config file)
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,368 WARN Included extra file "/etc/supervisor/conf.d/zookeeper.conf" during parsing
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,368 WARN Included extra file "/etc/supervisor/conf.d/kafka.conf" during parsing
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,374 INFO RPC interface 'supervisor' initialized
+[32miotivity-messagequeue_1       |[0m log4j:WARN Please initialize the log4j system properly.
+[35miotivity-resourcedirectory_1  |[0m -----RD SERVER-----log4j:WARN No appenders could be found for logger (org.iotivity.cloud.util.Log).
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,374 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:19,374 INFO supervisord started with pid 1
+[34miotivity-interface_1          |[0m -----CI SERVER-------log4j:WARN No appenders could be found for logger (org.iotivity.cloud.util.Log).
+[31miotivity-accountserver_1      |[0m -----Account SERVER-----log4j:WARN No appenders could be found for logger (org.iotivity.cloud.util.Log).
+[32miotivity-messagequeue_1       |[0m 
+[35miotivity-resourcedirectory_1  |[0m 
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:20,376 INFO spawned: 'zookeeper' with pid 9
+[31miotivity-accountserver_1      |[0m log4j:WARN Please initialize the log4j system properly.
+[34miotivity-interface_1          |[0m log4j:WARN Please initialize the log4j system properly.
+[35miotivity-resourcedirectory_1  |[0m log4j:WARN Please initialize the log4j system properly.
+[34miotivity-interface_1          |[0m log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:20,376 INFO spawned: 'kafka' with pid 10
+[31miotivity-accountserver_1      |[0m 
+[32miotivity-messagequeue_1       |[0m log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+[35miotivity-resourcedirectory_1  |[0m log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+[34miotivity-interface_1          |[0m 
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:21,402 INFO success: zookeeper entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+[32miotivity-messagequeue_1       |[0m press 'q' to terminate
+[31miotivity-accountserver_1      |[0m log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:21,402 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+[35miotivity-resourcedirectory_1  |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[31miotivity-accountserver_1      |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[35miotivity-resourcedirectory_1  |[0m INFO: Cluster created with settings {hosts=[mongodb:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:22,822 INFO exited: kafka (exit status 1; not expected)
+[31miotivity-accountserver_1      |[0m INFO: Cluster created with settings {hosts=[mongodb:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=500}
+[35miotivity-resourcedirectory_1  |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[35miotivity-resourcedirectory_1  |[0m INFO: No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=mongodb:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+[35miotivity-resourcedirectory_1  |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[31miotivity-accountserver_1      |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[35miotivity-resourcedirectory_1  |[0m INFO: Opened connection [connectionId{localValue:1, serverValue:1}] to mongodb:27017
+[31miotivity-accountserver_1      |[0m INFO: No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=mongodb:27017, type=UNKNOWN, state=CONNECTING}]}. Waiting for 30000 ms before timing out
+[31miotivity-accountserver_1      |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[35miotivity-resourcedirectory_1  |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[31miotivity-accountserver_1      |[0m INFO: Opened connection [connectionId{localValue:1, serverValue:3}] to mongodb:27017
+[35miotivity-resourcedirectory_1  |[0m INFO: Monitor thread successfully connected to server with description ServerDescription{address=mongodb:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 1]}, minWireVersion=0, maxWireVersion=5, electionId=null, maxDocumentSize=16777216, roundTripTimeNanos=520544}
+[31miotivity-accountserver_1      |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[31miotivity-accountserver_1      |[0m INFO: Monitor thread successfully connected to server with description ServerDescription{address=mongodb:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[3, 4, 1]}, minWireVersion=0, maxWireVersion=5, electionId=null, maxDocumentSize=16777216, roundTripTimeNanos=653128}
+[35miotivity-resourcedirectory_1  |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[35miotivity-resourcedirectory_1  |[0m INFO: Opened connection [connectionId{localValue:2, serverValue:2}] to mongodb:27017
+[31miotivity-accountserver_1      |[0m Jan 24, 2017 5:08:21 PM com.mongodb.diagnostics.logging.JULLogger log
+[31miotivity-accountserver_1      |[0m INFO: Opened connection [connectionId{localValue:2, serverValue:4}] to mongodb:27017
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:23:157 [D] Connection to iotivity-resourcedirectory/172.19.0.5 was not successful. Retrying in 10s.
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:23,824 INFO spawned: 'kafka' with pid 321
+[33mmongodb_1                     |[0m 2017-01-24T17:08:23.907+0000 I COMMAND  [conn4] dropDatabase ACCOUNTSERVER_DB finished
+[33mmongodb_1                     |[0m 2017-01-24T17:08:23.907+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB command: dropDatabase { dropDatabase: 1 } numYields:0 reslen:67 locks:{ Global: { acquireCount: { r: 2, w: 1, W: 1 }, acquireWaitCount: { W: 1 }, timeAcquiringMicros: { W: 357076 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 2042ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:24.225+0000 I COMMAND  [conn2] command RD_DB.RD_TABLE command: create { create: "RD_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 }, acquireWaitCount: { w: 1 }, timeAcquiringMicros: { w: 1677493 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 1995ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:24.351+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.USER_TABLE command: create { create: "USER_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 434ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:24.894+0000 I COMMAND  [conn2] command RD_DB.PRESENCE_TABLE command: create { create: "PRESENCE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 668ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.128+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.TOKEN_TABLE command: create { create: "TOKEN_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 776ms
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:25,348 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.387+0000 I INDEX    [conn2] build index on: RD_DB.RD_TABLE properties: { v: 2, unique: true, key: { di: 1, ins: 1 }, name: "di_1_ins_1", ns: "RD_DB.RD_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.387+0000 I INDEX    [conn2] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.472+0000 I INDEX    [conn2] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.472+0000 I COMMAND  [conn2] command RD_DB.$cmd command: createIndexes { createIndexes: "RD_TABLE", indexes: [ { key: { di: 1, ins: 1 }, name: "di_1_ins_1", ns: "RD_DB.RD_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 569ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.605+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.GROUP_TABLE command: create { create: "GROUP_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 475ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.756+0000 I INDEX    [conn2] build index on: RD_DB.PRESENCE_TABLE properties: { v: 2, unique: true, key: { di: 1 }, name: "di_1", ns: "RD_DB.PRESENCE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.756+0000 I INDEX    [conn2] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.951+0000 I INDEX    [conn2] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:25.952+0000 I COMMAND  [conn2] command RD_DB.$cmd command: createIndexes { createIndexes: "PRESENCE_TABLE", indexes: [ { key: { di: 1 }, name: "di_1", ns: "RD_DB.PRESENCE_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 478ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:26.116+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.INVITE_TABLE command: create { create: "INVITE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 509ms
+[35miotivity-resourcedirectory_1  |[0m press 'q' to terminate
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:26,308 INFO exited: kafka (exit status 1; not expected)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:26.425+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.DEVICE_TABLE command: create { create: "DEVICE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 308ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:26.609+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.ACL_TABLE command: create { create: "ACL_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 183ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:26.894+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.ACE_TABLE command: create { create: "ACE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 283ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.069+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.ACLTEMPLATE_TABLE command: create { create: "ACLTEMPLATE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 175ms
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:27,310 INFO spawned: 'kafka' with pid 603
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.396+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.CERTIFICATE_TABLE command: create { create: "CERTIFICATE_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 325ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.747+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.CRL_TABLE command: create { create: "CRL_TABLE", capped: false } numYields:0 reslen:37 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } } } protocol:op_query 350ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.848+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.USER_TABLE properties: { v: 2, unique: true, key: { uuid: 1 }, name: "uuid_1", ns: "ACCOUNTSERVER_DB.USER_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.848+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.849+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.931+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.TOKEN_TABLE properties: { v: 2, unique: true, key: { uuid: 1, did: 1 }, name: "uuid_1_did_1", ns: "ACCOUNTSERVER_DB.TOKEN_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.931+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:27.942+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.090+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.GROUP_TABLE properties: { v: 2, unique: true, key: { gid: 1 }, name: "gid_1", ns: "ACCOUNTSERVER_DB.GROUP_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.090+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.091+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.091+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.$cmd command: createIndexes { createIndexes: "GROUP_TABLE", indexes: [ { key: { gid: 1 }, name: "gid_1", ns: "ACCOUNTSERVER_DB.GROUP_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 147ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.191+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.INVITE_TABLE properties: { v: 2, unique: true, key: { inviteUser: 1, gid: 1, invitedUser: 1 }, name: "inviteUser_1_gid_1_invitedUser_1", ns: "ACCOUNTSERVER_DB.INVITE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.191+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.192+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.292+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.DEVICE_TABLE properties: { v: 2, unique: true, key: { uuid: 1, did: 1 }, name: "uuid_1_did_1", ns: "ACCOUNTSERVER_DB.DEVICE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.292+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.292+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[36mkafka-zookeeper_1             |[0m 2017-01-24 17:08:28,311 INFO success: kafka entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.384+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.ACL_TABLE properties: { v: 2, unique: true, key: { aclid: 1 }, name: "aclid_1", ns: "ACCOUNTSERVER_DB.ACL_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.384+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.385+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.547+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.ACE_TABLE properties: { v: 2, unique: true, key: { gid: 1, di: 1, uid: 1, oid: 1, href: 1 }, name: "gid_1_di_1_uid_1_oid_1_href_1", ns: "ACCOUNTSERVER_DB.ACE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.547+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.548+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.548+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.$cmd command: createIndexes { createIndexes: "ACE_TABLE", indexes: [ { key: { gid: 1, di: 1, uid: 1, oid: 1, href: 1 }, name: "gid_1_di_1_uid_1_oid_1_href_1", ns: "ACCOUNTSERVER_DB.ACE_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 161ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.710+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.ACLTEMPLATE_TABLE properties: { v: 2, unique: true, key: { gid: 1, di: 1, uid: 1, oid: 1, href: 1 }, name: "gid_1_di_1_uid_1_oid_1_href_1", ns: "ACCOUNTSERVER_DB.ACLTEMPLATE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.710+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.711+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.711+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.$cmd command: createIndexes { createIndexes: "ACLTEMPLATE_TABLE", indexes: [ { key: { gid: 1, di: 1, uid: 1, oid: 1, href: 1 }, name: "gid_1_di_1_uid_1_oid_1_href_1", ns: "ACCOUNTSERVER_DB.ACLTEMPLATE_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 161ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.853+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.CERTIFICATE_TABLE properties: { v: 2, unique: true, key: { serialNumber: 1 }, name: "serialNumber_1", ns: "ACCOUNTSERVER_DB.CERTIFICATE_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.853+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.853+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:28.853+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.$cmd command: createIndexes { createIndexes: "CERTIFICATE_TABLE", indexes: [ { key: { serialNumber: 1 }, name: "serialNumber_1", ns: "ACCOUNTSERVER_DB.CERTIFICATE_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 140ms
+[33mmongodb_1                     |[0m 2017-01-24T17:08:29.012+0000 I INDEX    [conn4] build index on: ACCOUNTSERVER_DB.CRL_TABLE properties: { v: 2, unique: true, key: { tu: 1 }, name: "tu_1", ns: "ACCOUNTSERVER_DB.CRL_TABLE" }
+[33mmongodb_1                     |[0m 2017-01-24T17:08:29.012+0000 I INDEX    [conn4] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+[33mmongodb_1                     |[0m 2017-01-24T17:08:29.012+0000 I INDEX    [conn4] build index done.  scanned 0 total records. 0 secs
+[33mmongodb_1                     |[0m 2017-01-24T17:08:29.013+0000 I COMMAND  [conn4] command ACCOUNTSERVER_DB.$cmd command: createIndexes { createIndexes: "CRL_TABLE", indexes: [ { key: { tu: 1 }, name: "tu_1", ns: "ACCOUNTSERVER_DB.CRL_TABLE", unique: true } ] } numYields:0 reslen:113 locks:{ Global: { acquireCount: { r: 1, w: 1 } }, Database: { acquireCount: { W: 1 } }, Collection: { acquireCount: { w: 1 } } } protocol:op_query 158ms
+[31miotivity-accountserver_1      |[0m press 'q' to terminate
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:33:166 [V] 00000001-e355adc45653d305-29c00304 Connected, Address: iotivity-resourcedirectory/172.19.0.5:5684
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:33:167 [V] 00000002-c656fbc45653d308-430b99ec Connected, Address: iotivity-accountserver/172.19.0.6:5685
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:33:173 [V] 00000003-8b19bac45653d310-cb2f61db Connected, Address: iotivity-messagequeue/172.19.0.4:5686
+[32miotivity-messagequeue_1       |[0m 2017-01-24 17:08:33:209 [V] 00000001-598b1b045653d318-60fed16a Connected, Address: /172.19.0.7:44432
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:33:270 [V] 00000001-844570c45653d30b-19d1db63 Connected, Address: /172.19.0.7:50106
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:33:279 [V] 00000001-fd5651045653d313-a5a1f568 Connected, Address: /172.19.0.7:36374
+[34miotivity-interface_1          |[0m press 'q' to terminate
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:443 [V] 00000005-fdafd38f1653ef78-e496aab9 Connected, Address: /172.19.0.1:44068
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:516 [V] 00000005-fdafd38f1653ef78-e496aab9 51b2110a99a678b9 POST /oic/account SZ:93 P:�hauthcodet65b175ac2f5bd79da6b1lauthproviderfgithubbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886�
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:522 [V] 00000005-fdafd38f1653ef78-e496aab9 372d27fec5c89761 GET /oic/ping
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:523 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000000 POST /oic/account SZ:93 P:�hauthcodet65b175ac2f5bd79da6b1lauthproviderfgithubbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886�
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:722 [V] 00000005-fdafd38f1653ef78-e496aab9 372d27fec5c89761 2.05 Content SZ:16 P:�ginarray���
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:736 [V] 00000005-fdafd38f1653ef78-e496aab9 00b719c703f36e08 POST /oic/ping SZ:6 P:�bin�
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:40:745 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000000 POST /oic/account SZ:93 P:�hauthcodet65b175ac2f5bd79da6b1lauthproviderfgithubbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886�
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:40:841 [V] 00000005-fdafd38f1653ef78-e496aab9 00b719c703f36e08 2.03 Valid
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:40:850 [D] authCode: 65b175ac2f5bd79da6b1
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:40:868 [D] urls: jar:file:/iotivity/Github.jar!/
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:143 [D] access token : af94ca86c835dee9dce899c2424bc45866a946df
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:143 [D] refresh token : null
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:143 [D] expired time : -1
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:935 [D] response: {"login":"rzr","id":89133,"avatar_url":"https://avatars.githubusercontent.com/u/89133?v=3","gravatar_id":"","url":"https://api.github.com/users/rzr","html_url":"https://github.com/rzr","followers_url":"https://api.github.com/users/rzr/followers","following_url":"https://api.github.com/users/rzr/following{/other_user}","gists_url":"https://api.github.com/users/rzr/gists{/gist_id}","starred_url":"https://api.github.com/users/rzr/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/rzr/subscriptions","organizations_url":"https://api.github.com/users/rzr/orgs","repos_url":"https://api.github.com/users/rzr/repos","events_url":"https://api.github.com/users/rzr/events{/privacy}","received_events_url":"https://api.github.com/users/rzr/received_events","type":"User","site_admin":false,"name":"Phil \"RzR\" Coval","company":null,"blog":"http://rzr.online.fr/","location":null,"email":"rzr@gna.org","hireable":true,"bio":null,"public_repos":192,"public_gists":2,"followers":20,"following":51,"created_at":"2009-05-27T13:03:25Z","updated_at":"2017-01-07T12:42:46Z"}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:962 [D] user id  : rzr
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:42:981 [D] generated uuid : 11324f7d-be8a-477c-95d3-d9d15c451a55
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:000 [I] <USER_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:001 [I] [0] {provider=Github, uuid=11324f7d-be8a-477c-95d3-d9d15c451a55, userid=rzr}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:016 [I] <GROUP_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:016 [I] [0] {owner=11324f7d-be8a-477c-95d3-d9d15c451a55, rt=oic.wk.acl, gid=11324f7d-be8a-477c-95d3-d9d15c451a55, gacl=[{resources=[{rt=[], href=*, if=[oic.if.baseline]}], permission=31}], members=[11324f7d-be8a-477c-95d3-d9d15c451a55], gname=DEFAULT_GNAME, if=oic.if.baseline}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:017 [D] Group post response : {owner=11324f7d-be8a-477c-95d3-d9d15c451a55, gid=11324f7d-be8a-477c-95d3-d9d15c451a55, members=[11324f7d-be8a-477c-95d3-d9d15c451a55], gname=DEFAULT_GNAME}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:027 [I] <TOKEN_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:028 [I] [0] {provider=Github, issuedtime=201701241708, expiredtime=-1, accesstoken=af94ca86c835dee9dce899c2424bc45866a946df, uuid=11324f7d-be8a-477c-95d3-d9d15c451a55, did=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:036 [I] <ACL_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:036 [I] [0] {aclid=4add3326-65d5-43c1-b601-94082ccdfb27, di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, oid=11324f7d-be8a-477c-95d3-d9d15c451a55}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:128 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000000 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:135 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000000 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:137 [V] 00000005-fdafd38f1653ef78-e496aab9 51b2110a99a678b9 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:147 [V] 00000005-fdafd38f1653ef78-e496aab9 a13856aceece17f0 POST /oic/account/session SZ:146 P:�kaccesstokenx(af94ca86c835dee9dce899c2424bc45866a946dfbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886elog
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:158 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000001 POST /oic/account/session SZ:146 P:�kaccesstokenx(af94ca86c835dee9dce899c2424bc45866a946dfbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886elog
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:161 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000001 POST /oic/account/session SZ:146 P:�kaccesstokenx(af94ca86c835dee9dce899c2424bc45866a946dfbdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886elog
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:167 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000001 2.04 Changed SZ:13 P:�iexpiresin �
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:168 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000001 2.04 Changed SZ:13 P:�iexpiresin �
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:174 [V] 00000001-e355adc45653d305-29c00304 0000000000000000 POST /oic/prs SZ:52 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon�
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:175 [V] 00000005-fdafd38f1653ef78-e496aab9 a13856aceece17f0 2.04 Changed SZ:13 P:�iexpiresin �
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:190 [V] 00000005-fdafd38f1653ef78-e496aab9 c21817887afb76ec POST /oic/rd/?rt=oic.wk.rdpub SZ:274 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016blt Q�elinks��dhreff/oic/dbrt�hoic.wk.dtoic.d
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:249 [V] 00000001-844570c45653d30b-19d1db63 0000000000000000 POST /oic/prs SZ:52 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon�
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:255 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000002 POST /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?op=add;uid=11324f7d-be8a-477c-95d3-d9d15c451a55 SZ:50 P:�gdevices�x$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886��
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:255 [V] 00000005-fdafd38f1653ef78-e496aab9 ae03669951603091 POST /oic/rd/?rt=oic.wk.rdpub SZ:193 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016blt Q�elinks��dhrefm/sec/aircon/0brt�wx.com.s
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:258 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000003 POST /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?op=add;uid=11324f7d-be8a-477c-95d3-d9d15c451a55 SZ:50 P:�gdevices�x$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886��
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:262 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000002 POST /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?op=add;uid=11324f7d-be8a-477c-95d3-d9d15c451a55 SZ:50 P:�gdevices�x$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886��
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:302 [D] added property name: devices, values : [b56f8fba-c97c-7c5d-4fa9-6725b6ed5886] , to group : 11324f7d-be8a-477c-95d3-d9d15c451a55
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:306 [I] <GROUP_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:306 [I] [0] {owner=11324f7d-be8a-477c-95d3-d9d15c451a55, gid=11324f7d-be8a-477c-95d3-d9d15c451a55, gacl=[{resources=[{rt=[], href=*, if=[oic.if.baseline]}], permission=31}], devices=[b56f8fba-c97c-7c5d-4fa9-6725b6ed5886], members=[11324f7d-be8a-477c-95d3-d9d15c451a55], gname=DEFAULT_GNAME}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:309 [V] IN addACE
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:312 [I] <ACL_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:312 [I] [0] {aclid=4add3326-65d5-43c1-b601-94082ccdfb27, di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, oid=11324f7d-be8a-477c-95d3-d9d15c451a55, aclist=[]}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:313 [V] OUT addACE
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:314 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000002 2.04 Changed
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:315 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000003 POST /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?op=add;uid=11324f7d-be8a-477c-95d3-d9d15c451a55 SZ:50 P:�gdevices�x$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886��
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:315 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000002 2.04 Changed
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:323 [D] added property name: devices, values : [b56f8fba-c97c-7c5d-4fa9-6725b6ed5886] , to group : 11324f7d-be8a-477c-95d3-d9d15c451a55
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:329 [I] <GROUP_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:329 [I] [0] {owner=11324f7d-be8a-477c-95d3-d9d15c451a55, gid=11324f7d-be8a-477c-95d3-d9d15c451a55, gacl=[{resources=[{rt=[], href=*, if=[oic.if.baseline]}], permission=31}], devices=[b56f8fba-c97c-7c5d-4fa9-6725b6ed5886], members=[11324f7d-be8a-477c-95d3-d9d15c451a55], gname=DEFAULT_GNAME}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:08:43:331 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000003 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:341 [V] 00000001-e355adc45653d305-29c00304 0000000000000001 POST /oic/rd/?rt=oic.wk.rdpub SZ:363 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx./di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:341 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000003 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:347 [V] 00000001-e355adc45653d305-29c00304 0000000000000002 POST /oic/rd/?rt=oic.wk.rdpub SZ:239 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx5/di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:458 [I] <PRESENCE_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:458 [I] [0] {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=on}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:460 [V] 00000001-844570c45653d30b-19d1db63 0000000000000000 2.04 Changed
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:465 [V] 00000001-844570c45653d30b-19d1db63 0000000000000001 POST /oic/rd/?rt=oic.wk.rdpub SZ:363 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx./di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:465 [V] 00000001-e355adc45653d305-29c00304 0000000000000000 2.04 Changed
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:472 [D] publish payload : {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, links=[{href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, rt=[oic.wk.d, oic.d.airconditioner], if=[oic.if.baseline, oic.if.r], ins=0, type=[application/json], p={bm=1}}, {href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/p, rt=[oic.wk.p], if=[oic.if.baseline, oic.if.r], ins=0, type=[application/json], p={bm=1}}], n=FAC_2016}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:480 [I] <RD_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:481 [I] [0] {p=1, rt=[oic.wk.d, oic.d.airconditioner], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, type=[application/json], if=[oic.if.baseline, oic.if.r], n=FAC_2016, ins=1}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:487 [I] <RD_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:488 [I] [0] {p=1, rt=[oic.wk.d, oic.d.airconditioner], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, type=[application/json], if=[oic.if.baseline, oic.if.r], n=FAC_2016, ins=1}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:488 [I] [1] {p=1, rt=[oic.wk.p], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/p, type=[application/json], if=[oic.if.baseline, oic.if.r], n=FAC_2016, ins=2}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:489 [D] publish response : {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, links=[{href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, rt=[oic.wk.d, oic.d.airconditioner], if=[oic.if.baseline, oic.if.r], ins=1, type=[application/json], p={bm=1}}, {href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/p, rt=[oic.wk.p], if=[oic.if.baseline, oic.if.r], ins=2, type=[application/json], p={bm=1}}], n=FAC_2016}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:504 [V] 00000001-844570c45653d30b-19d1db63 0000000000000001 2.04 Changed SZ:363 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx./di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:506 [V] 00000001-e355adc45653d305-29c00304 0000000000000001 2.04 Changed SZ:363 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx./di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:507 [V] 00000001-844570c45653d30b-19d1db63 0000000000000002 POST /oic/rd/?rt=oic.wk.rdpub SZ:239 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx5/di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:509 [D] publish payload : {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, links=[{href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/sec/aircon/0, rt=[x.com.samsung.da.device], if=[oic.if.baseline, oic.if.b, oic.if.ll], ins=0, type=[application/json], p={bm=1}}], n=FAC_2016}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:516 [I] <RD_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:521 [I] [0] {p=1, rt=[oic.wk.d, oic.d.airconditioner], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, type=[application/json], if=[oic.if.baseline, oic.if.r], n=FAC_2016, ins=1}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:522 [I] [1] {p=1, rt=[oic.wk.p], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/p, type=[application/json], if=[oic.if.baseline, oic.if.r], n=FAC_2016, ins=2}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:522 [I] [2] {p=1, rt=[x.com.samsung.da.device], di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/sec/aircon/0, type=[application/json], if=[oic.if.baseline, oic.if.b, oic.if.ll], n=FAC_2016, ins=3}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:522 [D] publish response : {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, lt=86400, links=[{href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/sec/aircon/0, rt=[x.com.samsung.da.device], if=[oic.if.baseline, oic.if.b, oic.if.ll], ins=3, type=[application/json], p={bm=1}}], n=FAC_2016}
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:523 [V] 00000005-fdafd38f1653ef78-e496aab9 c21817887afb76ec 2.04 Changed SZ:281 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhreff/oic/dbrt�hoic.wk.dtoic.d.airconditi
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:08:43:523 [V] 00000001-844570c45653d30b-19d1db63 0000000000000002 2.04 Changed SZ:239 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx5/di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:524 [V] 00000001-e355adc45653d305-29c00304 0000000000000002 2.04 Changed SZ:239 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefx5/di/b56f8fba-c97c-7c5d-4fa9-6725b6e
+[34miotivity-interface_1          |[0m 2017-01-24 17:08:43:533 [V] 00000005-fdafd38f1653ef78-e496aab9 ae03669951603091 2.04 Changed SZ:198 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886blt Q�elinks��dhrefm/sec/aircon/0brt�xx.com.samsung.da.
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:453 [V] 00000006-ed49401946534d44-111c64da Connected, Address: /172.19.0.1:44086
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:458 [V] 00000006-ed49401946534d44-111c64da 09734f4bd539dd1d POST /oic/account SZ:93 P:�hauthcodet0d7bfea9a565390cd7a8lauthproviderfgithubbdix$cd55b396-5999-0bfa-7a52-83f04edc3087�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:462 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000004 POST /oic/account SZ:93 P:�hauthcodet0d7bfea9a565390cd7a8lauthproviderfgithubbdix$cd55b396-5999-0bfa-7a52-83f04edc3087�
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:04:464 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000004 POST /oic/account SZ:93 P:�hauthcodet0d7bfea9a565390cd7a8lauthproviderfgithubbdix$cd55b396-5999-0bfa-7a52-83f04edc3087�
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:04:465 [D] authCode: 0d7bfea9a565390cd7a8
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:04:465 [D] urls: jar:file:/iotivity/Github.jar!/
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:474 [V] 00000006-ed49401946534d44-111c64da 899767e4136aa574 GET /oic/ping
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:479 [V] 00000006-ed49401946534d44-111c64da 899767e4136aa574 2.05 Content SZ:16 P:�ginarray���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:493 [V] 00000006-ed49401946534d44-111c64da ad2742a859f3ef03 POST /oic/ping SZ:6 P:�bin�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:04:494 [V] 00000006-ed49401946534d44-111c64da ad2742a859f3ef03 2.03 Valid
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:011 [D] access token : f5999f7a9ddf78dc0819ce7ba2decb31bceb871b
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:011 [D] refresh token : null
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:011 [D] expired time : -1
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:573 [D] response: {"login":"rzr","id":89133,"avatar_url":"https://avatars.githubusercontent.com/u/89133?v=3","gravatar_id":"","url":"https://api.github.com/users/rzr","html_url":"https://github.com/rzr","followers_url":"https://api.github.com/users/rzr/followers","following_url":"https://api.github.com/users/rzr/following{/other_user}","gists_url":"https://api.github.com/users/rzr/gists{/gist_id}","starred_url":"https://api.github.com/users/rzr/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/rzr/subscriptions","organizations_url":"https://api.github.com/users/rzr/orgs","repos_url":"https://api.github.com/users/rzr/repos","events_url":"https://api.github.com/users/rzr/events{/privacy}","received_events_url":"https://api.github.com/users/rzr/received_events","type":"User","site_admin":false,"name":"Phil \"RzR\" Coval","company":null,"blog":"http://rzr.online.fr/","location":null,"email":"rzr@gna.org","hireable":true,"bio":null,"public_repos":192,"public_gists":2,"followers":20,"following":51,"created_at":"2009-05-27T13:03:25Z","updated_at":"2017-01-07T12:42:46Z"}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:573 [D] user id  : rzr
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:577 [I] <TOKEN_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:577 [I] [0] {provider=Github, issuedtime=201701241708, expiredtime=-1, accesstoken=af94ca86c835dee9dce899c2424bc45866a946df, uuid=11324f7d-be8a-477c-95d3-d9d15c451a55, did=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:578 [I] [1] {provider=Github, issuedtime=201701241709, expiredtime=-1, accesstoken=f5999f7a9ddf78dc0819ce7ba2decb31bceb871b, uuid=11324f7d-be8a-477c-95d3-d9d15c451a55, did=cd55b396-5999-0bfa-7a52-83f04edc3087}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:590 [I] <ACL_TABLE>
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:592 [I] [0] {aclid=4add3326-65d5-43c1-b601-94082ccdfb27, di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, oid=11324f7d-be8a-477c-95d3-d9d15c451a55, aclist=[]}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:592 [I] [1] {aclid=b0ce4119-c356-444a-8371-86eb7640f6a1, di=cd55b396-5999-0bfa-7a52-83f04edc3087, oid=11324f7d-be8a-477c-95d3-d9d15c451a55}
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:595 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000004 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:598 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000004 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:599 [V] 00000006-ed49401946534d44-111c64da 09734f4bd539dd1d 2.04 Changed SZ:1525 P:�iexpiresin cuidx$11324f7d-be8a-477c-95d3-d9d15c451a55kredirecturixcoap+tcp://127.0.0.1:5683kcertif
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:613 [V] 00000006-ed49401946534d44-111c64da 0dc483edf262a033 POST /oic/account/session SZ:146 P:�kaccesstokenx(f5999f7a9ddf78dc0819ce7ba2decb31bceb871bbdix$cd55b396-5999-0bfa-7a52-83f04edc3087elog
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:615 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000005 POST /oic/account/session SZ:146 P:�kaccesstokenx(f5999f7a9ddf78dc0819ce7ba2decb31bceb871bbdix$cd55b396-5999-0bfa-7a52-83f04edc3087elog
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:617 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000005 POST /oic/account/session SZ:146 P:�kaccesstokenx(f5999f7a9ddf78dc0819ce7ba2decb31bceb871bbdix$cd55b396-5999-0bfa-7a52-83f04edc3087elog
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:621 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000005 2.04 Changed SZ:13 P:�iexpiresin �
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:623 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000005 2.04 Changed SZ:13 P:�iexpiresin �
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:629 [V] 00000001-844570c45653d30b-19d1db63 0000000000000003 POST /oic/prs SZ:52 P:�bdix$cd55b396-5999-0bfa-7a52-83f04edc3087estatebon�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:627 [V] 00000001-e355adc45653d305-29c00304 0000000000000003 POST /oic/prs SZ:52 P:�bdix$cd55b396-5999-0bfa-7a52-83f04edc3087estatebon�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:628 [V] 00000006-ed49401946534d44-111c64da 0dc483edf262a033 2.04 Changed SZ:13 P:�iexpiresin �
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:635 [I] <PRESENCE_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:635 [I] [0] {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=on}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:635 [I] [1] {di=cd55b396-5999-0bfa-7a52-83f04edc3087, state=on}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:636 [V] 00000001-844570c45653d30b-19d1db63 0000000000000003 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:637 [V] 00000001-e355adc45653d305-29c00304 0000000000000003 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:644 [V] 00000006-ed49401946534d44-111c64da cf79c9f005db1f6f GET /oic/res/?rt=oic.wk.d
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:646 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000006 GET /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?uid=11324f7d-be8a-477c-95d3-d9d15c451a55;members=11324f7d-be8a-477c-95d3-d9d15c451a55;rt=oic.wk.d
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:647 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000006 GET /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?uid=11324f7d-be8a-477c-95d3-d9d15c451a55;members=11324f7d-be8a-477c-95d3-d9d15c451a55;rt=oic.wk.d
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:654 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000006 2.05 Content SZ:273 P:�eownerx$11324f7d-be8a-477c-95d3-d9d15c451a55cgidx$11324f7d-be8a-477c-95d3-d9d15c451a55dgacl��iresou
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:656 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000006 2.05 Content SZ:273 P:�eownerx$11324f7d-be8a-477c-95d3-d9d15c451a55cgidx$11324f7d-be8a-477c-95d3-d9d15c451a55dgacl��iresou
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:660 [V] 00000001-e355adc45653d305-29c00304 0000000000000004 GET /oic/res/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886;rt=oic.wk.d
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:661 [V] 00000001-844570c45653d30b-19d1db63 0000000000000004 GET /oic/res/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886;rt=oic.wk.d
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:666 [D] discovery payload : [{di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, n=FAC_2016, links=[{p={bm=1}, rt=[oic.wk.d, oic.d.airconditioner], href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, if=[oic.if.baseline, oic.if.r]}]}]
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:668 [V] 00000001-844570c45653d30b-19d1db63 0000000000000004 2.05 Content SZ:192 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:669 [V] 00000001-e355adc45653d305-29c00304 0000000000000004 2.05 Content SZ:192 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:670 [V] 00000006-ed49401946534d44-111c64da cf79c9f005db1f6f 2.05 Content SZ:192 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:674 [V] 00000006-ed49401946534d44-111c64da 130861fdb5222e8b GET /oic/res/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:675 [V] 00000001-e355adc45653d305-29c00304 0000000000000005 GET /oic/res/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:677 [V] 00000001-844570c45653d30b-19d1db63 0000000000000005 GET /oic/res/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:680 [D] discovery payload : [{di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, n=FAC_2016, links=[{p={bm=1}, rt=[oic.wk.d, oic.d.airconditioner], href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/d, if=[oic.if.baseline, oic.if.r]}, {p={bm=1}, rt=[oic.wk.p], href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/oic/p, if=[oic.if.baseline, oic.if.r]}, {p={bm=1}, rt=[x.com.samsung.da.device], href=/di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/sec/aircon/0, if=[oic.if.baseline, oic.if.b, oic.if.ll]}]}]
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:680 [V] 00000001-844570c45653d30b-19d1db63 0000000000000005 2.05 Content SZ:439 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:682 [V] 00000001-e355adc45653d305-29c00304 0000000000000005 2.05 Content SZ:439 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:683 [V] 00000006-ed49401946534d44-111c64da 130861fdb5222e8b 2.05 Content SZ:439 P:��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886anhFAC_2016elinks��ap�bbm�brt�hoic.wk.dtoic.d.airconditi
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:684 [V] 00000006-ed49401946534d44-111c64da 25d44c6b3080027d GET OBSERVE /oic/prs/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:686 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000007 GET /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?uid=11324f7d-be8a-477c-95d3-d9d15c451a55;members=11324f7d-be8a-477c-95d3-d9d15c451a55;di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:687 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000007 GET /oic/acl/group/11324f7d-be8a-477c-95d3-d9d15c451a55/?uid=11324f7d-be8a-477c-95d3-d9d15c451a55;members=11324f7d-be8a-477c-95d3-d9d15c451a55;di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:691 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000007 2.05 Content SZ:273 P:�eownerx$11324f7d-be8a-477c-95d3-d9d15c451a55cgidx$11324f7d-be8a-477c-95d3-d9d15c451a55dgacl��iresou
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:692 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000007 2.05 Content SZ:273 P:�eownerx$11324f7d-be8a-477c-95d3-d9d15c451a55cgidx$11324f7d-be8a-477c-95d3-d9d15c451a55dgacl��iresou
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:696 [V] 00000001-e355adc45653d305-29c00304 0000000000000006 GET OBSERVE /oic/prs/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:701 [V] 00000001-844570c45653d30b-19d1db63 0000000000000006 GET OBSERVE /oic/prs/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:704 [I] Device presence observe response : {prslist=[{di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=on}]}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:05:707 [V] 00000001-844570c45653d30b-19d1db63 0000000000000006 2.05 Content OBSERVE SZ:64 P:�gprslist��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:709 [V] 00000001-e355adc45653d305-29c00304 0000000000000006 2.05 Content OBSERVE SZ:64 P:�gprslist��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:718 [V] 00000006-ed49401946534d44-111c64da 25d44c6b3080027d 2.05 Content OBSERVE SZ:64 P:�gprslist��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:719 [V] 00000006-ed49401946534d44-111c64da 3a0d8c1b00fa2546 GET /di/b56f8fba-c97c-7c5d-4fa9-6725b6ed5886/sec/aircon/0/?if=oic.if.ll
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:723 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000008 GET /oic/acl/verify/?sid=11324f7d-be8a-477c-95d3-d9d15c451a55;di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886;rm=GET;uri=/sec/aircon/0
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:724 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000008 GET /oic/acl/verify/?sid=11324f7d-be8a-477c-95d3-d9d15c451a55;di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886;rm=GET;uri=/sec/aircon/0
+[31miotivity-accountserver_1      |[0m 2017-01-24 17:09:05:727 [V] 00000001-fd5651045653d313-a5a1f568 0000000000000008 2.05 Content SZ:13 P:�bgpgAllowed�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:05:729 [V] 00000002-c656fbc45653d308-430b99ec 0000000000000008 2.05 Content SZ:13 P:�bgpgAllowed�
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:31:272 [V] 00000006-ed49401946534d44-111c64da Disconnected, Address: /172.19.0.1:44086
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:31:286 [V] 00000001-e355adc45653d305-29c00304 0000000000000007 POST /oic/prs SZ:53 P:�bdix$cd55b396-5999-0bfa-7a52-83f04edc3087estatecoff�
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:288 [V] 00000001-844570c45653d30b-19d1db63 0000000000000007 POST /oic/prs SZ:53 P:�bdix$cd55b396-5999-0bfa-7a52-83f04edc3087estatecoff�
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:291 [I] <PRESENCE_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:291 [I] [0] {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=on}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:291 [I] [1] {di=cd55b396-5999-0bfa-7a52-83f04edc3087, state=off}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:292 [V] 00000001-844570c45653d30b-19d1db63 0000000000000007 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:31:297 [V] 00000001-e355adc45653d305-29c00304 0000000000000006 GET OBSERVE CANCEL /oic/prs/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:299 [V] 00000001-844570c45653d30b-19d1db63 0000000000000006 GET OBSERVE CANCEL /oic/prs/?di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:31:298 [V] 00000001-e355adc45653d305-29c00304 0000000000000007 2.04 Changed
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:306 [I] Device presence observe response : {prslist=[{di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=on}]}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:31:308 [V] 00000001-844570c45653d30b-19d1db63 0000000000000006 2.05 Content SZ:64 P:�gprslist��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:31:311 [V] 00000001-e355adc45653d305-29c00304 0000000000000006 2.05 Content SZ:64 P:�gprslist��bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatebon���
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:32:819 [V] 00000005-fdafd38f1653ef78-e496aab9 Disconnected, Address: /172.19.0.1:44068
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:32:821 [V] 00000001-e355adc45653d305-29c00304 0000000000000008 POST /oic/prs SZ:53 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatecoff�
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:823 [V] 00000001-844570c45653d30b-19d1db63 0000000000000008 POST /oic/prs SZ:53 P:�bdix$b56f8fba-c97c-7c5d-4fa9-6725b6ed5886estatecoff�
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:833 [I] <PRESENCE_TABLE>
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:835 [I] [0] {di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=off}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:836 [I] [1] {di=cd55b396-5999-0bfa-7a52-83f04edc3087, state=off}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:838 [I] Device presence observe response : {prslist=[{di=b56f8fba-c97c-7c5d-4fa9-6725b6ed5886, state=off}]}
+[35miotivity-resourcedirectory_1  |[0m 2017-01-24 17:09:32:840 [V] 00000001-844570c45653d30b-19d1db63 0000000000000008 2.04 Changed
+[34miotivity-interface_1          |[0m 2017-01-24 17:09:32:846 [V] 00000001-e355adc45653d305-29c00304 0000000000000008 2.04 Changed
