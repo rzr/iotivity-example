@@ -82,9 +82,9 @@ install: ${all}
 	install README.md ${install_dir}
 
 
-#iotivity_out:
-#	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
-#	@echo "# $@: $^"
+iotivity_out:
+	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
+	@echo "# $@: $^"
 
 demo/kill: bin/server bin/client
 	-killall ${^F}
