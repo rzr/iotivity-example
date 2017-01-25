@@ -60,7 +60,6 @@ OCStackApplicationResult handleResponse(void *ctx,
                                         OCDoHandle handle,
                                         OCClientResponse *clientResponse)
 {
-    LOGf("%ld {", gProperties.value);
     OCStackApplicationResult result = OC_STACK_DELETE_TRANSACTION;
 
     if (!clientResponse)
@@ -75,30 +74,12 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropInt(payload, "value", &(gProperties.value)))
-    {
-        LOGf("%ld (error)", gProperties.value);
-    }
-#if 1
-    if (!OCRepPayloadGetPropDouble(payload, "lat", &gProperties.lat))
-    {
-        LOGf("%f (error)", gProperties.lat);
-    }
-    if (!OCRepPayloadGetPropDouble(payload, "lon", &gProperties.lon))
-    {
-        LOGf("%f (error)", gProperties.lon);
-    }
     if (!OCRepPayloadGetPropInt(payload, "illuminance", &gProperties.illuminance))
     {
-        LOGf("%f (error)", gProperties.illuminance);
+        LOGf("%ld (error)", gProperties.illuminance);
     }
-#endif
-    printf("%ld\n", gProperties.value);
-    printf("%f\n", gProperties.lat);
-    printf("%f\n", gProperties.lon);
 
-    LOGf("%ld }", gProperties.value);
-    LOGf("%d }", gProperties.illuminance);
+    LOGf("%ld=", gProperties.illuminance);
 
     return OC_STACK_KEEP_TRANSACTION;
 }
@@ -107,14 +88,12 @@ OCStackApplicationResult onObserve(void* ctx,
                                    OCDoHandle handle,
                                    OCClientResponse * clientResponse)
 {
-    LOGf("%ld {", gProperties.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
     LOGf("%p", clientResponse);
     result = handleResponse(ctx, handle, clientResponse);
 
     LOGf("%d", result);
-    LOGf("%ld }", gProperties.value);
 
     return result;
 }
@@ -180,7 +159,7 @@ OCStackApplicationResult onDiscover(void *ctx,
 OCStackResult client_loop()
 {
     OCStackResult result;
-    LOGf("%ld (iterate)", gProperties.value);
+    LOGf("%ld (iterate)", gProperties.illuminance);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
