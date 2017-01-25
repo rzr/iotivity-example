@@ -31,6 +31,10 @@
 #define HAVE_STDIO_H 1
 #endif
 
+#ifdef ARDUINO
+#undef HAVE_UNISTD_H
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else
@@ -62,13 +66,13 @@ static const char *gName = "oic.r.geolocation";
 static const char *gUri = "/GeolocationResURI";
 static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
-static OCQualityOfService gQos = OC_LOW_QOS;
+static OCQualityOfService gQos = OC_HIGH_QOS;
 
 
 typedef struct GEOLOCATIONRESOURCE
 {
     OCResourceHandle handle;
-    bool value;
+    int value;
     double lat;
     double lon;
 } GeolocationResource;
