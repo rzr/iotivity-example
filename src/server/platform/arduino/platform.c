@@ -122,10 +122,12 @@ int setup_network()
         { CONFIG_MAC_1, CONFIG_MAC_2, CONFIG_MAC_3,
           CONFIG_MAC_4, CONFIG_MAC_5, CONFIG_MAC_6};
     uint8_t error = Ethernet.begin(ETHERNET_MAC);
+
     if (error == 0)
     {
         LOGf("%s",__FUNCTION__);
-        return -1;
+        if (false) blink(9);
+        //return -1; //TODO check
     }
 
     if (false) {
@@ -156,18 +158,18 @@ void platform_setup()
         pinMode(gGpio, OUTPUT);
         LOGf("%d",gGpio);
 
-        if (!false) blink(1);
+        if (false) blink(1);
 
 #ifdef CONFIG_ARDUINOSERIAL
         Serial.begin(115200);
         LOGf("%d",gGpio);
 #endif
-        if (!false) blink(2);
+        if (false) blink(2);
         if (true)
         {
             setup_network();
         }
-        if (!false) blink(3);
+        if (false) blink(3);
         platform_log("1");
     }
     delay(4*gDelay);
@@ -178,7 +180,7 @@ void setup()
 {
     platform_setup();
     server_setup();
-    if (!false) blink(4);
+    if (false) blink(4);
 }
 
 
