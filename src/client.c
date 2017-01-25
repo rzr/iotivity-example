@@ -107,9 +107,9 @@ OCStackApplicationResult handleResponse(void *ctx,
     {
         LOGf("%f (error)", gGeolocation.lon);
     }
-    if (!OCRepPayloadGetPropInt(payload, "temperature", &gGeolocation.temperature))
+    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gGeolocation.illuminance))
     {
-        LOGf("%f (error)", gGeolocation.temperature);
+        LOGf("%f (error)", gGeolocation.illuminance);
     }
 #endif
     printf("%ld\n", gGeolocation.value);
@@ -117,7 +117,7 @@ OCStackApplicationResult handleResponse(void *ctx,
     printf("%f\n", gGeolocation.lon);
 
     LOGf("%ld }", gGeolocation.value);
-    LOGf("%d }", gGeolocation.temperature);
+    LOGf("%d }", gGeolocation.illuminance);
     return OC_STACK_DELETE_TRANSACTION;
 }
 
