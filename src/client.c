@@ -55,31 +55,12 @@ unsigned int gDiscovered = 0;
 static OCDevAddr gDestination;
 int gObversable= 1;
 
-#if 0
-OCRepPayload *createPayload()
-{
-    OCRepPayload *payload = OCRepPayloadCreate();
-
-    LOGf("%p", payload);
-    if (!payload)
-    {
-        exit(1);
-    }
-
-    LOGf("%d (changing)", gGeolocation.value);
-    OCRepPayloadSetPropBool(payload, "value", gGeolocation.value);
-
-    LOGf("%d", gGeolocation.value);
-    return payload;
-}
-#endif
-
 
 OCStackApplicationResult handleResponse(void *ctx,
                                         OCDoHandle handle,
                                         OCClientResponse *clientResponse)
 {
-    LOGf("%ld {", gGeolocation.value);
+    LOGf("%ld {", gProperties.value);
     OCStackApplicationResult result = OC_STACK_DELETE_TRANSACTION;
 
     if (!clientResponse)
@@ -94,132 +75,48 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropInt(payload, "value", &(gGeolocation.value)))
+    if (!OCRepPayloadGetPropInt(payload, "value", &(gProperties.value)))
     {
-        LOGf("%ld (error)", gGeolocation.value);
+        LOGf("%ld (error)", gProperties.value);
     }
 #if 1
-    if (!OCRepPayloadGetPropDouble(payload, "lat", &gGeolocation.lat))
+    if (!OCRepPayloadGetPropDouble(payload, "lat", &gProperties.lat))
     {
-        LOGf("%f (error)", gGeolocation.lat);
+        LOGf("%f (error)", gProperties.lat);
     }
-    if (!OCRepPayloadGetPropDouble(payload, "lon", &gGeolocation.lon))
+    if (!OCRepPayloadGetPropDouble(payload, "lon", &gProperties.lon))
     {
-        LOGf("%f (error)", gGeolocation.lon);
+        LOGf("%f (error)", gProperties.lon);
     }
-    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gGeolocation.illuminance))
+    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gProperties.illuminance))
     {
-        LOGf("%f (error)", gGeolocation.illuminance);
+        LOGf("%f (error)", gProperties.illuminance);
     }
 #endif
-    printf("%ld\n", gGeolocation.value);
-    printf("%f\n", gGeolocation.lat);
-    printf("%f\n", gGeolocation.lon);
+    printf("%ld\n", gProperties.value);
+    printf("%f\n", gProperties.lat);
+    printf("%f\n", gProperties.lon);
 
-    LOGf("%ld }", gGeolocation.value);
-    LOGf("%d }", gGeolocation.illuminance);
-    return OC_STACK_DELETE_TRANSACTION;
+    LOGf("%ld }", gProperties.value);
+    LOGf("%d }", gProperties.illuminance);
+
+    return OC_STACK_KEEP_TRANSACTION;
 }
-
-
-#if 0
-
-OCStackApplicationResult onGet(void *ctx,
-                               OCDoHandle handle,
-                               OCClientResponse *clientResponse)
-{
-    LOGf("%d {", gGeolocation.value);
-    OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
-
-    LOGf("%p", clientResponse);
-    if (!true)
-        result = handleResponse(ctx, handle, clientResponse);
-    if (result != OC_STACK_OK)
-    {
-        LOGf("%d (error)", result);
-    }
-    LOGf("%d }", gGeolocation.value);
-    return OC_STACK_DELETE_TRANSACTION;
-}
-
-
-OCStackResult get()
-{
-    LOGf("%d {", gGeolocation.value);
-    OCStackResult result = OC_STACK_OK;
-    OCMethod method = OC_REST_GET;
-    OCRepPayload *payload = NULL;
-    OCCallbackData callback = {NULL, NULL, NULL};
-    callback.cb = onGet;
-
-    result = OCDoResource(&gGeolocation.handle, method, gUri, &gDestination,
-                          (OCPayload *) payload,
-                          gConnectivityType, gQos, &callback, NULL, 0);
-
-    if (result != OC_STACK_OK)
-    {
-        LOGf("%d", result);
-    }
-    LOGf("%d }", gGeolocation.value);
-    return result;
-}
-
-
-OCStackApplicationResult onPost(void *ctx,
-                                OCDoHandle handle,
-                                OCClientResponse *clientResponse)
-{
-    LOGf("%d {", gGeolocation.value);
-    OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
-
-    LOGf("%p", clientResponse);
-    result = handleResponse(ctx, handle, clientResponse);
-
-    LOGf("%d", result);
-    LOGf("%d }", gGeolocation.value);
-    return OC_STACK_DELETE_TRANSACTION;
-}
-
-
-OCStackResult post()
-{
-    LOGf("%d {", gGeolocation.value);
-    OCStackResult result = OC_STACK_OK;
-    OCMethod method = OC_REST_POST;
-    OCRepPayload *payload = NULL;
-    OCCallbackData callback = {NULL, NULL, NULL};
-    callback.cb = onPost;
-
-    LOGf("%d", gGeolocation.value);
-    gGeolocation.value = !gGeolocation.value;
-    payload = createPayload();
-
-    result = OCDoResource(&gGeolocation.handle, method, gUri, &gDestination,
-                          (OCPayload *) payload,
-                          gConnectivityType, gQos, &callback, NULL, 0);
-
-    if (result != OC_STACK_OK)
-    {
-        LOGf("%d", result);
-    }
-    LOGf("%d }", gGeolocation.value);
-    return result;
-}
-#endif
 
 OCStackApplicationResult onObserve(void* ctx, 
-                                       OCDoHandle handle,
-                                       OCClientResponse * clientResponse)
+                                   OCDoHandle handle,
+                                   OCClientResponse * clientResponse)
 {
-    LOGf("%ld {", gGeolocation.value);
+    LOGf("%ld {", gProperties.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
     LOGf("%p", clientResponse);
     result = handleResponse(ctx, handle, clientResponse);
 
     LOGf("%d", result);
-    LOGf("%ld }", gGeolocation.value);
-    return OC_STACK_KEEP_TRANSACTION;
+    LOGf("%ld }", gProperties.value);
+
+    return result;
 }
 
 // This is a function called back when a device is discovered
@@ -261,13 +158,13 @@ OCStackApplicationResult onDiscover(void *ctx,
                 gDestination = clientResponse->devAddr;
                 LOGf("%s", gDestination.addr);
                 gConnectivityType = clientResponse->connType;
-                gGeolocation.handle = handle;
+                gProperties.handle = handle;
                 if (gObversable)
                 {
                     OCCallbackData callback = {NULL, NULL, NULL};
                     callback.cb = onObserve;
                     OCStackResult ret;
-                    ret = OCDoResource(&gGeolocation.handle, OC_REST_OBSERVE,
+                    ret = OCDoResource(&gProperties.handle, OC_REST_OBSERVE,
                                        gUri, &gDestination, NULL,
                                        gConnectivityType, gQos, &callback, NULL, 0);
                 }
@@ -280,11 +177,10 @@ OCStackApplicationResult onDiscover(void *ctx,
 }
 
 
-
 OCStackResult client_loop()
 {
     OCStackResult result;
-    LOGf("%ld (iterate)", gGeolocation.value);
+    LOGf("%ld (iterate)", gProperties.value);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
@@ -292,21 +188,6 @@ OCStackResult client_loop()
         LOGf("%d (error)", result);
         return result;
     }
-#if 0 
-    static int once = 1;
-    if (gDiscovered && once-- > 0)
-    {
-        sleep(4 * gDelay);
-        result = post();
-        LOGf("%d (post)", result);
-    }
-    int c = 0;
-    if (gDiscovered && ((c = kbhit()) > 0))
-    {
-        LOGf("%d (post on kbhit)", c);
-        result = post();
-    }
-#endif
     sleep(gDelay);
     LOGf("%d", gOver);
     return result;
@@ -320,7 +201,7 @@ OCStackResult client_setup()
     static int gInit = 0;
     if (gInit++ == 0)
     {
-        result = OCInit1(OC_CLIENT, // or OC_CLIENT_SERVER,
+        result = OCInit1(OC_CLIENT_SERVER,
                          OC_DEFAULT_FLAGS, OC_DEFAULT_FLAGS);
 
         if (result != OC_STACK_OK)
@@ -358,7 +239,7 @@ OCStackResult client_setup()
             LOGf("%d (error)", result);
         }
 
-        sleep(gDelay/2);
+        sleep(gDelay);
     }
     LOGf("%d", result);
     return result;
