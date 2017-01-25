@@ -62,8 +62,8 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     {
         exit(1);
     }
-    //OCRepPayloadAddResourceType(payload, gIface);
-    //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
+    //OCRepPayloadAddResourceType(payload, gName);
+    //OCRepPayloadAddInterface(payload, gIface);
 
     LOGf("%ld (payload)", gGeolocation.value);
     OCRepPayloadSetPropInt(payload, "value", gGeolocation.value);
@@ -150,7 +150,7 @@ OCStackResult createGeolocationResource()
     LOGf("%d", result);
     return result;
 }
-#include <Arduino.h>
+//#include <Arduino.h>
 
 
 OCStackResult server_loop()
@@ -158,7 +158,7 @@ OCStackResult server_loop()
     LOGf("%ld (iterate)", gGeolocation.value);
     OCStackResult result = OC_STACK_ERROR;
 
-    if ( gGeolocation.value % 10 == 0)
+    if ( gGeolocation.value++ % 10 == 0)
     {
         static double m_lat = 48.1033; //TODO check double on atmega
         static double m_lon = -1.6725;
@@ -177,10 +177,10 @@ OCStackResult server_loop()
         {
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
-        gGeolocation.lat = m_lat;
-        //    gGeolocation.lon = m_lon;
+        //gGeolocation.lat = m_lat;
         gGeolocation.lat++;
-        gGeolocation.value++;
+        gGeolocation.lon = m_lon;
+
         gGeolocation.illuminance = platform_getValue();
 
         OCRepPayload* payload = NULL;
@@ -190,7 +190,6 @@ OCStackResult server_loop()
         result = OCNotifyAllObservers(gGeolocation.handle, gQos);
         //postResourceRepresentation();
         OCRepPayloadDestroy(payload);
-
     }
 
     result = OCProcess();
