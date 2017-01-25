@@ -32,4 +32,8 @@
 #CPPFLAGS+=-DCONFIG_MAC_6=0xED
 
 USER?=$(shell echo '${USER}' || echo default)
+
+#TODO
+scons_flags+=ARDUINO_HOME=/usr/local/opt/arduino-1.5.8
+
 -include config-user-${USER}.mk
