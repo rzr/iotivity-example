@@ -37,17 +37,17 @@ OCStackResult server_finish();
 void platform_log(char const *);
 void platform_setup();
 void platform_loop();
-void platform_setValue(bool value);
+void platform_setValue(int value);
 
 OCStackResult createGeolocationResource();
 
 
-OCStackResult setValue(bool value)
+OCStackResult setValue(int value)
 {
     OCStackResult result;
     LOGf("%d", value);
     gGeolocation.value = value;
-    platform_setValue(gGeolocation.value);
+    platform_setValue(gGeolocation.value%2);
     result = OCNotifyAllObservers(gGeolocation.handle, gQos);
     return result;
 }
@@ -65,10 +65,9 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
 
     LOGf("%d (payload)", gGeolocation.value);
-    OCRepPayloadSetPropBool(payload, "value", gGeolocation.value);
-    OCRepPayloadSetPropBool(payload, "lat", gGeolocation.lat);
-    OCRepPayloadSetPropBool(payload, "lon", gGeolocation.lon);
-
+    OCRepPayloadSetPropInt(payload, "value", gGeolocation.value);
+    OCRepPayloadSetPropDouble(payload, "lat", gGeolocation.lat);
+    OCRepPayloadSetPropDouble(payload, "lon", gGeolocation.lon);
 
     return payload;
 }
@@ -93,6 +92,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         OCRepPayload* input = NULL;
         switch (entityHandlerRequest->method)
         {
+#if 0
         case OC_REST_POST:
         case OC_REST_PUT:
             input = (OCRepPayload*) entityHandlerRequest->payload;
@@ -100,6 +100,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
             LOGf("%d (update)", gGeolocation.value);
             res = setValue(gGeolocation.value);
             break;
+#endif
         case OC_REST_GET:
             OCRepPayloadSetUri(payload, gUri);
             payload = OCRepPayloadCreate();
@@ -186,7 +187,7 @@ OCStackResult server_loop()
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
         updatePayload(payload);
-        gGeolocation.value = ! gGeolocation.value;
+        gGeolocation.value++;
 
 
         result = OCNotifyAllObservers(gGeolocation.handle, gQos);
@@ -202,9 +203,9 @@ OCStackResult server_loop()
         return result;
     }
 
-    sleep(gDelay);
-    static int count=0;
-    if (++count > 40) { gOver = true;}
+    sleep(gDelay*2);
+
+    //static int count=0; if (++count > 20) { gOver = true;}
 
     return result;
 }
