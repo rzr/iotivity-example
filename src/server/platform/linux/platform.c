@@ -93,6 +93,12 @@ void platform_setValue(bool value)
 #endif
 }
 
+int platform_getValue()
+{
+    static int value=0;
+
+    return value++;
+}
 
 void onSignal(int signum)
 {
