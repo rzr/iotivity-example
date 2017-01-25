@@ -47,7 +47,7 @@ OCStackResult setValue(int value)
     OCStackResult result;
     LOGf("%d", value);
     gGeolocation.value = value;
-    platform_setValue(gGeolocation.value%2);
+    platform_setValue( (bool) (gGeolocation.value%2));
     result = OCNotifyAllObservers(gGeolocation.handle, gQos);
     return result;
 }
@@ -64,10 +64,11 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     //OCRepPayloadAddResourceType(payload, gIface);
     //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
 
-    LOGf("%d (payload)", gGeolocation.value);
+    LOGf("%ld (payload)", gGeolocation.value);
     OCRepPayloadSetPropInt(payload, "value", gGeolocation.value);
     OCRepPayloadSetPropDouble(payload, "lat", gGeolocation.lat);
     OCRepPayloadSetPropDouble(payload, "lon", gGeolocation.lon);
+    OCRepPayloadSetPropString(payload, "line", "TODO");
 
     return payload;
 }
@@ -84,7 +85,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
     memset(&response,0,sizeof response);
 
     LOGf("%p", entityHandlerRequest);
-    LOGf("%d (current)", gGeolocation.value);
+    LOGf("%ld (current)", gGeolocation.value);
 
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
@@ -160,12 +161,11 @@ OCStackResult createGeolocationResource()
 
 OCStackResult server_loop()
 {
-    LOGf("%d (iterate)", gGeolocation.value);
+    LOGf("%ld (iterate)", gGeolocation.value);
     OCStackResult result = OC_STACK_ERROR;
 
 
     {
-        
         static double m_lat = 48.1033;
         static double m_lon = -1.6725;
         static double m_offset = 0.001;
@@ -183,12 +183,14 @@ OCStackResult server_loop()
         {
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
+//        gGeolocation.lat = m_lat;
+        //      gGeolocation.lon = m_lon;
+        gGeolocation.lat++;
+        gGeolocation.value++;
 
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
         updatePayload(payload);
-        gGeolocation.value++;
-
 
         result = OCNotifyAllObservers(gGeolocation.handle, gQos);
         //postResourceRepresentation();
