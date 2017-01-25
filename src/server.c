@@ -37,7 +37,6 @@ OCStackResult server_finish();
 void platform_log(char const *);
 void platform_setup();
 void platform_loop();
-void platform_setValue(int value);
 int platform_getValue();
 
 OCStackResult createGeolocationResource();
@@ -51,7 +50,7 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     {
         exit(1);
     }
-    OCRepPayloadSetPropInt(payload, "illuminance", gProperties.illuminance);
+    OCRepPayloadSetPropInt(payload, "illuminance", gProperties.value);
 
     return payload;
 }
@@ -76,15 +75,15 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         switch (entityHandlerRequest->method)
         {
         case OC_REST_GET:
-            OCRepPayloadSetUri(payload, gUri);
             payload = OCRepPayloadCreate();
+            OCRepPayloadSetUri(payload, gUri);
             payload = updatePayload(payload);
             break;
         default:
             break;
         }
-        //if (payload == 0 ) 
-        //  payload = OCRepPayloadCreate();
+        if (payload == 0 ) 
+            payload = OCRepPayloadCreate();
     
         //if (!payload)
         //{
@@ -131,14 +130,13 @@ OCStackResult createGeolocationResource()
     LOGf("%d", result);
     return result;
 }
-//#include <Arduino.h>
 
 
 OCStackResult server_loop()
 {
     OCStackResult result = OC_STACK_ERROR;
     {
-        gProperties.illuminance = platform_getValue();
+        gProperties.value = platform_getValue();
 
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
@@ -154,13 +152,7 @@ OCStackResult server_loop()
         LOGf("%d (error)", result);
         return result;
     }
-//#ifdef ARDUINO
-//    delay(100);
-//#else
     sleep(gDelay);
-//#endif
-    //static int count=0; if (++count > 20) { gOver = true;}
-
     return result;
 }
 
