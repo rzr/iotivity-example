@@ -66,7 +66,7 @@ static const char *gName = "oic.r.geolocation";
 static const char *gUri = "/GeolocationResURI";
 static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
-static OCQualityOfService gQos = OC_HIGH_QOS;
+static OCQualityOfService gQos = OC_LOW_QOS;
 
 
 typedef struct GEOLOCATIONRESOURCE
@@ -79,6 +79,6 @@ typedef struct GEOLOCATIONRESOURCE
     int illuminance;
 } GeolocationResource;
 
-static GeolocationResource gGeolocation = {NULL, false, 90, 180, "TODO", 0};
+static GeolocationResource gGeolocation = {NULL, 0, 90, 180, "TODO", 0};
 
 #endif // common_h_
