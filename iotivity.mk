@@ -35,7 +35,6 @@ iotivity_mode?=release
 export iotivity_version
 
 tinycbor_url?=https://github.com/01org/tinycbor.git
-tinycbor_version?=v0.3.1
 
 ifeq (${iotivity_version}, 1.2.1)
 tinycbor_version?=v0.4
@@ -43,6 +42,8 @@ endif
 ifeq (${iotivity_version}, 1.1.1)
 tinycbor_version?=v0.2.1
 endif
+
+tinycbor_version?=v0.3.1
 
 gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8ccdf5c46b05ba54a9fd1d130d7/gtest-1.7.0.zip
 gtest_url?=https://github.com/google/googletest/archive/release-1.7.0.zip
@@ -117,7 +118,7 @@ iotivity_out:
 
 ${iotivity_dir}:
 	mkdir -p ${@D}
-	cd ${@D} && ${git} clone ${iotivity_url} -b ${iotivity_version} ${@}
+	cd ${@D} && ${git} clone --depth=1 ${iotivity_url} -b ${iotivity_version} ${@}
 
 gtest: ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip
 
@@ -134,8 +135,9 @@ ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip/github:
 
 ${iotivity_dir}/extlibs/tinycbor/tinycbor:
 	${MAKE} ${iotivity_dir}
-	cd ${iotivity_dir}\
+	cd "${iotivity_dir}" \
  && git clone ${tinycbor_url} -b ${tinycbor_version} "extlibs/tinycbor/tinycbor"
 
 
 tinycbor: ${iotivity_dir}/extlibs/tinycbor/tinycbor
+	@echo "# tinycbor_version=${tinycbor_version}"
