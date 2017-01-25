@@ -42,18 +42,6 @@ int platform_getValue();
 
 OCStackResult createGeolocationResource();
 
-#if 0
-OCStackResult setValue(int value)
-{
-    OCStackResult result;
-    LOGf("%d", value);
-    gProperties.value = value;
-    platform_setValue( (bool) (gProperties.value%2));
-    result = OCNotifyAllObservers(gProperties.handle, gQos);
-    return result;
-}
-#endif
-
 
 OCRepPayload *updatePayload(OCRepPayload* payload)
 {
@@ -63,14 +51,6 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     {
         exit(1);
     }
-    //OCRepPayloadAddResourceType(payload, gName);
-    //OCRepPayloadAddInterface(payload, gIface);
-
-    LOGf("%ld (payload)", gProperties.value);
-    OCRepPayloadSetPropInt(payload, "value", gProperties.value);
-    OCRepPayloadSetPropDouble(payload, "lat", gProperties.lat);
-    OCRepPayloadSetPropDouble(payload, "lon", gProperties.lon);
-    OCRepPayloadSetPropString(payload, "line", "TODO");
     OCRepPayloadSetPropInt(payload, "illuminance", gProperties.illuminance);
 
     return payload;
@@ -88,7 +68,6 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
     memset(&response,0,sizeof response);
 
     LOGf("%p", entityHandlerRequest);
-    LOGf("%ld (current)", gProperties.value);
 
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
@@ -107,11 +86,11 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         //if (payload == 0 ) 
         //  payload = OCRepPayloadCreate();
     
-        if (!payload)
-        {
-            LOGf("%p (error)", payload);
-            return OC_EH_ERROR;
-        }
+        //if (!payload)
+        //{
+        //  LOGf("%p (error)", payload);
+        //  return OC_EH_ERROR;
+        //}
 
         // updatePayload(payload);
         response.payload = (OCPayload *) payload;
@@ -157,32 +136,8 @@ OCStackResult createGeolocationResource()
 
 OCStackResult server_loop()
 {
-    LOGf("%ld (iterate)", gProperties.value);
     OCStackResult result = OC_STACK_ERROR;
-
-    if ( gProperties.value++ % 10 == 0)
     {
-        static double m_lat = 48.1033; //TODO check double on atmega
-        static double m_lon = -1.6725;
-        static double m_offset = 0.001;
-        static double m_latmax = 49;
-        static double m_latmin = 48;
-
-        m_lat += m_offset;
-        m_lon += m_offset;
-
-        if (m_lat > m_latmax)
-        {
-            if (m_offset > 0) { m_offset = - m_offset; }
-        }
-        else if (m_lat < m_latmin)
-        {
-            if ( m_offset < 0 ) m_offset = - m_offset;
-        }
-        //gProperties.lat = m_lat;
-        gProperties.lat++;
-        gProperties.lon = m_lon;
-
         gProperties.illuminance = platform_getValue();
 
         OCRepPayload* payload = NULL;
