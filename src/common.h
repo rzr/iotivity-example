@@ -72,11 +72,12 @@ static OCQualityOfService gQos = OC_HIGH_QOS;
 typedef struct GEOLOCATIONRESOURCE
 {
     OCResourceHandle handle;
-    int value;
+    int64_t value;
     double lat;
     double lon;
+    char* line;
 } GeolocationResource;
 
-static GeolocationResource gGeolocation = {NULL, false, 0, 0};
+static GeolocationResource gGeolocation = {NULL, false, 90, 180, "TODO"};
 
 #endif // common_h_
