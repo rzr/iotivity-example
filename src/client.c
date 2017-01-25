@@ -79,7 +79,7 @@ OCStackApplicationResult handleResponse(void *ctx,
                                         OCDoHandle handle,
                                         OCClientResponse *clientResponse)
 {
-    LOGf("%d {", gGeolocation.value);
+    LOGf("%ld {", gGeolocation.value);
     OCStackApplicationResult result = OC_STACK_DELETE_TRANSACTION;
 
     if (!clientResponse)
@@ -94,14 +94,25 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropInt(payload, "value", &gGeolocation.value))
+    if (!OCRepPayloadGetPropInt(payload, "value", &(gGeolocation.value)))
     {
-        LOGf("%d (error)", gGeolocation.value);
+        LOGf("%ld (error)", gGeolocation.value);
     }
+#if 1
+    if (!OCRepPayloadGetPropDouble(payload, "lat", &gGeolocation.lat))
+    {
+        LOGf("%f (error)", gGeolocation.lat);
+    }
+    if (!OCRepPayloadGetPropDouble(payload, "lon", &gGeolocation.lon))
+    {
+        LOGf("%f (error)", gGeolocation.lon);
+    }
+#endif
+    printf("%ld\n", gGeolocation.value);
+    printf("%f\n", gGeolocation.lat);
+    printf("%f\n", gGeolocation.lon);
 
-    printf("%d\n", gGeolocation.value);
-
-    LOGf("%d }", gGeolocation.value);
+    LOGf("%ld }", gGeolocation.value);
     return OC_STACK_DELETE_TRANSACTION;
 }
 
@@ -195,14 +206,14 @@ OCStackApplicationResult onObserve(void* ctx,
                                        OCDoHandle handle,
                                        OCClientResponse * clientResponse)
 {
-    LOGf("%d {", gGeolocation.value);
+    LOGf("%ld {", gGeolocation.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
     LOGf("%p", clientResponse);
     result = handleResponse(ctx, handle, clientResponse);
 
     LOGf("%d", result);
-    LOGf("%d }", gGeolocation.value);
+    LOGf("%ld }", gGeolocation.value);
     return OC_STACK_KEEP_TRANSACTION;
 }
 
@@ -268,7 +279,7 @@ OCStackApplicationResult onDiscover(void *ctx,
 OCStackResult client_loop()
 {
     OCStackResult result;
-    LOGf("%d (iterate)", gGeolocation.value);
+    LOGf("%ld (iterate)", gGeolocation.value);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
