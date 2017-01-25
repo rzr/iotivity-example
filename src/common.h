@@ -79,6 +79,6 @@ typedef struct GEOLOCATIONRESOURCE
     int illuminance;
 } GeolocationResource;
 
-static GeolocationResource gGeolocation = {NULL, 0, 90, 180, "TODO", 0};
+static GeolocationResource gProperties = {NULL, 0, 90, 180, "TODO", 0};
 
 #endif // common_h_
