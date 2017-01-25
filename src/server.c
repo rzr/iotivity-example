@@ -42,16 +42,17 @@ int platform_getValue();
 
 OCStackResult createGeolocationResource();
 
-
+#if 0
 OCStackResult setValue(int value)
 {
     OCStackResult result;
     LOGf("%d", value);
-    gGeolocation.value = value;
-    platform_setValue( (bool) (gGeolocation.value%2));
-    result = OCNotifyAllObservers(gGeolocation.handle, gQos);
+    gProperties.value = value;
+    platform_setValue( (bool) (gProperties.value%2));
+    result = OCNotifyAllObservers(gProperties.handle, gQos);
     return result;
 }
+#endif
 
 
 OCRepPayload *updatePayload(OCRepPayload* payload)
@@ -65,12 +66,12 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     //OCRepPayloadAddResourceType(payload, gName);
     //OCRepPayloadAddInterface(payload, gIface);
 
-    LOGf("%ld (payload)", gGeolocation.value);
-    OCRepPayloadSetPropInt(payload, "value", gGeolocation.value);
-    OCRepPayloadSetPropDouble(payload, "lat", gGeolocation.lat);
-    OCRepPayloadSetPropDouble(payload, "lon", gGeolocation.lon);
+    LOGf("%ld (payload)", gProperties.value);
+    OCRepPayloadSetPropInt(payload, "value", gProperties.value);
+    OCRepPayloadSetPropDouble(payload, "lat", gProperties.lat);
+    OCRepPayloadSetPropDouble(payload, "lon", gProperties.lon);
     OCRepPayloadSetPropString(payload, "line", "TODO");
-    OCRepPayloadSetPropInt(payload, "illuminance", gGeolocation.illuminance);
+    OCRepPayloadSetPropInt(payload, "illuminance", gProperties.illuminance);
 
     return payload;
 }
@@ -87,7 +88,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
     memset(&response,0,sizeof response);
 
     LOGf("%p", entityHandlerRequest);
-    LOGf("%ld (current)", gGeolocation.value);
+    LOGf("%ld (current)", gProperties.value);
 
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
@@ -103,15 +104,16 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         default:
             break;
         }
-        if (payload == 0 ) 
-            payload = OCRepPayloadCreate();
+        //if (payload == 0 ) 
+        //  payload = OCRepPayloadCreate();
     
         if (!payload)
         {
             LOGf("%p (error)", payload);
             return OC_EH_ERROR;
         }
-        updatePayload(payload);
+
+        // updatePayload(payload);
         response.payload = (OCPayload *) payload;
 
         response.ehResult = result;
@@ -139,7 +141,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
 
 OCStackResult createGeolocationResource()
 {
-    OCStackResult result = OCCreateResource(&(gGeolocation.handle),
+    OCStackResult result = OCCreateResource(&(gProperties.handle),
                                             gName,
                                             gIface,
                                             gUri,
@@ -155,10 +157,10 @@ OCStackResult createGeolocationResource()
 
 OCStackResult server_loop()
 {
-    LOGf("%ld (iterate)", gGeolocation.value);
+    LOGf("%ld (iterate)", gProperties.value);
     OCStackResult result = OC_STACK_ERROR;
 
-    if ( gGeolocation.value++ % 10 == 0)
+    if ( gProperties.value++ % 10 == 0)
     {
         static double m_lat = 48.1033; //TODO check double on atmega
         static double m_lon = -1.6725;
@@ -177,18 +179,17 @@ OCStackResult server_loop()
         {
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
-        //gGeolocation.lat = m_lat;
-        gGeolocation.lat++;
-        gGeolocation.lon = m_lon;
+        //gProperties.lat = m_lat;
+        gProperties.lat++;
+        gProperties.lon = m_lon;
 
-        gGeolocation.illuminance = platform_getValue();
+        gProperties.illuminance = platform_getValue();
 
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
         updatePayload(payload);
-
-        result = OCNotifyAllObservers(gGeolocation.handle, gQos);
-        //postResourceRepresentation();
+        
+        OCNotifyAllObservers(gProperties.handle, gQos);
         OCRepPayloadDestroy(payload);
     }
 
