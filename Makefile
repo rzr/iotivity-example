@@ -108,7 +108,6 @@ xterm/% : bin/%
 	xterm -e ${MAKE} run/${@F}  &
 	sleep 5
 
-
 run: run/client
 	@echo "# $@: $^"
 
