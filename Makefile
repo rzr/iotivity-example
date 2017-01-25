@@ -50,7 +50,7 @@ help: README.md
 	@echo "# Type make demo , client/server usage"
 	@echo "# iotivity_version=${iotivity_version}"
 
-demo: demo/${platform}
+demo: demo/linux demo/arduino
 	@echo "# $@: $^"
 
 demo/%:
