@@ -45,6 +45,11 @@ LOCAL_CPP_SRCS += src/server.c.tmp.cpp
 LOCAL_CPP_SRCS += src/server/platform/${platform}/platform.c.tmp.cpp
 CPPFLAGS+=-Isrc
 
+# sensor
+sensor_url=https://github.com/LowPowerLab/SFE_BMP180
+LOCAL_CPP_SRCS += $(wildcard ${CURDIR}/SFE_BMP180/*.cpp)
+CPPFLAGS+=-I${CURDIR}/SFE_BMP180
+
 #{ configuration
 eth_enabled?=1
 CPPFLAGS += -DARDUINOSERIAL=1
@@ -160,3 +165,7 @@ ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
 
 /dev/ttyACM0: /dev/ttyUSB0
 	echo sudo ln -fs ${<F} $@
+
+SFE_BMP180:
+	git clone --depth 1 \
+https://github.com/LowPowerLab/SFE_BMP180
