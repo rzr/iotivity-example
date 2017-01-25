@@ -120,7 +120,10 @@ scons_flags+=SHIELD=ETH
 arduino/all: ${TARGET_ELF}
 	@echo "# $@: $^"
 
-arduino/demo: upload arduino/run
+arduino/prepare:
+	-killall xterm server client
+
+arduino/demo: arduino/prepare upload arduino/run
 	@echo "# $@: $^"
 
 arduino/run:
