@@ -21,15 +21,15 @@
 git?=git
 export git
 
-# Overide here
+# Override here if needed
 #iotivity_version=master
-#iotivity_version=1.2-rel
 #iotivity_version=1.1-rel
+#iotivity_version=1.2-rel
 #iotivity_src?=${HOME}/usr/local/src/
 
 # Supported configuration
 iotivity_url?=http://github.com/iotivity/iotivity
-iotivity_version?=1.1.1
+iotivity_version?=1.2.0
 iotivity_mode?=release
 
 export iotivity_version
@@ -39,11 +39,14 @@ tinycbor_url?=https://github.com/01org/tinycbor.git
 ifeq (${iotivity_version}, 1.1.1)
 tinycbor_version?=v0.2.1
 endif
+ifeq (${iotivity_version}, 1.2.0)
+tinycbor_version?=v0.3.1
+endif
 ifeq (${iotivity_version}, 1.2.1)
 tinycbor_version?=v0.4
 endif
-
-tinycbor_version?=v0.3.1
+# 
+tinycbor_version?=master
 
 gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8ccdf5c46b05ba54a9fd1d130d7/gtest-1.7.0.zip
 # TODO:
@@ -142,3 +145,6 @@ ${iotivity_dir}/extlibs/tinycbor/tinycbor:
 
 tinycbor: ${iotivity_dir}/extlibs/tinycbor/tinycbor
 	@echo "# tinycbor_version=${tinycbor_version}"
+
+TODO/iotivity/1.2.0: ${iotivity_dir}/extlibs/tinycbor/tinycbor
+	ln -fs $</src/cbor.h ${iotivity_dir}/resource/csdk/stack/include
