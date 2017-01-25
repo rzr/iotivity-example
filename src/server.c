@@ -38,6 +38,7 @@ void platform_log(char const *);
 void platform_setup();
 void platform_loop();
 void platform_setValue(int value);
+int platform_getValue();
 
 OCStackResult createGeolocationResource();
 
@@ -69,6 +70,7 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     OCRepPayloadSetPropDouble(payload, "lat", gGeolocation.lat);
     OCRepPayloadSetPropDouble(payload, "lon", gGeolocation.lon);
     OCRepPayloadSetPropString(payload, "line", "TODO");
+    OCRepPayloadSetPropInt(payload, "temperature", gGeolocation.temperature);
 
     return payload;
 }
@@ -166,7 +168,7 @@ OCStackResult server_loop()
 
 
     {
-        static double m_lat = 48.1033;
+        static double m_lat = 48.1033; //TODO check double on atmega
         static double m_lon = -1.6725;
         static double m_offset = 0.001;
         static double m_latmax = 49;
@@ -187,6 +189,7 @@ OCStackResult server_loop()
         //      gGeolocation.lon = m_lon;
         gGeolocation.lat++;
         gGeolocation.value++;
+        gGeolocation.temperature = platform_getValue();
 
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
