@@ -48,6 +48,7 @@ all: local.mk
 help: README.md
 	@cat $<
 	@echo "# Type make demo , client/server usage"
+	@echo "# iotivity_version=${iotivity_version}"
 
 demo: demo/${platform}
 	@echo "# $@: $^"
