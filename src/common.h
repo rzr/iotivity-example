@@ -58,19 +58,21 @@ unsigned int sleep(unsigned int secs);
 static int gOver = 0;
 static int gVerbose = 0;
 static const int gDelay = 1;
-static const char *gName = "oic.r.switch.binary";
-static const char *gUri = "/BinarySwitchResURI";
+static const char *gName = "oic.r.geolocation";
+static const char *gUri = "/GeolocationResURI";
 static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
 static OCQualityOfService gQos = OC_LOW_QOS;
 
 
-typedef struct SWITCHRESOURCE
+typedef struct GEOLOCATIONRESOURCE
 {
     OCResourceHandle handle;
     bool value;
-} SwitchResource;
+    double lat;
+    double lon;
+} GeolocationResource;
 
-static SwitchResource gSwitch = {NULL, false};
+static GeolocationResource gGeolocation = {NULL, false, 0, 0};
 
 #endif // common_h_
