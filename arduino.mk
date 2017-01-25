@@ -47,8 +47,8 @@ CPPFLAGS+=-Isrc
 
 # sensor
 sensor_url=https://github.com/LowPowerLab/SFE_BMP180
-LOCAL_CPP_SRCS += $(wildcard ${CURDIR}/SFE_BMP180/*.cpp)
-CPPFLAGS+=-I${CURDIR}/SFE_BMP180
+#LOCAL_CPP_SRCS += $(wildcard ${CURDIR}/SFE_BMP180/*.cpp)
+#CPPFLAGS+=-I${CURDIR}/SFE_BMP180
 
 #{ configuration
 eth_enabled?=1
