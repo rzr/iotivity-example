@@ -184,6 +184,7 @@ void platform_setup()
     delay(4*gDelay);
 }
 
+
 void setup()
 {
     platform_setup();
