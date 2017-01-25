@@ -21,3 +21,4 @@ build*
 log*
 *.c.cpp
 local.mk
+*.tmp.cpp
