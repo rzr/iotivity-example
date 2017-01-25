@@ -46,9 +46,6 @@ LOCAL_CPP_SRCS += src/server/platform/${platform}/platform.c.tmp.cpp
 CPPFLAGS+=-Isrc
 
 # sensor
-sensor_url=https://github.com/LowPowerLab/SFE_BMP180
-#LOCAL_CPP_SRCS += $(wildcard ${CURDIR}/SFE_BMP180/*.cpp)
-#CPPFLAGS+=-I${CURDIR}/SFE_BMP180
 
 #{ configuration
 eth_enabled?=1
@@ -127,7 +124,8 @@ arduino/demo: upload arduino/run
 	@echo "# $@: $^"
 
 arduino/run:
-	sleep 10
+	@echo "# TODO: adjust waiting registration ($@)"
+	sleep 40 
 	${MAKE} run platform=default
 	@echo "# $@: $^"
 
