@@ -75,7 +75,7 @@ unsigned int sleep(unsigned int secs)
     delay(secs*1000);
 }
 
-
+#if 0
 #include <SFE_BMP180.h>
 int platform_getValue()
 {
@@ -89,6 +89,14 @@ int platform_getValue()
     status = sensor.getTemperature(value);
     return (int) value;
 }
+#else
+int platform_getValue()
+{
+    double value=0;
+    return (int) value;
+}
+
+#endif
 
 void platform_setValue(bool value)
 {
