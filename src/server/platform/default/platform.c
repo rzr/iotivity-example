@@ -42,6 +42,14 @@ void platform_setValue(bool value)
 }
 
 
+int platform_getValue()
+{
+    static int value=0;
+
+    return value++;
+}
+
+
 int main(int argc, char* argv[])
 {
     return server_main(argc, argv);
