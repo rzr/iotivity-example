@@ -86,7 +86,7 @@ void blink(int n)
 {
     int step = 250;
     delay(4*step);
-    for (int i=0;i<n;i++){
+    for (int i=0;i<n;i++) {
         platform_setValue(false);
         delay(step);
         platform_setValue(true);
