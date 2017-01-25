@@ -107,12 +107,17 @@ OCStackApplicationResult handleResponse(void *ctx,
     {
         LOGf("%f (error)", gGeolocation.lon);
     }
+    if (!OCRepPayloadGetPropInt(payload, "temperature", &gGeolocation.temperature))
+    {
+        LOGf("%f (error)", gGeolocation.temperature);
+    }
 #endif
     printf("%ld\n", gGeolocation.value);
     printf("%f\n", gGeolocation.lat);
     printf("%f\n", gGeolocation.lon);
 
     LOGf("%ld }", gGeolocation.value);
+    LOGf("%d }", gGeolocation.temperature);
     return OC_STACK_DELETE_TRANSACTION;
 }
 
