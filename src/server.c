@@ -70,7 +70,7 @@ OCRepPayload *updatePayload(OCRepPayload* payload)
     OCRepPayloadSetPropDouble(payload, "lat", gGeolocation.lat);
     OCRepPayloadSetPropDouble(payload, "lon", gGeolocation.lon);
     OCRepPayloadSetPropString(payload, "line", "TODO");
-    OCRepPayloadSetPropInt(payload, "temperature", gGeolocation.temperature);
+    OCRepPayloadSetPropInt(payload, "illuminance", gGeolocation.illuminance);
 
     return payload;
 }
@@ -95,15 +95,6 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         OCRepPayload* input = NULL;
         switch (entityHandlerRequest->method)
         {
-#if 0
-        case OC_REST_POST:
-        case OC_REST_PUT:
-            input = (OCRepPayload*) entityHandlerRequest->payload;
-            OCRepPayloadGetPropBool(input, "value", &gGeolocation.value);
-            LOGf("%d (update)", gGeolocation.value);
-            res = setValue(gGeolocation.value);
-            break;
-#endif
         case OC_REST_GET:
             OCRepPayloadSetUri(payload, gUri);
             payload = OCRepPayloadCreate();
@@ -159,6 +150,7 @@ OCStackResult createGeolocationResource()
     LOGf("%d", result);
     return result;
 }
+#include <Arduino.h>
 
 
 OCStackResult server_loop()
@@ -166,7 +158,7 @@ OCStackResult server_loop()
     LOGf("%ld (iterate)", gGeolocation.value);
     OCStackResult result = OC_STACK_ERROR;
 
-
+    if ( gGeolocation.value % 10 == 0)
     {
         static double m_lat = 48.1033; //TODO check double on atmega
         static double m_lon = -1.6725;
@@ -185,11 +177,11 @@ OCStackResult server_loop()
         {
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
-//        gGeolocation.lat = m_lat;
-        //      gGeolocation.lon = m_lon;
+        gGeolocation.lat = m_lat;
+        //    gGeolocation.lon = m_lon;
         gGeolocation.lat++;
         gGeolocation.value++;
-        gGeolocation.temperature = platform_getValue();
+        gGeolocation.illuminance = platform_getValue();
 
         OCRepPayload* payload = NULL;
         payload = OCRepPayloadCreate();
@@ -207,9 +199,11 @@ OCStackResult server_loop()
         LOGf("%d (error)", result);
         return result;
     }
-
-    sleep(gDelay*2);
-
+//#ifdef ARDUINO
+//    delay(100);
+//#else
+    sleep(gDelay);
+//#endif
     //static int count=0; if (++count > 20) { gOver = true;}
 
     return result;
