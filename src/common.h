@@ -76,7 +76,7 @@ typedef struct GEOLOCATIONRESOURCE
     double lat;
     double lon;
     char* line;
-    int temperature;
+    int illuminance;
 } GeolocationResource;
 
 static GeolocationResource gGeolocation = {NULL, false, 90, 180, "TODO", 0};
