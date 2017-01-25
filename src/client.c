@@ -74,12 +74,12 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gProperties.illuminance))
+    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gProperties.value))
     {
-        LOGf("%ld (error)", gProperties.illuminance);
+        LOGf("%ld (error)", gProperties.value);
     }
 
-    LOGf("%ld=", gProperties.illuminance);
+    LOGf("%ld", gProperties.value);
 
     return OC_STACK_KEEP_TRANSACTION;
 }
@@ -159,7 +159,7 @@ OCStackApplicationResult onDiscover(void *ctx,
 OCStackResult client_loop()
 {
     OCStackResult result;
-    LOGf("%ld (iterate)", gProperties.illuminance);
+    LOGf("%ld (iterate)", gProperties.value);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
