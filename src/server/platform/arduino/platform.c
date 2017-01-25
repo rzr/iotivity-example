@@ -153,28 +153,27 @@ void platform_test()
 void platform_setup()
 {
     static int init=1; // make sure it will be init once
-    if (init--)
-    {
-        pinMode(gGpio, OUTPUT);
-        LOGf("%d",gGpio);
+    if (0 >= init--) return;
 
-        if (false) blink(1);
+    pinMode(gGpio, OUTPUT);
+    LOGf("%d",gGpio);
+
+    if (!false) blink(1);
 
 #ifdef CONFIG_ARDUINOSERIAL
-        Serial.begin(115200);
-        LOGf("%d",gGpio);
+    Serial.begin(115200);
+    LOGf("%d",gGpio);
 #endif
-        if (false) blink(2);
-        if (true)
-        {
-            setup_network();
-        }
-        if (false) blink(3);
-        platform_log("1");
+    if (!false) blink(2);
+    if (true)
+    {
+        setup_network();
     }
+    if (!false) blink(3);
+    platform_log("1");
+
     delay(4*gDelay);
 }
-
 
 void setup()
 {
