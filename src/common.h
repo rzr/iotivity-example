@@ -62,20 +62,20 @@ unsigned int sleep(unsigned int secs);
 static int gOver = 0;
 static int gVerbose = 0;
 static const int gDelay = 1;
-static const char *gResourceType = "oic.r.geolocation";
-static const char *gName = "oic.r.geolocation";
+static const char *gResourceType = "oic.r.illuminance";
+static const char *gName = "oic.r.illuminance";
 static const char *gUri = "/IlluminanceResURI";
 static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
 static OCQualityOfService gQos = OC_LOW_QOS;
 
 
-typedef struct GEOLOCATIONRESOURCE
+typedef struct ValueResource_t
 {
     OCResourceHandle handle;
-    int64_t illuminance;
-} GeolocationResource;
+    int64_t value;
+} ValueResource;
 
-static GeolocationResource gProperties = {NULL, 0};
+static ValueResource gProperties = {NULL, 0};
 
 #endif // common_h_
