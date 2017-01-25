@@ -55,7 +55,7 @@ unsigned int gDiscovered = 0;
 static OCDevAddr gDestination;
 int gObversable= 1;
 
-
+#if 0
 OCRepPayload *createPayload()
 {
     OCRepPayload *payload = OCRepPayloadCreate();
@@ -72,6 +72,7 @@ OCRepPayload *createPayload()
     LOGf("%d", gGeolocation.value);
     return payload;
 }
+#endif
 
 
 OCStackApplicationResult handleResponse(void *ctx,
@@ -93,7 +94,7 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropBool(payload, "value", &gGeolocation.value))
+    if (!OCRepPayloadGetPropInt(payload, "value", &gGeolocation.value))
     {
         LOGf("%d (error)", gGeolocation.value);
     }
@@ -104,6 +105,8 @@ OCStackApplicationResult handleResponse(void *ctx,
     return OC_STACK_DELETE_TRANSACTION;
 }
 
+
+#if 0
 
 OCStackApplicationResult onGet(void *ctx,
                                OCDoHandle handle,
@@ -186,6 +189,7 @@ OCStackResult post()
     LOGf("%d }", gGeolocation.value);
     return result;
 }
+#endif
 
 OCStackApplicationResult onObserve(void* ctx, 
                                        OCDoHandle handle,
@@ -260,22 +264,6 @@ OCStackApplicationResult onDiscover(void *ctx,
 }
 
 
-int kbhit()
-{
-    struct termios term, oterm;
-    int fd = 0;
-    int c = 0;
-    tcgetattr(fd, &oterm);
-    memcpy(&term, &oterm, sizeof(term));
-    term.c_lflag = term.c_lflag & (!ICANON);
-    term.c_cc[VMIN] = 0;
-    term.c_cc[VTIME] = 1;
-    tcsetattr(fd, TCSANOW, &term);
-    c = getchar();
-    tcsetattr(fd, TCSANOW, &oterm);
-    return (c);
-}
-
 
 OCStackResult client_loop()
 {
@@ -288,7 +276,7 @@ OCStackResult client_loop()
         LOGf("%d (error)", result);
         return result;
     }
-
+#if 0 
     static int once = 1;
     if (gDiscovered && once-- > 0)
     {
@@ -302,6 +290,7 @@ OCStackResult client_loop()
         LOGf("%d (post on kbhit)", c);
         result = post();
     }
+#endif
     sleep(gDelay);
     LOGf("%d", gOver);
     return result;
@@ -353,7 +342,7 @@ OCStackResult client_setup()
             LOGf("%d (error)", result);
         }
 
-        sleep(1 * gDelay);
+        sleep(gDelay/2);
     }
     LOGf("%d", result);
     return result;
