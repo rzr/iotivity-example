@@ -78,8 +78,8 @@ unsigned int sleep(unsigned int secs)
 #if 0
 int platform_getValue()
 {
-    double value=0;
-    return (int) value;
+    static double value=0;
+    return (int) value++;
 }
 #else
 #include "illuminance.c"
