@@ -74,12 +74,12 @@ OCStackApplicationResult handleResponse(void *ctx,
         return result;
     }
 
-    if (!OCRepPayloadGetPropInt(payload, "illuminance", &gProperties.value))
+    if (!OCRepPayloadGetPropInt(payload, gResource.name, &gResource.value))
     {
-        LOGf("%ld (error)", gProperties.value);
+        LOGf("%ld (error)", gResource.value);
     }
 
-    LOGf("%ld", gProperties.value);
+    LOGf("%ld", gResource.value);
 
     return OC_STACK_KEEP_TRANSACTION;
 }
@@ -137,13 +137,13 @@ OCStackApplicationResult onDiscover(void *ctx,
                 gDestination = clientResponse->devAddr;
                 LOGf("%s", gDestination.addr);
                 gConnectivityType = clientResponse->connType;
-                gProperties.handle = handle;
+                gResource.handle = handle;
                 if (gObversable)
                 {
                     OCCallbackData callback = {NULL, NULL, NULL};
                     callback.cb = onObserve;
                     OCStackResult ret;
-                    ret = OCDoResource(&gProperties.handle, OC_REST_OBSERVE,
+                    ret = OCDoResource(&gResource.handle, OC_REST_OBSERVE,
                                        gUri, &gDestination, NULL,
                                        gConnectivityType, gQos, &callback, NULL, 0);
                 }
@@ -159,7 +159,7 @@ OCStackApplicationResult onDiscover(void *ctx,
 OCStackResult client_loop()
 {
     OCStackResult result;
-    LOGf("%ld (iterate)", gProperties.value);
+    LOGf("%ld (iterate)", gResource.value);
 
     result = OCProcess();
     if (result != OC_STACK_OK)
