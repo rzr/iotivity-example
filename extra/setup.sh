@@ -155,7 +155,7 @@ build_()
             args=" -b "${branch}""
 #           args=" $args --depth 1"
             ls "$package" || \
-                $git clone $args -- "${url}"
+                $git clone $args "${url}"
             $make -C "${package}"
         fi
     done
