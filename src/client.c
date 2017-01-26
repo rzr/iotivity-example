@@ -167,7 +167,7 @@ OCStackResult client_loop()
         LOGf("%d (error)", result);
         return result;
     }
-    sleep(gDelay);
+    usleep(500*1000*gDelay);
     LOGf("%d", gOver);
     return result;
 }
