@@ -23,9 +23,9 @@
 
 default: all
 
-package?=iotivity-example
+package?=iotivity-example-gpio
 name?=${package}
-config_pkgconfig?=1
+config_pkgconfig?=0
 export config_pkgconfig
 
 #TODO: workaround missing /usr/include/iotivity namespace
@@ -51,7 +51,7 @@ srcs_all+=$(wildcard src/*.cpp)
 endif
 CPPFLAGS+=-I.
 
-
+DESTDIR?=/
 local_bindir?=bin
 local_optdir?=opt
 install_dir?=${DESTDIR}/${local_optdir}/${package}/
@@ -119,7 +119,7 @@ rule/install/service: ${name}.service
 	install $< ${DESTDIR}${_unitdir}/
 
 ${name}.service: extra/iotivity-example.service
-	sed -e "s|ExecStart=.*|ExecStart=/opt/%{name}/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${local_optdir}/%{name}/server|g" < $< > $@
 
 iotivity: ${include_dir}
 	@echo "TODO: workaround for namespace"
