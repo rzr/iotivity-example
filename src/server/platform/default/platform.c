@@ -36,12 +36,6 @@ void platform_loop()
 }
 
 
-void platform_setValue(bool value)
-{
-    printf("%d\n", value);
-}
-
-
 int platform_getValue()
 {
     static int value=0;
