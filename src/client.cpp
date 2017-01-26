@@ -72,8 +72,12 @@ void Resource::onPost(const HeaderOptions &headerOptions,
     {
         bool value;
         representation.getValue(Common::m_propname, value);
-        Platform::getInstance().setValue(value);
-    }
+        if (true) {
+            std::cout<<value<<std::endl;
+        } else {
+            Platform::getInstance().setValue(value); //dont clash with server
+        }
+    } 
     else
     {
         cerr << "error: in POST response: " << eCode <<  endl;
@@ -142,7 +146,6 @@ void IoTClient::start()
 {
     LOG();
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
-
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     OCPlatform::findResource("", //
                              coap_multicast_discovery.c_str(),
@@ -268,10 +271,11 @@ bool IoTClient::toggle()
 {
     Common::log(__PRETTY_FUNCTION__);
 
-    bool value = m_value;
+    bool value = !m_value;
+    Common::log(value ? "1" : "0");
     if (m_Resource)
     {
-        m_Resource->post(!value);
+        m_Resource->post(value);
     }
     else
     {
@@ -279,7 +283,7 @@ bool IoTClient::toggle()
         Common::log("log: resource not yet discovered");
     }
 
-    return value;
+    return m_value;
 }
 
 
