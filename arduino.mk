@@ -128,7 +128,7 @@ arduino/demo: arduino/prepare upload arduino/run
 
 arduino/run:
 	@echo "# TODO: waiting registration ($@)"
-	sleep 40
+	sleep 30
 	${MAKE} run platform=default
 	@echo "# $@: $^"
 
