@@ -246,17 +246,23 @@ int IoTServer::main(int argc, char *argv[])
     sigaction(SIGINT, &sa, nullptr);
 
     cerr << "log: Server: " << endl
-         << "Press Ctrl-C to quit...." << endl;
+         << "Press Ctrl-C to quit...." << endl
+         << "Usage: server -v 5" << endl
+        ;
 
+    int subargc=argc;
+    char** subargv=argv;
     for (int i = 1; i < argc; i++)
     {
         if (0 == strcmp("-v", argv[i]))
         {
             Common::m_logLevel++;
+            argc--;
+            subargv++;
         }
     }
 
-    Platform::getInstance().setup(argc, argv);
+    Platform::getInstance().setup(subargc, subargv);
 
     IoTServer server;
     try
