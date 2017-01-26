@@ -62,10 +62,9 @@ unsigned int sleep(unsigned int secs);
 static int gOver = 0;
 static int gVerbose = 0;
 static const int gDelay = 1;
-static const char *gResourceType = "oic.r.illuminance";
-static const char *gName = "oic.r.illuminance";
+static const char *gResourceTypeName = "oic.r.illuminance";
 static const char *gUri = "/IlluminanceResURI";
-static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
+static char const *gResourceInterfaceName = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
 static OCQualityOfService gQos = OC_LOW_QOS;
 
@@ -73,9 +72,10 @@ static OCQualityOfService gQos = OC_LOW_QOS;
 typedef struct ValueResource_t
 {
     OCResourceHandle handle;
+    char* name;
     int64_t value;
 } ValueResource;
 
-static ValueResource gProperties = {NULL, 0};
+static ValueResource gResource = {NULL, "illuminance", 0};
 
 #endif // common_h_
