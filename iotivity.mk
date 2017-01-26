@@ -24,7 +24,7 @@ export git
 # Override here if needed
 #iotivity_version=master
 #iotivity_version=1.1-rel
-#iotivity_version=1.2-rel
+iotivity_version=1.2-rel
 #iotivity_src?=${HOME}/usr/local/src/
 
 # Supported configuration
