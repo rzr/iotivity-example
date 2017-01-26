@@ -75,7 +75,7 @@ unsigned int sleep(unsigned int secs)
     delay(secs*1000);
 }
 
-#if 0
+#if 1
 int platform_getValue()
 {
     static double value=0;
