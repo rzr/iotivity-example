@@ -39,6 +39,7 @@ class IoTServer
 
     public:
         static int main(int argc, char *argv[]);
+        void update();
 
     protected:
         static void handle_signal(int signal);

@@ -195,8 +195,6 @@ void IoTServer::update()
 
         cerr << "location: " << std::fixed << m_lat << "," << std::fixed << m_lon << endl;
     }
-
-    postResourceRepresentation();
 }
 
 

@@ -49,5 +49,4 @@ void Platform::setValue(float lat, float lon)
 {
     LOG();
     cout<<"geolocation: "<<lat<<","<<lon<<endl;
-#endif
 }

@@ -162,8 +162,6 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
                 m_Resource = make_shared<Resource>(resource);
-
-                input();
             }
 
         }
