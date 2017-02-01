@@ -2,8 +2,7 @@ Source: iotivity-example
 Section: net
 Priority: optional
 Maintainer: Philippe Coval <philippe.coval@osg.samsung.com>
-Build-Depends: debhelper (>= 8.0.0),
- iotivity-dev
+Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.4
 Homepage: <insert the upstream URL, if relevant>
 Vcs-Git: http://github.com/TizenTeam/iotivity-example
