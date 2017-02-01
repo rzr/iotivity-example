@@ -1,4 +1,4 @@
-SUMMARY = "IoTivity Switch Example"
+SUMMARY = "IoTivity Example"
 DESCRIPTION = "Minimalist Iotivity Client/Server application that share a resource"
 HOMEPAGE = "https://github.com/TizenTeam/iotivity-example"
 SECTION = "apps"
@@ -13,6 +13,7 @@ S = "${WORKDIR}/git"
 inherit systemd pkgconfig
 
 LOCAL_OPT_DIR = "/opt"
+LOCAL_OPT_DIR_D = "${D}${LOCAL_OPT_DIR}"
 
 DEPENDS += " iotivity "
 BDEPENDS += " iotivity-dev "
@@ -39,7 +40,7 @@ do_compile() {
  LANG=C
  export LANG
  unset DISPLAY
- LD_AS_NEEDED=1; export LD_AS_NEEDED ;
+ LD_AS_NEEDED=1; export LD_AS_NEEDED;
  
  oe_runmake all
 }
