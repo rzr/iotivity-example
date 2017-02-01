@@ -34,12 +34,12 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer(string property, bool value)
+IoTServer::IoTServer(string endpoint)
 {
     LOG();
+    Common::m_endpoint = endpoint;
     init();
     setup();
-    m_Representation.setValue(property, value);
 }
 
 IoTServer::~IoTServer()
@@ -109,14 +109,6 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 }
 
 
-void IoTServer::postResourceRepresentation()
-{
-    LOG();
-    bool value = 0;
-    m_Representation.getValue(Common::m_propname, value);
-    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
-}
-
 OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
 {
     OCStackResult result =  OC_STACK_ERROR;
@@ -129,44 +121,6 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
         response->setResourceRepresentation(m_Representation);
         result = OCPlatform::sendResponse(response);
     }
-    return result;
-}
-
-OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
-    OCRepresentation requestRep = request->getResourceRepresentation();
-    if (requestRep.hasAttribute(Common::m_propname))
-    {
-        try
-        {
-            bool value = requestRep.getValue<bool>(Common::m_propname);
-            Platform::getInstance().setValue(value);
-        }
-        catch (...)
-        {
-            cerr << "error: Client sent invalid resource value type" << endl;
-            return result;
-        }
-    }
-    else
-    {
-        cerr << "error: Client sent invalid resource property" << endl;
-        return result;
-    }
-    m_Representation = requestRep;
-    postResourceRepresentation();
-
-    return result;
-}
-
-OCStackResult IoTServer::handleGet(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
     return result;
 }
 
@@ -185,39 +139,6 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
 
-            if (requestType == "POST")
-            {
-                if (handlePost(request) == OC_STACK_OK)
-                {
-                    if (respond(response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
-                }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                }
-                ;;
-            }
-            else if (requestType == "GET")
-            {
-                if (handleGet(request) == OC_STACK_OK)
-                {
-                    if (respond(response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
-                }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                }
-
-            }
-            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
