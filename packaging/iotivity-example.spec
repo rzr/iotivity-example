@@ -7,8 +7,12 @@ Url:            http://github.com/TizenTeam/iotivity-example
 Group:          System/Libraries
 #X-Vc-Url:      http://github.com/TizenTeam/iotivity-example
 Group:          Contrib
-Source:         %{name}-%{version}.tar.gz
 
+%if ! 0%{?license:0}
+%define license %doc
+%endif
+
+Source:         %{name}-%{version}.tar.gz
 BuildRequires:  make
 BuildRequires:  fdupes
 BuildRequires:  pkgconfig(iotivity)
@@ -57,6 +61,7 @@ install extra/iotivity-example.service \
 
 %files
 %defattr(-,root,root)
+%licence LICENSE
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
 %{_unitdir}/network.target.wants/%{name}.service
