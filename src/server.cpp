@@ -34,8 +34,6 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer(string endpoint)
-
 double IoTServer::m_lat = 48.1033;
 double IoTServer::m_lon = -1.6725;
 double IoTServer::m_offset = 0.001;
@@ -149,6 +147,22 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+
+            if (requestType == "GET")
+            {
+                cerr << "GET request for platform Resource" << endl;
+                if (response)
+                {
+                    response->setErrorCode(200);
+                    response->setResponseResult(OC_EH_OK);
+                    response->setResourceRepresentation(m_Representation);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
@@ -164,14 +178,6 @@ void IoTServer::update()
 {
     LOG();
     {
-        string line = "";
-        time_t const now = time(0);
-        char *dt = ctime(&now);
-        line = string(dt);
-        m_Representation.setValue(Common::m_propname, line);
-    }
-
-    {
         m_lat += m_offset;
         m_lon += m_offset;
 
@@ -184,8 +190,8 @@ void IoTServer::update()
             if ( m_offset < 0 ) m_offset = - m_offset;
         }
 
-        m_Representation.setValue("lat", m_lat);
-        m_Representation.setValue("lon", m_lon);
+        m_Representation.setValue("latitude", m_lat);
+        m_Representation.setValue("longitude", m_lon);
 
         cerr << "location: " << std::fixed << m_lat << "," << std::fixed << m_lon << endl;
     }
@@ -258,7 +264,8 @@ int IoTServer::main(int argc, char *argv[])
 
         do
         {
-            usleep(2000000);
+            server.update();
+            sleep(delay);
         }
         while (!IoTServer::m_over );
     }
