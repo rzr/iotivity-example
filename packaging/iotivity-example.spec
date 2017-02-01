@@ -11,7 +11,7 @@ Source:         %{name}-%{version}.tar.gz
 
 BuildRequires:  make
 BuildRequires:  fdupes
-BuildRequires:  iotivity-devel
+BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  systemd
@@ -19,8 +19,7 @@ Requires:  iotivity
 
 
 %description
-Mimimal client/server application,
-that share a binrry switch value as IoTivity resource.
+Mimimal client/server application that share an IoTivity resource
 
 %prep
 %setup -q
@@ -29,7 +28,6 @@ that share a binrry switch value as IoTivity resource.
 
 %__make %{?_smp_mflags} \
     PLATFORM=TIZEN \
-    config_pkgconfig=0 \
     #eol
 
 %install
@@ -37,7 +35,6 @@ that share a binrry switch value as IoTivity resource.
     name=%{name} \
     DESTDIR=%{buildroot} \
     PLATFORM=TIZEN \
-    config_pkgconfig=0 \
     #eol
 
 make %{name}.service
