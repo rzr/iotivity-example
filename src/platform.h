@@ -30,7 +30,7 @@ class Platform
 
         Platform() {}
 
-    virtual ~Platform();
+        virtual ~Platform();
 
         static Platform &getInstance() { static Platform instance; return instance; }
 
