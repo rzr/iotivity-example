@@ -35,6 +35,8 @@ Resource::Resource(shared_ptr<OCResource> resource)
 {
     LOG();
     m_OCResource = resource;
+    m_GETCallback = bind(&Resource::onGet, this,
+                         placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
@@ -46,24 +48,19 @@ void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation
                        const int &eCode, const int &sequenceNumber)
 {
     LOG();
-    std::string line;
-    rep.getValue(Common::m_propname, line);
+    double latitude = 0;
+    double longitude = 0;
 
-    std::cout << line << std::endl;
-
-    double lat = 0;
-    double lon = 0;
-
-    if (rep.hasAttribute("lat"))
+    if (rep.hasAttribute("latitude"))
     {
-        lat = rep.getValue<double>("lat");
+        latitude = rep.getValue<double>("latitude");
     }
-    if (rep.hasAttribute("lon"))
+    if (rep.hasAttribute("longitude"))
     {
-        lon = rep.getValue<double>("lon");
+        longitude = rep.getValue<double>("longitude");
     }
-
-    cout << "location: " << lat << ", " << lon << std::endl;
+    Platform::setValue(latitude,longitude);
+    cout << "location: " << latitude << ", " << longitude << std::endl;
 }
 
 
@@ -90,6 +87,7 @@ void Resource::get()
     QueryParamsMap params;
     m_OCResource->get(params, m_GETCallback);
 }
+
 
 IoTClient::IoTClient()
 {
@@ -194,18 +192,11 @@ void IoTClient::print(shared_ptr<OCResource> resource)
 }
 
 
-void IoTClient::input()
-{
-    cerr << endl << "menu: "
-         << "  9) Quit"
-         << "  *) Display this menu"
-         << endl;
-}
-
 
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
+    int delay = 5;
 
     for (int i = 1; i < argc; i++)
     {
@@ -214,21 +205,12 @@ int IoTClient::main(int argc, char *argv[])
             Common::m_logLevel++;
         }
     }
-
-    int choice;
-    do
+    while (delay >= 0)
     {
-        cin >> choice;
-        switch (choice)
-        {
-            case 9:
-                return 0;
-            default:
-                IoTClient::input();
-                break;
-        }
+        sleep(delay);
+        shared_ptr<Resource> resource = IoTClient::getInstance()->getResource();
+        if (resource) resource->get();;
     }
-    while (choice != 9);
     return 0;
 }
 
