@@ -34,7 +34,7 @@
 class IoTServer
 {
     public:
-        IoTServer(std::string propname = Common::m_propname, bool value = false);
+        IoTServer(std::string endpoint = Common::m_endpoint);
         virtual ~IoTServer();
 
     public:
