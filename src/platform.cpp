@@ -33,13 +33,6 @@ Platform::~Platform()
 }
 
 
-void Platform::setValue(bool value)
-{
-    LOG();
-    cout << value << endl;
-}
-
-
 void Platform::setup(int argc, char *argv[])
 {
     LOG();
