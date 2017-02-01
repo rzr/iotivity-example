@@ -49,18 +49,15 @@ class Common
         static void log(char const *const message);
 };
 
-#define STR_(x) #x
-#define STR(x) STR_(x)
-
 #include <iostream>
 
 class Logger
 {
-        const char *mMessage;
     public:
-
         Logger(const char *message);
         ~Logger();
+    protected:
+        const char *mMessage;
 };
 
 #define LOG()                                   \
