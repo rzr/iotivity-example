@@ -169,10 +169,10 @@ int IoTServer::main(int argc, char *argv[])
     cerr << "log: Server: " << endl
          << "Press Ctrl-C to quit...." << endl
          << "Usage: server -v" << endl
-        ;
+         ;
 
-    int subargc=argc;
-    char** subargv=argv;
+    int subargc = argc;
+    char **subargv = argv;
     for (int i = 1; i < argc; i++)
     {
         if (0 == strcmp("-v", argv[i]))
