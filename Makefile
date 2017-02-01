@@ -51,10 +51,10 @@ srcs_all+=$(wildcard src/*.cpp)
 endif
 CPPFLAGS+=-I.
 
-
+DESTDIR?=/
 local_bindir?=bin
-local_optdir?=opt
-install_dir?=${DESTDIR}/${local_optdir}/${package}/
+local_optdir?=/opt
+install_dir?=${DESTDIR}${local_optdir}/${package}/
 _unitdir?=/lib/systemd/
 
 vpath+=src
@@ -119,7 +119,7 @@ rule/install/service: ${name}.service
 	install $< ${DESTDIR}${_unitdir}/
 
 ${name}.service: extra/iotivity-example.service
-	sed -e "s|ExecStart=.*|ExecStart=/opt/%{name}/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${local_optdir}/%{name}/server|g" < $< > $@
 
 iotivity: ${include_dir}
 	@echo "TODO: workaround for namespace"
