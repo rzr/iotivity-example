@@ -49,11 +49,15 @@ class IoTServer
         OCStackResult handlePost(std::shared_ptr<OC::OCResourceRequest> request);
         OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
         OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
+        void update();
+
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::OCRepresentation m_Representation;
         OCResourceHandle m_ResourceHandle;
         static bool m_over;
+        OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
+        OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
 
     protected:
         static double m_lat;
