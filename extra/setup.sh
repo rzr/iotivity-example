@@ -147,11 +147,13 @@ build_()
             package="iotivity"
             url="https://git.tizen.org/cgit/contrib/${package}"
             branch="tizen"
-            #TODO
+            #TODO: Unsing unsecured mode
             url="http://github.com/tizenteam/${package}"
             branch="sandbox/pcoval/on/latest/tizen"
+            args=" -b "${branch}""
+            args=" $args --depth 1"
             ls "$package" || \
-                $git clone --depth 1 -b "${branch}" "${url}"
+                $git clone $args "${url}"
             $make -C "${package}"
         fi
     done
@@ -174,7 +176,7 @@ build_()
 
             # Checking
             package="iotivity-example"
-            url="https://notabug.org/tizen/${package}"
+            url="http://github.com/tizenteam/${package}"
             branch="tizen"
             ls "$package" || \
                 $git clone -b "${branch}" "${url}"
@@ -196,8 +198,10 @@ deploy_()
 
     ln -fs ${rootfs}/usr/include/boost usr/include/
     # TODO
-    cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||: #TODO might not be needed
-    cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||: #TODO might not be needed
+    cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so \
+  || echo "TODO might not be needed"
+    cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ \
+  || echo "TODO might not be needed"
     rm -rf lib
     ln -fs usr/lib lib
 }
