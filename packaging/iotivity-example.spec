@@ -1,5 +1,5 @@
 Name:           iotivity-example
-Version:        1.1.0
+Version:        1.2.1
 Release:        0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
@@ -61,7 +61,7 @@ install extra/iotivity-example.service \
 
 %files
 %defattr(-,root,root)
-%licence LICENSE
+%license LICENSE
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
 %{_unitdir}/network.target.wants/%{name}.service
