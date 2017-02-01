@@ -41,30 +41,31 @@ do_compile_prepend() {
 }
 
 do_compile() {
- cd ${S}
- LANG=C
- export LANG
- unset DISPLAY
- LD_AS_NEEDED=1; export LD_AS_NEEDED;
- 
- oe_runmake all
+    cd ${S}
+    LANG=C
+    export LANG
+    unset DISPLAY
+    LD_AS_NEEDED=1; export LD_AS_NEEDED;
+
+    oe_runmake all
 }
 
 do_install() {
- export RPM_BUILD_ROOT=${D}
- cd ${S}
- LANG=C
- export LANG
- unset DISPLAY
- rm -rf ${D}
- install -d ${D}
+    export RPM_BUILD_ROOT=${D}
+    cd ${S}
+    LANG=C
+    export LANG
+    unset DISPLAY
+    rm -rf ${D}
+    install -d ${D}
 
- oe_runmake install \
-  DESTDIR=${D} \
-  #eol
+    oe_runmake install \
+        DESTDIR=${D} \
+        #eol
 
-  install -d ${D}${base_libdir}/systemd/system
-  install ${S}/extra/iotivity-example.service ${D}${base_libdir}/systemd/system/${PN}.service
+    install -d ${D}${base_libdir}/systemd/system
+    install ${S}/extra/iotivity-example.service \
+        ${D}${base_libdir}/systemd/system/${PN}.service
 }
 
 FILES_${PN} += "${LOCAL_OPT_DIR}/${PN}/*"
