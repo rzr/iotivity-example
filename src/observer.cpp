@@ -174,19 +174,19 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
-    double lat = 0;
-    double lon = 0;
+    double latitude = 0;
+    double longitude = 0;
 
-    if (rep.hasAttribute("lat"))
+    if (rep.hasAttribute("latitude"))
     {
-        lat = rep.getValue<double>("lat");
+        latitude = rep.getValue<double>("latitude");
     }
-    if (rep.hasAttribute("lon"))
+    if (rep.hasAttribute("longitude"))
     {
-        lon = rep.getValue<double>("lon");
+        longitude = rep.getValue<double>("longitude");
     }
 
-    cout << "location: " << lat << ", " << lon<<endl;
+    cout << "location: " << latitude << ", " << longitude<<endl;
 }
 
 
