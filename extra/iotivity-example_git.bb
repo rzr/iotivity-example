@@ -6,15 +6,14 @@ SECTION = "apps"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRCREV = "master"
+SRCREV = "sandbox/pcoval/iotivity-node"
 SRC_URI = "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobranch=1"
 
 S = "${WORKDIR}/git"
 
 inherit systemd pkgconfig
 
-LOCAL_OPT_DIR = "/opt"
-
+LOCAL_INSTALL_DIR = "/usr/lib/node_modules/iotivity-node/extra/js"
 DEPENDS += " iotivity "
 BDEPENDS += " iotivity-dev "
 
@@ -39,10 +38,6 @@ do_compile_prepend() {
     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
     export PKG_CONFIG="PKG_CONFIG_SYSROOT_DIR=\"${PKG_CONFIG_SYSROOT_DIR}\" pkg-config"
     export LD_FLAGS="${LD_FLAGS}"
-
-    # TODO: remove this workaround for iotivity-1.1.1
-    # https://gerrit.iotivity.org/gerrit/#/c/13721
-    ln -fs /usr/include/assert.h src/stdassert.h
 }
 
 do_compile() {
@@ -72,5 +67,4 @@ do_install() {
   install ${S}/extra/iotivity-example.service ${D}${base_libdir}/systemd/system/${PN}.service
 }
 
-FILES_${PN} += "${LOCAL_OPT_DIR}/${PN}/*"
-FILES_${PN}-dbg += "${LOCAL_OPT_DIR}/${PN}/.debug"
+FILES_${PN} += "${LOCAL_INSTALL_DIR}/*"
