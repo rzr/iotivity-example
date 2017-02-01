@@ -42,62 +42,6 @@ Resource::~Resource()
 }
 
 
-void Resource::onGet(const HeaderOptions &headerOptions,
-                     const OCRepresentation &representation, int eCode)
-{
-    LOG();
-    if (eCode < OC_STACK_INVALID_URI)
-    {
-        bool value;
-        representation.getValue(Common::m_propname, value);
-        cout << value << endl;
-    }
-    else
-    {
-        cerr << "errror:: in GET response:" << eCode << endl;
-    }
-    IoTClient::menu();
-}
-
-void Resource::onPost(const HeaderOptions &headerOptions,
-                      const OCRepresentation &representation, int eCode)
-{
-    LOG();
-    if (eCode < OC_STACK_INVALID_URI)
-    {
-        bool value;
-        representation.getValue(Common::m_propname, value);
-        if (true) {
-            std::cout<<value<<std::endl;
-        } else {
-            Platform::getInstance().setValue(value); //dont clash with server
-        }
-    } 
-    else
-    {
-        cerr << "error: in POST response: " << eCode <<  endl;
-    }
-    IoTClient::menu();
-}
-
-
-void Resource::get()
-{
-    LOG();
-    QueryParamsMap params;
-    m_OCResource->get(params, m_GETCallback);
-}
-
-void Resource::post(bool value)
-{
-    LOG();
-    QueryParamsMap params;
-    OCRepresentation rep;
-    rep.setValue(Common::m_propname, value);
-    m_OCResource->post(rep, params, m_POSTCallback);
-}
-
-
 IoTClient::IoTClient()
 {
     LOG();
@@ -201,6 +145,45 @@ void IoTClient::print(shared_ptr<OCResource> resource)
 }
 
 
+void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                          const int &eCode, const int &sequenceNumber)
+{
+    LOG();
+    try
+    {
+        if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
+        {
+            if (sequenceNumber == OC_OBSERVE_REGISTER)
+            {
+                cerr << "Observe registration action is successful" << endl;
+            }
+            else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
+            {
+                cerr << "Observe De-registration action is successful" << endl;
+            }
+            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
+        }
+        else
+        {
+            if (sequenceNumber == OC_OBSERVE_NO_OPTION)
+            {
+                cerr << "warning: Observe registration or de-registration action is failed" << endl;
+            }
+            else
+            {
+                cerr << "error: onObserve Response error=" << eCode << endl;
+                //exit(-1);
+            }
+        }
+    }
+    catch (exception &e)
+    {
+        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
+    }
+
+}
+
+
 void IoTClient::input()
 {
     cerr << endl << "menu: "
@@ -210,47 +193,6 @@ void IoTClient::input()
 }
 
 
-<<<<<<< HEAD
-=======
-bool IoTClient::toggle()
-{
-    Common::log(__PRETTY_FUNCTION__);
-
-    bool value = !m_value;
-    Common::log(value ? "1" : "0");
-    if (m_Resource)
-    {
-        m_Resource->post(value);
-    }
-    else
-    {
-        cerr << "log: resource not yet discovered" << endl;
-        Common::log("log: resource not yet discovered");
-    }
-
-    return m_value;
-}
-
-
-bool IoTClient::setValue(bool value)
-{
-    Common::log(__PRETTY_FUNCTION__);
-
-    if (m_Resource)
-    {
-        m_Resource->post(value);
-    }
-    else
-    {
-        cerr << "log: resource not yet discovered" << endl;
-        Common::log("log: resource not yet discovered");
-    }
-
-    return m_value;
-}
-
-
->>>>>>> 6bddd0f... WIP: mod: src/client.cpp (master)
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
