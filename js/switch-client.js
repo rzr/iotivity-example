@@ -15,7 +15,7 @@
 // limitations under the License.
 
 var iotivity = require( "iotivity-node/lowlevel" );
-var sampleUri = "/BinarySwitchResURI";
+var resourcePath = "/BinarySwitchResURI";
 var sampleResourceType = "oic.r.switch.binary";
 var gDestination = null;
 
@@ -24,11 +24,18 @@ handleReceptacle = {};
 
 var stdin = Object.getPrototypeOf(process.stdin);
 
-function post(value, destination)
+function update(value, destination)
 {
     console.log( "post: value=" + value + "\n" );
+    console.log(destination);
 
-    if ( ! destination ) return;
+    if ( null === destination ) {
+        if (gDestination === null)  {
+            discover();
+            return; 
+        } else { destination = gDestination; }
+    }
+
     value = (1 == value);
 
     postHandleReceptacle = {};
@@ -41,7 +48,7 @@ function post(value, destination)
     iotivity.OCDoResource(
         postHandleReceptacle,
         iotivity.OCMethod.OC_REST_POST,
-        sampleUri,
+        resourcePath,
         destination,
         {
             type: iotivity.OCPayloadType.PAYLOAD_TYPE_REPRESENTATION,
@@ -58,15 +65,15 @@ function post(value, destination)
 }
 
 
-function menu(destination)
+function input(destination)
 {
-    console.log( "menu:" + destination);
+    console.log( "input:" + destination);
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
     var value = 0;
     process.stdin.on('data', function (input) {
         value = parseInt(input.trim(), 10);
-        post(value, destination);
+        update(value, destination);
     });
 }
 
@@ -86,7 +93,7 @@ function discover()
             console.log( "Received response to DISCOVER request:" );
             console.log( JSON.stringify( response, null, 4 ) );
             var index,
-            destination = response.addr,
+            gDestination = response.addr,
             postHandleReceptacle = {},
             resources = response && response.payload && response.payload.resources,
             resourceCount = resources ? resources.length : 0,
@@ -95,12 +102,12 @@ function discover()
                 console.log( JSON.stringify( response, null, 4 ) );
                 return iotivity.OCStackApplicationResult.OC_STACK_DELETE_TRANSACTION;
             };
-            console.log( "destination=" + JSON.stringify( destination, null, 4 ) );
+            console.log( "destination=" + JSON.stringify( response.addr, null, 4 ) );
             console.log( "resources=" + JSON.stringify(resources) );
             var value = true;
             for ( index = 0; index < resourceCount; index++ ) {
-                if ( resources[ index ].uri === sampleUri ) {
-                    menu(destination);
+                if ( resources[ index ].uri === resourcePath ) {
+                    input(response.addr);
                 }
             }
             return iotivity.OCStackApplicationResult.OC_STACK_KEEP_TRANSACTION;
@@ -110,10 +117,17 @@ function discover()
 
 }
 
+exports.discover = discover;
+exports.update = update;
+exports.main = function()
+{
+    iotivity.OCInit( null, 0, iotivity.OCMode.OC_CLIENT );
+    exports.discover();
+    intervalId = setInterval( function() {
+        iotivity.OCProcess();
+    }, 1000 );
+}
 
-console.log( "Starting OCF stack in client mode" );
-iotivity.OCInit( null, 0, iotivity.OCMode.OC_CLIENT );
-discover();
-intervalId = setInterval( function() {
-    iotivity.OCProcess();
-}, 1000 );
+if (require.main === module) {
+    exports.main();
+}
