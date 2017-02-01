@@ -29,7 +29,6 @@ that share an IoTivity resource.
 
 %__make %{?_smp_mflags} \
     PLATFORM=TIZEN \
-    config_pkgconfig=1 \
     #eol
 
 %install
@@ -37,7 +36,6 @@ that share an IoTivity resource.
     DESTDIR=%{buildroot}/ \
     name=%{name} \
     PLATFORM=TIZEN \
-    config_pkgconfig=1 \
     #eol
 
 make %{name}.service
