@@ -41,23 +41,18 @@ class IoTServer
         static int main(int argc, char *argv[]);
 
     protected:
-        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        OC::OCRepresentation m_Representation;
-        OCResourceHandle m_ResourceHandle;
-
+        static void handle_signal(int signal);
         void init();
         void setup();
         OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
-
-        OC::OCRepresentation getResourceRepresentation();
-        void postResourceRepresentation();
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
         OCStackResult handlePost(std::shared_ptr<OC::OCResourceRequest> request);
         OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
         OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
-
-        static void handle_signal(int signal);
-
+    protected:
+        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        OC::OCRepresentation m_Representation;
+        OCResourceHandle m_ResourceHandle;
         static bool m_over;
 };
 
