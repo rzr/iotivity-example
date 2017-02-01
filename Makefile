@@ -36,9 +36,6 @@ ifeq (${config_pkgconfig},1)
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
 LIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
-CPPFLAGS+=-I${iotivity_dir}/resource/c_common
-CPPFLAGS+=-I${iotivity_dir}/resource/oc_logger
-CPPFLAGS+=-I${iotivity_dir}/resource/stack
 else
 LIBS+=-loc -loc_logger -loctbstack
 CPPFLAGS+=-I${iotivity_dir}
@@ -53,8 +50,8 @@ CPPFLAGS+=-I.
 
 DESTDIR?=/
 local_bindir?=bin
-local_optdir?=/opt
-install_dir?=${DESTDIR}${local_optdir}/${package}/
+optdir?=/opt
+install_dir?=${DESTDIR}${optdir}/${package}/
 _unitdir?=/lib/systemd/
 
 vpath+=src
@@ -111,18 +108,18 @@ distclean: cleanall
 	-rm iotivity
 
 install: ${exes}
-	install -d ${install_dir}
-	install $^ ${install_dir}
+	install -d ${install_dir}/bin
+	install $^ ${install_dir}/bin
 
 rule/install/service: ${name}.service
 	install -d ${DESTDIR}${_unitdir}/
 	install $< ${DESTDIR}${_unitdir}/
 
 ${name}.service: extra/iotivity-example.service
-	sed -e "s|ExecStart=.*|ExecStart=${local_optdir}/%{name}/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${optdir}/%{name}/bin/server|g" < $< > $@
 
 iotivity: ${include_dir}
-	@echo "TODO: workaround for namespace"
+	@echo "# TODO: workaround for namespace"
 	-@rm -f $@
 	ls $</iotivity && ln -fs $</iotivity $@ || ln -fs $< $@
 	ls -l $@
@@ -138,21 +135,17 @@ xterm/% : ${local_bindir}/%
 
 run: run/server
 
-run/client-auto:  ${local_bindir}/client
-	-while true ; do echo 2 ; sleep 5 ;  done | $<
-
-xterm/client-auto : ${local_bindir}/client
-	sleep 5
-	xterm -e ${MAKE} run/${@F} &
-	sleep 5
-
 auto: all xterm/server  run/client-auto
 	killall client server
 
 demo:all xterm/server  run/client
 	killall client server
 
-help:
+help: README.md
+	cat $<
+	@echo "# type make longhelp for more"
+
+longhelp:
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
 	set
