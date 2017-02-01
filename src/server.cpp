@@ -34,18 +34,20 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
-IoTServer::IoTServer(string property, bool value)
+IoTServer::IoTServer(string endpoint)
 {
     LOG();
+    Common::m_endpoint = endpoint;
     init();
     setup();
-    m_Representation.setValue(property, value);
 }
+
 
 IoTServer::~IoTServer()
 {
     LOG();
 }
+
 
 void IoTServer::init()
 {
@@ -97,7 +99,6 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
         else
             cerr << "log: Successfully created " << type << " resource" << endl;
     }
-
     catch (OC::OCException &e)
     {
         cerr << "error: OCException " <<  e.reason().c_str() << " " << hex << e.code();
@@ -108,14 +109,6 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
     return result;
 }
 
-
-void IoTServer::postResourceRepresentation()
-{
-    LOG();
-    bool value = 0;
-    m_Representation.getValue(Common::m_propname, value);
-    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
-}
 
 OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
 {
@@ -132,43 +125,6 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
     return result;
 }
 
-OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
-    OCRepresentation requestRep = request->getResourceRepresentation();
-    if (requestRep.hasAttribute(Common::m_propname))
-    {
-        try
-        {
-            bool value = requestRep.getValue<bool>(Common::m_propname);
-            Platform::getInstance().setValue(value);
-        }
-        catch (...)
-        {
-            cerr << "error: Client sent invalid resource value type" << endl;
-            return result;
-        }
-    }
-    else
-    {
-        cerr << "error: Client sent invalid resource property" << endl;
-        return result;
-    }
-    m_Representation = requestRep;
-    postResourceRepresentation();
-
-    return result;
-}
-
-OCStackResult IoTServer::handleGet(shared_ptr<OCResourceRequest> request)
-{
-    LOG();
-    OCStackResult result = OC_STACK_OK;
-
-    return result;
-}
 
 OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
 {
@@ -184,40 +140,6 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
-
-            if (requestType == "POST")
-            {
-                if (handlePost(request) == OC_STACK_OK)
-                {
-                    if (respond(response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
-                }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                }
-                ;;
-            }
-            else if (requestType == "GET")
-            {
-                if (handleGet(request) == OC_STACK_OK)
-                {
-                    if (respond(response) == OC_STACK_OK)
-                    {
-                        result = OC_EH_OK;
-                    }
-                }
-                else
-                {
-                    response->setResponseResult(OC_EH_ERROR);
-                    OCPlatform::sendResponse(response);
-                }
-
-            }
-            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
@@ -246,24 +168,31 @@ int IoTServer::main(int argc, char *argv[])
     sigaction(SIGINT, &sa, nullptr);
 
     cerr << "log: Server: " << endl
-         << "Press Ctrl-C to quit...." << endl;
+         << "Press Ctrl-C to quit...." << endl
+         << "Usage: server -v" << endl
+         ;
 
+    int subargc = argc;
+    char **subargv = argv;
     for (int i = 1; i < argc; i++)
     {
         if (0 == strcmp("-v", argv[i]))
         {
             Common::m_logLevel++;
+            argc--;
+            subargv++;
         }
     }
 
-    Platform::getInstance().setup(argc, argv);
+    Platform::getInstance().setup(subargc, subargv);
 
     IoTServer server;
     try
     {
+        int delay = Common::m_period;
         do
         {
-            usleep(2000000);
+            sleep(delay);
         }
         while (!IoTServer::m_over );
     }

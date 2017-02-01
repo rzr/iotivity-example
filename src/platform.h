@@ -30,13 +30,11 @@ class Platform
 
         Platform() {}
 
-        ~Platform();
+        virtual ~Platform();
 
         static Platform &getInstance() { static Platform instance; return instance; }
 
         void setup(int argc = 0, char *argv[] = 0);
-
-        void setValue(bool value);
 
         static void log(char const *const message);
 
