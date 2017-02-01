@@ -46,14 +46,10 @@ class Resource
 class IoTClient
 {
     public:
-        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+        static int main(int argc, char *argv[]);
 
-        static void onObserve(const OC::HeaderOptions /*headerOptions*/,
-                              const OC::OCRepresentation &rep,
-                              const int &eCode, const int &sequenceNumber);
         static void input();
 
-        static int main(int argc, char *argv[]);
     public:
         std::shared_ptr<Resource> getResource();
         void start();
