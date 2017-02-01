@@ -40,32 +40,26 @@ class Common
         static std::string  m_type;
         /** url's path (used both sides) **/
         static std::string  m_endpoint;
-        /** key (used both sides) **/
-        static std::string  m_propname;
         /** polling period**/
         static int m_period;
         /** log enabled if positive **/
         static int m_logLevel;
+    public:
         static void log(char const *const message);
 };
-
-#define STR_(x) #x
-#define STR(x) STR_(x)
 
 #include <iostream>
 
 class Logger
 {
-        const char *mMessage;
     public:
-
         Logger(const char *message);
         ~Logger();
+    protected:
+        const char *mMessage;
 };
 
 #define LOG()                                   \
     Logger localLoggerObject ## __LINE__ (__PRETTY_FUNCTION__)
 
-
-//TODO: << " @"<< __FILE__<<":"<<__LINE__<<":"<<
 #endif /* COMMON_H_ */
