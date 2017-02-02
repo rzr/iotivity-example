@@ -107,6 +107,21 @@ EOF
 
 }
 
+fetch_()
+{
+    # TODO: Unpackaged demo
+    cd /usr/lib/node_modules/iotivity-node/
+    url=http://github.com/TizenTeam/iotivity-example
+    branch=sandbox/pcoval/demo
+    unit=iotivity-example-demo
+    rm -rfv /usr/lib/node_modules/iotivity-node/$unit
+    git config --global user.email "iotivity-example-demo@localhost"
+    git config --global user.name "iotivity-example-demo developer"
+    git clone $url -b $branch $unit
+    cd /usr/lib/node_modules/iotivity-node/$unit/js
+    chmod a+rx *.sh
+}
+
 
 setup_()
 {
@@ -135,23 +150,14 @@ setup_()
         $sudo rm -v "$file"
     fi
 
+    fetch_
+
     # TODO: Unpackaged depandencies for demo
     npm install lcd
     npm install bh1750
     npm install node-rest-client
 
-    # TODO: Unpackaged demo
-    cd /usr/lib/node_modules/iotivity-node/
-    rm -rfv /usr/lib/node_modules/iotivity-node/iotivity-example ||:
-    url=http://github.com/TizenTeam/iotivity-example
-    branch=sandbox/pcoval/demo
-    git config --global user.email "iotivity-example-demo@localhost"
-    git config --global user.name "iotivity-example-demo developer"
-    git clone $url -b $branch
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
-    chmod a+rx *.sh
-    ln -fs /usr/lib/node_modules/iotivity-node/iotivity-example /mnt/
-    ln -fs /usr/lib/node_modules/iotivity-node /mnt/
+
     enable_
 }
 
