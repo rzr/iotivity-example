@@ -186,6 +186,12 @@ build_()
 }
 
 
+unp_()
+{
+    # TODO: use unp if present
+    rpm2cpio "$1" | cpio -idmv
+}
+
 deploy_()
 {
     ls .tproject || die_ "TODO"
@@ -193,8 +199,8 @@ deploy_()
     rm -rf usr lib
     mkdir -p usr lib
 
-    unp ${rpmdir}/iotivity-${version}[0-9]*-*.${arch}.rpm
-    unp ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm
+    unp_ ${rpmdir}/iotivity-${version}[0-9]*-*.${arch}.rpm
+    unp_ ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm
 
     ln -fs ${rootfs}/usr/include/boost usr/include/
     # TODO
@@ -244,7 +250,7 @@ main_()
 
     case "$profile" in
         "tizen_2_3_1_wearable")
-            deps="scons boost libx11 iotivity"
+            deps="scons libx11 iotivity"
             ;;
         "tizen_2_4_mobile")
             deps="iotivity"
