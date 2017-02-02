@@ -37,9 +37,13 @@ class Resource
     public:
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
+        void get();
+    protected:
+        void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
     protected:
         std::shared_ptr<OC::OCResource> m_OCResource;
         OC::OCRepresentation m_Representation;
+        OC::GetCallback m_GETCallback;
 };
 
 
@@ -48,7 +52,9 @@ class IoTClient
     public:
         static int main(int argc, char *argv[]);
 
-        static void input();
+        static void handle(const OC::HeaderOptions /*headerOptions*/,
+                           const OC::OCRepresentation &rep,
+                           const int &eCode, const int &sequenceNumber);
 
     public:
         std::shared_ptr<Resource> getResource();

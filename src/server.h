@@ -38,18 +38,27 @@ class IoTServer
         virtual ~IoTServer();
     public:
         static int main(int argc, char *argv[]);
+        void update();
     protected:
         static void handle_signal(int signal);
         void init();
         void setup();
         OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
+        OCStackResult handlePost(std::shared_ptr<OC::OCResourceRequest> request);
+        OCStackResult handleGet(std::shared_ptr<OC::OCResourceRequest> request);
         OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::OCRepresentation m_Representation;
         OCResourceHandle m_ResourceHandle;
         static bool m_over;
+    protected:
+        static double m_lat;
+        static double m_lon;
+        static double m_latmax;
+        static double m_latmin;
+        static double m_offset;
 };
 
 #endif /* SERVER_H_ */
