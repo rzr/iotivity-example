@@ -26,7 +26,7 @@
 #include "platform.h"
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
-std::string Common::m_type = "org.example.dummy";
+std::string Common::m_type = "org.example.r.dummy";
 std::string Common::m_endpoint = "/DummyResURI";
 
 int Common::m_logLevel = 0;
