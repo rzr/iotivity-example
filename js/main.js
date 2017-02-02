@@ -47,8 +47,8 @@ function main()
                  );
         if (gThreshold > properties.illuminance) {
             if (gGelocation) {
-                var data = { "lattitude": gGelocation.lat,
-                             "longitude": gGelocation.lon,
+                var data = { "lattitude": gGelocation.lattitude,
+                             "longitude": gGelocation.longitude,
                              "illuminance": properties.illuminance };
                 log("alert: " + JSON.stringify(data));
                 try {

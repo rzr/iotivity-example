@@ -9,10 +9,10 @@ URL: http://wiki.iotivity.org/automotive
 Contact: https://wiki.tizen.org/wiki/User:Pcoval
 Status: WIP
 
-systemctl status iotivity-demo
+systemctl status iotivity-example-demo
 
-systemctl stop iotivity-demo
-sh /usr/lib/node_modules/iotivity-node/iotivity-example/extra/iotivity-demo.sh
+systemctl stop iotivity-example-demo
+sh /usr/lib/node_modules/iotivity-node/iotivity-example/extra/iotivity-example-demo.sh
 
 TODO: 
 client on linux pi, server on arduino:
@@ -21,7 +21,7 @@ error: in POST response: 132
 cd /usr/lib/node_modules/iotivity-node/iotivity-example/
 git commit -sam WIP && git push
 
-systemctl restart iotivity-demo
+systemctl restart iotivity-example-demo
 journalctl -f
 EOF
 }
@@ -31,7 +31,7 @@ stop_()
 {    
     systemctl stop iotivity-example
     systemctl stop iotivity-example-csdk
-    systemctl stop iotivity-example-demo
+#   systemctl stop iotivity-example-demo
     systemctl stop iotivity-example-geolocation
     systemctl stop iotivity-example-gpio
     systemctl stop iotivity-example-mraa
@@ -48,7 +48,7 @@ stop_()
 
 kill_()
 {
-    systemctl stop iotivity-demo
+    systemctl stop iotivity-example-demo
     stop_
 }
 
@@ -63,10 +63,44 @@ download_()
         && echo 'nameserver 8.8.8.8' \
         | sudo tee -a /etc/resolv.conf
 
-    url='https://raw.githubusercontent.com/TizenTeam/iotivity-example/sandbox/pcoval/demo/extra/iotivity-demo.sh'
-    curl "$url" > iotivity-demo.sh.tmp \
-        && mv iotivity-demo.sh.tmp iotivity-demo.sh
-    chmod a+rx iotivity-demo.sh
+    url='https://raw.githubusercontent.com/TizenTeam/iotivity-example/sandbox/pcoval/demo/extra/iotivity-example-demo.sh'
+    curl "$url" > iotivity-example-demo.sh.tmp \
+        && mv iotivity-example-demo.sh.tmp iotivity-example-demo.sh
+    chmod a+rx iotivity-example-demo.sh
+}
+
+
+
+enable_()
+{
+    unit=iotivity-example-demo
+    exe=/usr/lib/node_modules/iotivity-node/$unit/extra/$unit.sh
+    service=/usr/local/share/$unit.service
+    chmod a+rx $exe
+    chmod a-x /lib/systemd/system/*.service $service
+
+    mkdir -p /usr/local/share && cat<<EOF | tee "$service"
+[Unit]
+Description=$unit
+After=network.target
+
+[Service]
+ExecStart=${exe}
+Restart=always
+
+[Install]
+WantedBy=default.target
+EOF
+
+    systemctl disable $service ||:
+    systemctl stop $unit ||:
+    systemctl enable $service
+    systemctl start $unit
+    systemctl status $unit
+
+    ps | grep $unit
+    ps | grep iotivity
+
 }
 
 
@@ -80,13 +114,13 @@ setup_()
     systemctl disable iotivity-example ||:
     systemctl disable iotivity-example-csdk ||:
     systemctl disable iotivity-example-demo ||:
-    # systemctl disable iotivity-example-geolocation ||:
+    systemctl disable iotivity-example-geolocation ||:
     systemctl disable iotivity-example-gpio ||:
     systemctl disable iotivity-example-mraa ||:
     systemctl disable iotivity-example-number ||:
     systemctl disable iotivity-example-switch ||:
-    systemctl stop iotivity-demo ||:
-    systemctl disable iotivity-demo ||:
+    systemctl stop iotivity-example-demo ||:
+    systemctl disable iotivity-example-demo ||:
 
     # TODO: patch OS
     # https://jira.automotivelinux.org/browse/SPEC-366
@@ -107,43 +141,14 @@ setup_()
     rm -rfv /usr/lib/node_modules/iotivity-node/iotivity-example ||:
     url=http://github.com/TizenTeam/iotivity-example
     branch=sandbox/pcoval/demo
-    git config --global user.email "iotivity-demo@localhost"
-    git config --global user.name "iotivity-demo developer"
+    git config --global user.email "iotivity-example-demo@localhost"
+    git config --global user.name "iotivity-example-demo developer"
     git clone $url -b $branch
     cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
     chmod a+rx *.sh
     ln -fs /usr/lib/node_modules/iotivity-node/iotivity-example /mnt/
     ln -fs /usr/lib/node_modules/iotivity-node /mnt/
-
-    # OCF
-    unit=iotivity-demo
-    exe=/usr/lib/node_modules/iotivity-node/iotivity-example/extra/iotivity-demo.sh
-    service=/usr/local/share/$unit.service
-    chmod a+rx $exe
-    chmod a-x /lib/systemd/system/*.service
-
-    mkdir -p /usr/local/share && cat<<EOF | tee "$service"
-[Unit]
-Description=$unit
-After=network.target
-
-[Service]
-ExecStart=$exe
-Restart=always
-
-[Install]
-WantedBy=default.target
-EOF
-
-    systemctl disable $service ||:
-    systemctl stop $unit ||:
-    systemctl enable $service
-    systemctl start $unit
-    systemctl status $unit
-
-    ps | grep $unit
-    ps | grep iotivity
-
+    enable_
 }
 
 
@@ -327,7 +332,7 @@ check_()
         log_ "$line"
     done
 
-    geolocation_
+#   geolocation_
 
 
     log_ "binaryswitch"
@@ -419,6 +424,10 @@ journal_()
 run_()
 {
     cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
+
+    sh -x main-devel.sh
+
+    exit 0
     node illuminance-server.js > /dev/null &
 
     node main.js \
@@ -439,7 +448,7 @@ run_()
 main_()
 {
     #   download_
-    #   bash -x ~/iotivity-demo.sh setup_
+    #   bash -x ~/iotivity-example-demo.sh setup_
     check_
 
     #    sh -x /usr/lib/node_modules/iotivity-node/iotivity-example/js/main.sh
