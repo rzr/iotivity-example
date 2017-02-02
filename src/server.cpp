@@ -34,6 +34,14 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
+double IoTServer::m_lat = 48.1033;
+double IoTServer::m_lon = -1.6725;
+double IoTServer::m_offset = 0.001;
+
+
+double IoTServer::m_latmax = 49;
+double IoTServer::m_latmin = 48;
+
 IoTServer::IoTServer(string endpoint)
 {
     LOG();
@@ -139,6 +147,22 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+
+            if (requestType == "GET")
+            {
+                cerr << "GET request for platform Resource" << endl;
+                if (response)
+                {
+                    response->setErrorCode(200);
+                    response->setResponseResult(OC_EH_OK);
+                    response->setResourceRepresentation(m_Representation);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
@@ -147,6 +171,30 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
         }
     }
     return result;
+}
+
+
+void IoTServer::update()
+{
+    LOG();
+    {
+        m_lat += m_offset;
+        m_lon += m_offset;
+
+        if (m_lat > m_latmax)
+        {
+            if (m_offset > 0) { m_offset = - m_offset; }
+        }
+        else if (m_lat < m_latmin)
+        {
+            if ( m_offset < 0 ) m_offset = - m_offset;
+        }
+
+        m_Representation.setValue("latitude", m_lat);
+        m_Representation.setValue("longitude", m_lon);
+
+        cerr << "location: " << std::fixed << m_lat << "," << std::fixed << m_lon << endl;
+    }
 }
 
 
@@ -189,8 +237,27 @@ int IoTServer::main(int argc, char *argv[])
     try
     {
         int delay = Common::m_period;
+        if ((argc > 1) && argv[1])
+        {
+            delay = atoi(argv[1]);
+        }
+        if ((argc > 2) && argv[2])
+        {
+            server.m_offset = atof(argv[2]);
+        }
+        if ((argc > 3) && argv[3])
+        {
+            server.m_lat = atof(argv[3]);
+        }
+        if ((argc > 4) && argv[4])
+        {
+            server.m_lon = atof(argv[4]);
+        }
+        server.m_latmax = server.m_lat + 1;
+        server.m_latmin = server.m_lat - 1;
         do
         {
+            server.update();
             sleep(delay);
         }
         while (!IoTServer::m_over );

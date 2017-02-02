@@ -38,5 +38,6 @@ class Platform
 
         static void log(char const *const message);
 
+        static void setValue(float latitude, float longitude);
 };
 #endif // PLATFORM_H_

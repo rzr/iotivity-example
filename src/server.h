@@ -38,6 +38,7 @@ class IoTServer
         virtual ~IoTServer();
     public:
         static int main(int argc, char *argv[]);
+        void update();
     protected:
         static void handle_signal(int signal);
         void init();
@@ -52,6 +53,12 @@ class IoTServer
         OC::OCRepresentation m_Representation;
         OCResourceHandle m_ResourceHandle;
         static bool m_over;
+    protected:
+        static double m_lat;
+        static double m_lon;
+        static double m_latmax;
+        static double m_latmin;
+        static double m_offset;
 };
 
 #endif /* SERVER_H_ */

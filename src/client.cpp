@@ -35,10 +35,57 @@ Resource::Resource(shared_ptr<OCResource> resource)
 {
     LOG();
     m_OCResource = resource;
+    m_GETCallback = bind(&Resource::onGet, this,
+                         placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
 {
+}
+
+// TODO: overide with your business logic
+void IoTClient::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                       const int &eCode, const int &sequenceNumber)
+{
+    LOG();
+    double latitude = 0;
+    double longitude = 0;
+
+    if (rep.hasAttribute("latitude"))
+    {
+        latitude = rep.getValue<double>("latitude");
+    }
+    if (rep.hasAttribute("longitude"))
+    {
+        longitude = rep.getValue<double>("longitude");
+    }
+    Platform::setValue(latitude,longitude);
+    cout << "location: " << latitude << ", " << longitude << std::endl;
+}
+
+
+
+void Resource::onGet(const HeaderOptions &headerOptions,
+                     const OCRepresentation &representation, int eCode)
+{
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
+    {
+        IoTClient::handle(headerOptions, representation, eCode, 0);
+    }
+    else
+    {
+        cerr << "errror:: in GET response:" << eCode << endl;
+    }
+
+}
+
+
+void Resource::get()
+{
+    LOG();
+    QueryParamsMap params;
+    m_OCResource->get(params, m_GETCallback);
 }
 
 
@@ -115,8 +162,6 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
                 m_Resource = make_shared<Resource>(resource);
-
-                input();
             }
 
         }
@@ -145,18 +190,11 @@ void IoTClient::print(shared_ptr<OCResource> resource)
 }
 
 
-void IoTClient::input()
-{
-    cerr << endl << "menu: "
-         << "  9) Quit"
-         << "  *) Display this menu"
-         << endl;
-}
-
 
 int IoTClient::main(int argc, char *argv[])
 {
     IoTClient::getInstance()->start();
+    int delay = 5;
 
     for (int i = 1; i < argc; i++)
     {
@@ -165,21 +203,12 @@ int IoTClient::main(int argc, char *argv[])
             Common::m_logLevel++;
         }
     }
-
-    int choice;
-    do
+    while (delay >= 0)
     {
-        cin >> choice;
-        switch (choice)
-        {
-            case 9:
-                return 0;
-            default:
-                IoTClient::input();
-                break;
-        }
+        sleep(delay);
+        shared_ptr<Resource> resource = IoTClient::getInstance()->getResource();
+        if (resource) resource->get();;
     }
-    while (choice != 9);
     return 0;
 }
 
