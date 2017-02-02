@@ -23,8 +23,8 @@
 
 default: all
 
-package?=iotivity-example
-name?=${package}
+name?=iotivity-example
+
 config_pkgconfig?=0
 export config_pkgconfig
 
@@ -51,7 +51,7 @@ CPPFLAGS+=-I.
 DESTDIR?=/
 local_bindir?=bin
 optdir?=/opt
-install_dir?=${DESTDIR}${optdir}/${package}/
+install_dir?=${DESTDIR}${optdir}/${name}/
 _unitdir?=/lib/systemd/
 
 vpath+=src
