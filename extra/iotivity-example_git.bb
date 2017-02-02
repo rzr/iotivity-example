@@ -47,7 +47,9 @@ do_compile() {
     unset DISPLAY
     LD_AS_NEEDED=1; export LD_AS_NEEDED;
 
-    oe_runmake all
+    oe_runmake all \
+        name=${PN} \
+	#eol
 }
 
 do_install() {
@@ -61,12 +63,13 @@ do_install() {
 
     oe_runmake install \
         DESTDIR=${D} \
+        name=${PN} \
         #eol
 
     install -d ${D}${base_libdir}/systemd/system
-    install ${S}/extra/iotivity-example.service \
+    install ${PN}.service \
         ${D}${base_libdir}/systemd/system/${PN}.service
 }
 
-FILES_${PN} += "${LOCAL_OPT_DIR}/${PN}/*"
-FILES_${PN}-dbg += "${LOCAL_OPT_DIR}/${PN}/.debug"
+FILES_${PN} += "${LOCAL_OPT_DIR}/${PN}/bin/*"
+FILES_${PN}-dbg += "${LOCAL_OPT_DIR}/${PN}/bin/.debug"
