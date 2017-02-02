@@ -174,6 +174,19 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
+    double latitude = 0;
+    double longitude = 0;
+
+    if (rep.hasAttribute("latitude"))
+    {
+        latitude = rep.getValue<double>("latitude");
+    }
+    if (rep.hasAttribute("longitude"))
+    {
+        longitude = rep.getValue<double>("longitude");
+    }
+
+    cout << "geolocation: " << latitude << ", " << longitude<<endl;
 }
 
 

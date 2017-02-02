@@ -26,8 +26,9 @@
 #include "platform.h"
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
-std::string Common::m_type = "org.example.r.example";
-std::string Common::m_endpoint = "/ExampleResURI";
+
+std::string Common::m_type = "oic.r.geolocation";
+std::string Common::m_endpoint = "/GeolocationResURI";
 
 int Common::m_logLevel = 0;
 int Common::m_period = 5;

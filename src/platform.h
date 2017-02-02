@@ -1,8 +1,6 @@
 // -*-c++-*-
 //******************************************************************
 //
-// Copyright 2014 Intel Corporation.
-// Copyright 2015 Eurogiciel <philippe.coval@eurogiciel.fr>
 // Copyright 2016 Samsung <philippe.coval@osg.samsung.com>
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -38,5 +36,6 @@ class Platform
 
         static void log(char const *const message);
 
+        static void setValue(float latitude, float longitude);
 };
 #endif // PLATFORM_H_
