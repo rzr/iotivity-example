@@ -32,6 +32,7 @@ export config_pkgconfig
 iotivity_dir?=iotivity
 includedir?=/usr/include
 include_dir?=${PKG_CONFIG_SYSROOT_DIR}/${includedir}
+
 ifeq (${config_pkgconfig},1)
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
 LIBS+=$(shell pkg-config iotivity --libs)
@@ -46,6 +47,8 @@ CPPFLAGS+=-I${iotivity_dir}/resource/stack
 all+=${iotivity_dir}
 srcs_all+=$(wildcard src/*.cpp)
 endif
+
+all+=${name}.service
 CPPFLAGS+=-I.
 
 DESTDIR?=/
@@ -116,7 +119,7 @@ rule/install/service: ${name}.service
 	install $< ${DESTDIR}${_unitdir}/
 
 ${name}.service: extra/iotivity-example.service
-	sed -e "s|ExecStart=.*|ExecStart=${optdir}/%{name}/bin/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${optdir}/${name}/bin/server|g" < $< > $@
 
 iotivity: ${include_dir}
 	@echo "# TODO: workaround for namespace"
