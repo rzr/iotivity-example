@@ -265,10 +265,11 @@ create_map_view(Evas_Object *parent)
 	m_parent_evas_obj = parent;
 	m_map_view_layout = view_layout;
 
-        //  Evas_Object *content = elm_layout_add(parent);
-//    __gl_content_get_by_type(content);
-//    evas_object_show(content);
-
+#if 0
+    Evas_Object *content = elm_layout_add(parent);
+    __gl_content_get_by_type(content);
+    evas_object_show(content);
+#endif //TODO
 	return view_layout;
 }
 
