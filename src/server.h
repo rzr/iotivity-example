@@ -36,10 +36,8 @@ class IoTServer
     public:
         IoTServer(std::string endpoint = Common::m_endpoint);
         virtual ~IoTServer();
-
     public:
         static int main(int argc, char *argv[]);
-
     protected:
         static void handle_signal(int signal);
         void init();
