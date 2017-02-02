@@ -447,16 +447,19 @@ run_()
 
 main_()
 {
+    log_ "{ main"
     #   download_
     #   bash -x ~/iotivity-example-demo.sh setup_
-    check_
+#   check_
 
     #    sh -x /usr/lib/node_modules/iotivity-node/iotivity-example/js/main.sh
 
     # wait all: agl
-    log_ "@TizenHelper"
+    log_ "OCF Automotive"
 
     run_
+
+    log_ "} main"
 }
 
 ###
