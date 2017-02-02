@@ -1,6 +1,10 @@
 #!/bin/sh
 
 set -x
+SELF=$0
+SELFDIR=$(dirname -- "$SELF")/../js/
+cd $SELFDIR
+
 
 usage_()
 {
@@ -225,7 +229,7 @@ geolocation_()
         sleep 1
         grep "$pattern" "$log" && found=true ||:
         killall client
-        log_ "failed: $pattern"
+        log_ "0: $pattern"
     done
     log_ "} $pattern $line"
 }
@@ -233,34 +237,33 @@ geolocation_()
 
 binaryswitch_()
 {
-    #   ping -c 1 $h && return
-
+    h=192.100.0.10
     pattern='log: Resource: uri: /BinarySwitchResURI'
     pattern="BinarySwitchResURI"
     log_ "{ $pattern $line"
     found=false
-    log="$(mktemp)"
+    log="$(mktemp).$pattern"
     rm -fv "$log"
+
     while ! $found ; do
-
-        h=192.100.0.10
         log_ ping $h
-
+        
         ping -c 1 $h \
             || while [ 0 != $? ] ; do
-            ping -c 1 $h && line "1: $h $pattern" ||:
+            ping -c 1 $h \
+                ||:
         done
-
-        log_ $pattern
-        found=false
-        found=true
-        if [ ! $found ] ; then
+#       found=true # TODO
+        line="1: $h $found"
+        log_ "$line"
+        sleep 1
+        if ! $found ; then
             /opt/iotivity-example-gpio/client -v 2>&1 \
                 | stdbuf -oL grep --line-buffered -m 1 "$pattern" \
                 | head -n1 | tee "$log" &
 
-            sleep 1
-            grep "$pattern" "$log" && found=true ||:
+            sleep 4
+            grep "$pattern" "$log" && declare found=true ||:
             killall client
         fi
 
@@ -269,9 +272,9 @@ binaryswitch_()
         #
 
         #        sleep 5
-        log_ "failed: $pattern"
+        log_ "0: $pattern"
     done
-
+    log_ "1: $pattern"
     log_ "} $pattern $line"
 }
 
@@ -343,7 +346,7 @@ check_()
 }
 
 
-log_()
+journal_()
 {
     journalctl -f &
     pid=$!
@@ -425,7 +428,7 @@ run_()
 {
     cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
 
-    sh -x main-devel.sh
+    sh -x main.sh
 
     exit 0
     node illuminance-server.js > /dev/null &
@@ -450,7 +453,7 @@ main_()
     log_ "{ main"
     #   download_
     #   bash -x ~/iotivity-example-demo.sh setup_
-#   check_
+    check_
 
     #    sh -x /usr/lib/node_modules/iotivity-node/iotivity-example/js/main.sh
 
