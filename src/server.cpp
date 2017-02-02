@@ -188,9 +188,10 @@ int IoTServer::main(int argc, char *argv[])
     IoTServer server;
     try
     {
+        int delay = Common::m_period;
         do
         {
-            usleep(2000000);
+            sleep(delay);
         }
         while (!IoTServer::m_over );
     }
