@@ -91,7 +91,7 @@ ${local_bindir}/observer: observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-all: help ${all}
+all: ${all}
 
 ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
@@ -148,4 +148,5 @@ help: README.md
 longhelp:
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
+	@echo "# config_pkgconfig=${config_pkgconfig}"
 	set
