@@ -116,11 +116,6 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
                 cerr << "resourceUri=" << resourceUri << endl;
                 m_Resource = make_shared<Resource>(resource);
 
-                if (true)   // multi-client need observe
-                {
-                    QueryParamsMap test;
-                    resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
-                }
                 input();
             }
 
@@ -149,43 +144,6 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     }
 }
 
-void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
-                          const int &eCode, const int &sequenceNumber)
-{
-    LOG();
-    try
-    {
-        if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
-        {
-            if (sequenceNumber == OC_OBSERVE_REGISTER)
-            {
-                cerr << "Observe registration action is successful" << endl;
-            }
-            else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
-            {
-                cerr << "Observe De-registration action is successful" << endl;
-            }
-            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
-        }
-        else
-        {
-            if (sequenceNumber == OC_OBSERVE_NO_OPTION)
-            {
-                cerr << "warning: Observe registration or de-registration action is failed" << endl;
-            }
-            else
-            {
-                cerr << "error: onObserve Response error=" << eCode << endl;
-                //exit(-1);
-            }
-        }
-    }
-    catch (exception &e)
-    {
-        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
-    }
-
-}
 
 void IoTClient::input()
 {
