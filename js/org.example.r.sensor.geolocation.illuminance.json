@@ -1,7 +1,7 @@
 {
   "fields": [
     {
-      "name": "lattitude",
+      "name": "latitude",
       "type": "CUSTOM",
       "valueClass": "Double",
       "isCollection": false,

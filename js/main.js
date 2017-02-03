@@ -33,7 +33,7 @@ function log(message) {
 function main()
 {
     var client = require("iotivity-node").client;
-    var Config = require('./artik-config-geolocation.js').Config;
+    var Config = require('./artik-config.js').Config;
     var sender = require('./artik-rest.js');
     var gThreshold = 200;
     var gGelocation = null;
@@ -47,13 +47,15 @@ function main()
                  );
         if (gThreshold > properties.illuminance) {
             if (gGelocation) {
-                var data = { "lattitude": gGelocation.lattitude,
+                var data = { "latitude": gGelocation.latitude,
                              "longitude": gGelocation.longitude,
                              "illuminance": properties.illuminance };
                 log("alert: " + JSON.stringify(data));
                 try {
-                    if (true) 
+                    if (true) {
+                        log("sending:");
                         sender.send(data, Config);
+                    }
                 } catch(err) {
                     log("error: sender");
                     log(err);

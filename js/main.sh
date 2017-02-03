@@ -1,5 +1,9 @@
 #!/bin/sh
 set -x
+SELF=$0
+SELFDIR=$(dirname -- "$SELF")/../js/
+cd $SELFDIR
+
 
 log_()
 {
@@ -10,15 +14,15 @@ log_()
 
 main_()
 {
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
-
-    # wait all: agl
-    log_ "@TizenHelper"
-
     node illuminance-server.js > /dev/null &
+    pid=$!
+
     node main.js \
         | /opt/iotivity-example-gpio/client
+
+    kill $pid
 }
+
 [ "" != "$1" ] || main_
 
 $@

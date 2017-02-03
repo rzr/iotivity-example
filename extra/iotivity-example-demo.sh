@@ -2,8 +2,9 @@
 
 set -x
 SELF=$0
-SELFDIR=$(dirname -- "$SELF")/../js/
-cd $SELFDIR
+SELFDIR=$(dirname -- "$SELF")/../
+JSDIR=$(dirname -- "$SELF")/../js/
+cd $JSDIR
 
 
 usage_()
@@ -36,7 +37,7 @@ stop_()
     systemctl stop iotivity-example
     systemctl stop iotivity-example-csdk
 #   systemctl stop iotivity-example-demo
-    systemctl stop iotivity-example-geolocation
+#   systemctl stop iotivity-example-geolocation
     systemctl stop iotivity-example-gpio
     systemctl stop iotivity-example-mraa
     systemctl stop iotivity-example-number
@@ -133,7 +134,7 @@ setup_()
     systemctl disable iotivity-example ||:
     systemctl disable iotivity-example-csdk ||:
     systemctl disable iotivity-example-demo ||:
-    systemctl disable iotivity-example-geolocation ||:
+#   systemctl disable iotivity-example-geolocation ||:
     systemctl disable iotivity-example-gpio ||:
     systemctl disable iotivity-example-mraa ||:
     systemctl disable iotivity-example-number ||:
@@ -156,6 +157,7 @@ setup_()
     npm install lcd
     npm install bh1750
     npm install node-rest-client
+    npm install shelljs
 
 
     enable_
@@ -191,7 +193,7 @@ illuminance_()
 
     i2cdetect -y 1
 
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example/js/
+    cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js/
     log=$(mktemp)
     stdbuf -oL node bh1750.js | stdbuf -oL tee $log &
     for i in $(seq 1 10); do
@@ -217,13 +219,13 @@ geolocation_()
 
     log_ "Geolocation"
 
-    systemctl restart iotivity-example-geolocation
-    sleep 1
-    found=false
-
-    pattern='/opt/iotivity-example-geolocation/server'
-    ps auxf |  grep -v grep | grep "$pattern" && found=true
-
+    #    systemctl restart iotivity-example-geolocation
+    #    sleep 1
+    #    found=false
+    
+    #    pattern='/opt/iotivity-example-geolocation/server'
+    #    ps auxf |  grep -v grep | grep "$pattern" && found=true
+    
     log="$(mktemp)"
     while ! $found ; do
         log_ $pattern
@@ -244,9 +246,8 @@ geolocation_()
 binaryswitch_()
 {
     h=192.100.0.10
-    pattern='log: Resource: uri: /BinarySwitchResURI'
     pattern="BinarySwitchResURI"
-    log_ "{ $pattern $line"
+    log_ "{ $pattern"
     found=false
     log="$(mktemp).$pattern"
     rm -fv "$log"
@@ -254,11 +255,12 @@ binaryswitch_()
     while ! $found ; do
         log_ ping $h
         
-        ping -c 1 $h \
-            || while [ 0 != $? ] ; do
-            ping -c 1 $h \
-                ||:
-        done
+        ping -c 1 $h ||:
+        #
+        #            || while [ 0 != $? ] ; do
+        #            ping -c 1 $h \
+        #               ||:
+        #        done
 #       found=true # TODO
         line="1: $h $found"
         log_ "$line"
@@ -287,10 +289,9 @@ binaryswitch_()
 
 check_()
 {
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
+    cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js
 
     if false ; then
-        cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
         # LCD
         node lcd.js "Testing LCD" &
         pid=$!
@@ -432,8 +433,7 @@ journal_()
 
 run_()
 {
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example/js
-
+    cd ${JSDIR}
     sh -x main.sh
 
     exit 0
@@ -460,8 +460,6 @@ main_()
     #   download_
     #   bash -x ~/iotivity-example-demo.sh setup_
     check_
-
-    #    sh -x /usr/lib/node_modules/iotivity-node/iotivity-example/js/main.sh
 
     # wait all: agl
     log_ "OCF Automotive"
