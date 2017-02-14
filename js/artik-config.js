@@ -1,6 +1,6 @@
 exports.Config = 
-    { deviceType : "org.example.sensor.illuminance.geolocation",
-      deviceId: "54f5ddc4175b4cf986a9a111f9b508a8",
+   { deviceType : "org.example.sensor.illuminance.geolocation",
+      deviceId: "92924f1de26a435ea0b167f4341763f3",
       deviceTypeId: "dt38cb42fb7f2c45b79a98797d990345df",
-      token: "a7d82880c6bd4d4782d745b855d7fa3c",
+      token: "fdf92fe64a27422f9c9deec10621269d"
     };
