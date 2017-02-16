@@ -29,7 +29,7 @@ export git
 
 # Supported configuration
 iotivity_url?=http://github.com/iotivity/iotivity
-iotivity_version?=1.1.1
+iotivity_version?=1.2.1
 iotivity_mode?=release
 
 export iotivity_version
