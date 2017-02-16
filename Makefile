@@ -37,7 +37,7 @@ platform?=default
 user?=${USER}
 deps+=local.mk
 export platform
-arch?=$(shell arch || echo ${ARCH})
+arch?=$(shell uname -m || echo ${ARCH})
 
 
 rule/default: ${platform}/default
