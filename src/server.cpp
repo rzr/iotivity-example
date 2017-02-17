@@ -248,8 +248,8 @@ int IoTServer::main(int argc, char *argv[])
 
     cerr << "log: Server: " << endl
          << "Press Ctrl-C to quit...." << endl
-         << "Usage: server -v" << endl
-         ;
+         << "Usage: server -v 5" << endl
+        ;
 
     int subargc = argc;
     char **subargv = argv;
