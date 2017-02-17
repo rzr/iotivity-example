@@ -44,7 +44,9 @@ class Common
         static int m_period;
         /** log enabled if positive **/
         static int m_logLevel;
-    public:
+        /** Property name **/
+        static std::string  m_propname;
+  public:
         static void log(char const *const message);
 };
 

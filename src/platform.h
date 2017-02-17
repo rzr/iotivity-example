@@ -38,5 +38,6 @@ class Platform
 
         static void log(char const *const message);
 
+        void setValue(bool value);
 };
 #endif // PLATFORM_H_
