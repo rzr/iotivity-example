@@ -2,10 +2,17 @@
 
 set -x
 SELF=$0
-SELFDIR=$(dirname -- "$SELF")/../
-JSDIR=$(dirname -- "$SELF")/../js/
+SELFDIR=$(dirname -- "$SELF")
+SELFDIR=$(dirname -- "$SELFDIR")
+JSDIR=${SELFDIR}/js/
 cd $JSDIR
+sudo="sudo"
+which $sudo || sudo=""
 
+NODE_PATH=/usr/lib/node_modules/ 
+[ ! -d ${NODE_PATH} ] || export NODE_PATH
+
+switchclient=/opt/iotivity-example-gpio/bin/client
 
 usage_()
 {
@@ -38,7 +45,7 @@ stop_()
     systemctl stop iotivity-example-csdk
 #   systemctl stop iotivity-example-demo
 #   systemctl stop iotivity-example-geolocation
-    systemctl stop iotivity-example-gpio
+#   systemctl stop iotivity-example-gpio
     systemctl stop iotivity-example-mraa
     systemctl stop iotivity-example-number
     systemctl stop iotivity-example-switch
@@ -66,7 +73,7 @@ download_()
     ping -c 1 githubusercontent.com \
         || ping -c 1 8.8.8.8 \
         && echo 'nameserver 8.8.8.8' \
-        | sudo tee -a /etc/resolv.conf
+        | $sudo tee -a /etc/resolv.conf
 
     url='https://raw.githubusercontent.com/TizenTeam/iotivity-example/sandbox/pcoval/demo/extra/iotivity-example-demo.sh'
     curl "$url" > iotivity-example-demo.sh.tmp \
@@ -75,15 +82,17 @@ download_()
 }
 
 
-
 enable_()
 {
     unit=iotivity-example-demo
-    exe=/usr/lib/node_modules/iotivity-node/$unit/extra/$unit.sh
-    service=/usr/local/share/$unit.service
+    exe=${SELFDIR}/bin/$unit.sh
+    service=/lib/systemd/system/iotivity-example-demo.service
+    systemctl disable $service ||:
+    systemctl stop $unit ||:
+    rm $service ||:
+
     chmod a+rx $exe
     chmod a-x /lib/systemd/system/*.service $service
-
     mkdir -p /usr/local/share && cat<<EOF | tee "$service"
 [Unit]
 Description=$unit
@@ -97,48 +106,53 @@ Restart=always
 WantedBy=default.target
 EOF
 
-    systemctl disable $service ||:
-    systemctl stop $unit ||:
     systemctl enable $service
     systemctl start $unit
     systemctl status $unit
 
-    ps | grep $unit
-    ps | grep iotivity
-
+    ps | grep $unit ||:
+    ps | grep iotivity ||:
 }
+
 
 fetch_()
 {
     # TODO: Unpackaged demo
-    cd /usr/lib/node_modules/iotivity-node/
+#   cd /usr/lib/node_modules/iotivity-node/
     url=http://github.com/TizenTeam/iotivity-example
     branch=sandbox/pcoval/demo
     unit=iotivity-example-demo
-    rm -rfv /usr/lib/node_modules/iotivity-node/$unit
+#   rm -rfv /usr/lib/node_modules/iotivity-node/$unit
     git config --global user.email "iotivity-example-demo@localhost"
     git config --global user.name "iotivity-example-demo developer"
     git clone $url -b $branch $unit
-    cd /usr/lib/node_modules/iotivity-node/$unit/js
+#   cd /usr/lib/node_modules/iotivity-node/$unit/js
     chmod a+rx *.sh
+}
+
+
+npm_()
+{
+    # TODO: Unpackaged depandencies for demo
+    npm install lcd # TODO: uncomment if LCD present
+    npm install bh1750
+    npm install node-rest-client
+    npm install shelljs # might not be needed
 }
 
 
 setup_()
 {
-    sudo="sudo"
-    which $sudo || sudo=""
-
     # Stop
     stop_
     systemctl disable iotivity-example ||:
     systemctl disable iotivity-example-csdk ||:
     systemctl disable iotivity-example-demo ||:
-#   systemctl disable iotivity-example-geolocation ||:
+    # systemctl disable iotivity-example-geolocation ||:
     systemctl disable iotivity-example-gpio ||:
     systemctl disable iotivity-example-mraa ||:
     systemctl disable iotivity-example-number ||:
-    systemctl disable iotivity-example-switch ||:
+    # systemctl disable iotivity-example-switch ||:
     systemctl stop iotivity-example-demo ||:
     systemctl disable iotivity-example-demo ||:
 
@@ -152,14 +166,7 @@ setup_()
     fi
 
     fetch_
-
-    # TODO: Unpackaged depandencies for demo
-    npm install lcd
-    npm install bh1750
-    npm install node-rest-client
-    npm install shelljs
-
-
+    # npm_
     enable_
 }
 
@@ -168,20 +175,21 @@ bootstrap_()
 {
     download_
     setup_
-    sudo reboot
+    $sudo reboot
 }
 
 
 log_()
 {
+    echo "$@"
+    return $? #TODO: comment if LCD present"
+
     f="lcd.js"
     if [ -r "$f" ] ; then
 
         echo "$@                                                  " | \
             cut -b1-16 | \
             node -i lcd.js
-    else
-        echo "$@"
     fi
 }
 
@@ -193,7 +201,7 @@ illuminance_()
 
     i2cdetect -y 1
 
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js/
+#   cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js/
     log=$(mktemp)
     stdbuf -oL node bh1750.js | stdbuf -oL tee $log &
     for i in $(seq 1 10); do
@@ -230,13 +238,13 @@ geolocation_()
     while ! $found ; do
         log_ $pattern
         found=false
-        /opt/iotivity-example-gpio/client -v 2>&1 \
+        $switchclient -v 2>&1 \
             | stdbuf -oL grep --line-buffered -m 1 "$pattern" \
             | head -n1 | tee "$log" &
-
+        pid=$!
         sleep 1
         grep "$pattern" "$log" && found=true ||:
-        killall client
+        kill -9 $pid ||:
         log_ "0: $pattern"
     done
     log_ "} $pattern $line"
@@ -245,7 +253,9 @@ geolocation_()
 
 binaryswitch_()
 {
-    h=192.100.0.10
+    h=127.0.0.1
+    # h=192.100.0.10 # #TODO: uncomment if switch present on network"
+    
     pattern="BinarySwitchResURI"
     log_ "{ $pattern"
     found=false
@@ -266,20 +276,14 @@ binaryswitch_()
         log_ "$line"
         sleep 1
         if ! $found ; then
-            /opt/iotivity-example-gpio/client -v 2>&1 \
+            $swithclient -v 2>&1 \
                 | stdbuf -oL grep --line-buffered -m 1 "$pattern" \
                 | head -n1 | tee "$log" &
-
+            pid=$!
             sleep 4
             grep "$pattern" "$log" && declare found=true ||:
-            killall client
+            kill -9 $pid ||:
         fi
-
-        #        line=$(/opt/iotivity-example-gpio/client -v 2>&1 \
-        #           | stdbuf -oL grep -rl "$pattern" | head -n1 )\
-        #
-
-        #        sleep 5
         log_ "0: $pattern"
     done
     log_ "1: $pattern"
@@ -289,7 +293,7 @@ binaryswitch_()
 
 check_()
 {
-    cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js
+#   cd /usr/lib/node_modules/iotivity-node/iotivity-example-demo/js
 
     if false ; then
         # LCD
@@ -318,10 +322,6 @@ check_()
 
     grep '^NAME=' /etc/os-release | cut -d'"' -f 2 | node lcd.js || sleep 10
 
-    log_ "Stop"
-    stop_
-    killall node ||:
-
     illuminance_
 
     log_ "host?"
@@ -344,12 +344,11 @@ check_()
 
 #   geolocation_
 
-
     log_ "binaryswitch"
     binaryswitch_
 
     log_ "IoTivity.org"
-    log_ "FOSDEM.org/2017"
+    log_ "OCF Automotive"
 }
 
 
@@ -433,21 +432,22 @@ journal_()
 
 run_()
 {
-    cd ${JSDIR}
-    sh -x main.sh
+#   cd ${JSDIR}
+#   sh -x main.sh
 
-    exit 0
     node illuminance-server.js > /dev/null &
+    pid=$!
 
-    node main.js \
-        | /opt/iotivity-example-gpio/client
+    node ${JSDIR}/main.js \
+        | $switchclient
+    kill $pid
 
     exit 0
     while true ; do
         node main.js \
             | while true ; do
-            /opt/iotivity-example-gpio/client \
-                | grep error && kill client ||:
+            $switchclient \
+                | grep error && kill client ||: #TODO
             sleep 1
         done
     done
@@ -473,4 +473,3 @@ main_()
 
 [ "" != "$1" ] || main_
 $@
-
