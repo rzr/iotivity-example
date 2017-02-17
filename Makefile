@@ -19,6 +19,7 @@
 # // limitations under the License.
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
 rule/task/%: local.mk
 	${MAKE} ${@F}
 
@@ -48,6 +49,10 @@ all: local.mk
 help: README.md
 	@cat $<
 	@echo "# Type make demo , client/server usage"
+	@echo "# iotivity_version=${iotivity_version}"
+	@echo "# config_pkgconfig=${config_pkgconfig}"
+	@echo "# iotivity_cflags=${iotivity_cflags}"
+	@echo "# CPPFLAGS=${CPPFLAGS}"
 
 demo: demo/${platform}
 	@echo "# $@: $^"
@@ -68,7 +73,7 @@ demo/all: distclean
 	${MAKE} platform=${platform} demo
 
 default/% linux/% arduino/%:
-	${MAKE} platform=${@D} ${@D}/${@F}
+	${MAKE} platform=${@D} $@
 
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
@@ -83,7 +88,7 @@ install: ${all}
 
 
 iotivity_out:
-	ls ${iotivity_out} || ${MAKE} platform?=${platform} deps ${iotivity_out}
+	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
 	@echo "# $@: $^"
 
 demo/kill: bin/server bin/client
@@ -107,7 +112,6 @@ xterm/% : bin/%
 	xterm -e ${MAKE} run/${@F}  &
 	sleep 5
 
-
 run: run/client
 	@echo "# $@: $^"
 
@@ -119,12 +123,6 @@ check: ${all}
 
 rebuild: cleanall all
 	@echo "# $@: $^"
-
-local.mk:
-	ls /usr/lib*/pkgconfig/iotivity.pc && \
- echo "export config_pkgconfig=1" \
- || echo "export config_pkgconfig=0" > $@
-	@echo "# type make help for usage"
 
 clean:
 	find . -iname "*~" -exec rm '{}' \;
@@ -145,3 +143,9 @@ deps: ${deps}
 
 %.mk:
 	touch $@
+
+local.mk:
+	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
+ echo "export config_pkgconfig=1" \
+ || echo "export config_pkgconfig=0" > $@
+	@echo "# type make help for usage"

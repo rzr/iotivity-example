@@ -19,7 +19,10 @@
 
 # Configuration settings
 
-#ARTIK10/Pin13
+# ARTIK10/Pin13
 #CPPFLAGS+=-DCONFIG_GPIO=22
-
 #CPPFLAGS+=-DCONFIG_LOG=1
+
+USER?=$(shell echo '${USER}' || echo default)
+
+-include config-user-${USER}.mk
