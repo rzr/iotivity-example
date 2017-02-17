@@ -99,6 +99,7 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
         else
             cerr << "log: Successfully created " << type << " resource" << endl;
     }
+
     catch (OC::OCException &e)
     {
         cerr << "error: OCException " <<  e.reason().c_str() << " " << hex << e.code();
@@ -109,6 +110,14 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
     return result;
 }
 
+
+void IoTServer::postResourceRepresentation()
+{
+    LOG();
+    bool value = 0;
+    m_Representation.getValue(Common::m_propname, value);
+    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
+}
 
 OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
 {
@@ -124,6 +133,43 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
     return result;
 }
 
+OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
+{
+    LOG();
+    OCStackResult result = OC_STACK_OK;
+
+    OCRepresentation requestRep = request->getResourceRepresentation();
+    if (requestRep.hasAttribute(Common::m_propname))
+    {
+        try
+        {
+            bool value = requestRep.getValue<bool>(Common::m_propname);
+            Platform::getInstance().setValue(value);
+        }
+        catch (...)
+        {
+            cerr << "error: Client sent invalid resource value type" << endl;
+            return result;
+        }
+    }
+    else
+    {
+        cerr << "error: Client sent invalid resource property" << endl;
+        return result;
+    }
+    m_Representation = requestRep;
+    postResourceRepresentation();
+
+    return result;
+}
+
+OCStackResult IoTServer::handleGet(shared_ptr<OCResourceRequest> request)
+{
+    LOG();
+    OCStackResult result = OC_STACK_OK;
+
+    return result;
+}
 
 OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> request)
 {
@@ -139,6 +185,40 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+
+            if (requestType == "POST")
+            {
+                if (handlePost(request) == OC_STACK_OK)
+                {
+                    if (respond(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+                else
+                {
+                    response->setResponseResult(OC_EH_ERROR);
+                    OCPlatform::sendResponse(response);
+                }
+                ;;
+            }
+            else if (requestType == "GET")
+            {
+                if (handleGet(request) == OC_STACK_OK)
+                {
+                    if (respond(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+                else
+                {
+                    response->setResponseResult(OC_EH_ERROR);
+                    OCPlatform::sendResponse(response);
+                }
+
+            }
+            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
