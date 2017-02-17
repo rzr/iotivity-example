@@ -15,8 +15,6 @@
 
 // Usage:
 // # npm install node-rest-client
-
-var Config = require("./artik-config-binary.js");
 var url = "https://api.artik.cloud/v1.1/messages";
 
 var Client = require("node-rest-client").Client;
@@ -51,14 +49,14 @@ function send(data, config)
 
 function main()
 {
-
+    var config = require("./artik-config.js");
     var value = true;
     var delay = 5000;
     
     setInterval(function(){
         value = ! value;
         var data = { "value" : value };
-        send(data);
+        send(data, config);
     }, delay);
 }
 
