@@ -35,10 +35,67 @@ Resource::Resource(shared_ptr<OCResource> resource)
 {
     LOG();
     m_OCResource = resource;
+    m_GETCallback = bind(&Resource::onGet, this,
+                         placeholders::_1, placeholders::_2, placeholders::_3);
+
+    m_POSTCallback = bind(&Resource::onPost, this,
+                          placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
 Resource::~Resource()
 {
+}
+
+
+void Resource::onGet(const HeaderOptions &headerOptions,
+                     const OCRepresentation &representation, int eCode)
+{
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
+    {
+        bool value;
+        representation.getValue(Common::m_propname, value);
+        cout << value << endl;
+    }
+    else
+    {
+        cerr << "errror:: in GET response:" << eCode << endl;
+    }
+    IoTClient::input();
+}
+
+void Resource::onPost(const HeaderOptions &headerOptions,
+                      const OCRepresentation &representation, int eCode)
+{
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
+    {
+        bool value;
+        representation.getValue(Common::m_propname, value);
+        Platform::getInstance().setValue(value);
+    }
+    else
+    {
+        cerr << "error: in POST response: " << eCode <<  endl;
+    }
+    IoTClient::input();
+}
+
+
+void Resource::get()
+{
+    LOG();
+    QueryParamsMap params;
+    m_OCResource->get(params, m_GETCallback);
+}
+
+void Resource::post(bool value)
+{
+    LOG();
+    QueryParamsMap params;
+    OCRepresentation rep;
+    rep.setValue(Common::m_propname, value);
+    m_OCResource->post(rep, params, m_POSTCallback);
 }
 
 
@@ -86,11 +143,17 @@ void IoTClient::start()
     LOG();
     string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
-    OCPlatform::findResource("", //
-                             coap_multicast_discovery.c_str(),
-                             connectivityType,
-                             m_FindCallback,
-                             OC::QualityOfService::LowQos);
+    try
+    {
+        OCPlatform::findResource("", //
+                                 coap_multicast_discovery.c_str(),
+                                 connectivityType,
+                                 m_FindCallback,
+                                 OC::QualityOfService::LowQos);
+    } catch(OCException& e) {
+        oclog() << "Exception in main: "<<e.what();
+        exit(1);
+    }
 }
 
 
@@ -114,6 +177,15 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
                 m_Resource = make_shared<Resource>(resource);
+                if (true)   // multi client need observe (for flip/flop)
+                {
+                    QueryParamsMap test;
+                    resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
+                }
+                else     // simple client can only use get once
+                {
+                    m_Resource->get();
+                }
                 input();
             }
 
@@ -128,12 +200,13 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
 
 void IoTClient::print(shared_ptr<OCResource> resource)
 {
+    LOG();
     cerr << "log: Resource: uri: " << resource->uri() << endl;
     cerr << "log: Resource: host: " << resource->host() << endl;
 
     for (auto &type : resource->getResourceTypes())
     {
-        cerr << "log: Resource: type: " << type << endl << endl;
+        cerr << "log: Resource: type: " << type << endl;
     }
 
     for (auto &interface : resource->getResourceInterfaces())
@@ -142,20 +215,100 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     }
 }
 
+void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
+                          const int &eCode, const int &sequenceNumber)
+{
+    LOG();
+    try
+    {
+        if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
+        {
+            if (sequenceNumber == OC_OBSERVE_REGISTER)
+            {
+                cerr << "Observe registration action is successful" << endl;
+            }
+            else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
+            {
+                cerr << "Observe De-registration action is successful" << endl;
+            }
+            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
+
+            bool value;
+            rep.getValue(Common::m_propname, value);
+            cerr << "log: " << Common::m_propname << "=" << value << endl;
+            IoTClient::getInstance()->m_value = value;
+        }
+        else
+        {
+            if (sequenceNumber == OC_OBSERVE_NO_OPTION)
+            {
+                cerr << "warning: Observe registration or de-registration action is failed" << endl;
+            }
+            else
+            {
+                cerr << "error: onObserve Response error=" << eCode << endl;
+                //exit(-1);
+            }
+        }
+    }
+    catch (exception &e)
+    {
+        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
+    }
+
+}
 
 void IoTClient::input()
 {
     cerr << endl << "menu: "
+         << "  0) Set value off"
+         << "  1) Set value on"
+         << "  2) Toggle value"
          << "  9) Quit"
          << "  *) Display this menu"
          << endl;
 }
 
 
+bool IoTClient::toggle()
+{
+    Common::log(__PRETTY_FUNCTION__);
+
+    bool value = m_value;
+    if (m_Resource)
+    {
+        m_Resource->post(!value);
+    }
+    else
+    {
+        cerr << "log: resource not yet discovered" << endl;
+        Common::log("log: resource not yet discovered");
+    }
+
+    return value;
+}
+
+
+bool IoTClient::setValue(bool value)
+{
+    Common::log(__PRETTY_FUNCTION__);
+
+    if (m_Resource)
+    {
+        m_Resource->post(value);
+    }
+    else
+    {
+        cerr << "log: resource not yet discovered" << endl;
+        Common::log("log: resource not yet discovered");
+    }
+
+    return m_value;
+}
+
+
 int IoTClient::main(int argc, char *argv[])
 {
-    IoTClient::getInstance()->start();
-
     for (int i = 1; i < argc; i++)
     {
         if (0 == strcmp("-v", argv[i]))
@@ -163,6 +316,7 @@ int IoTClient::main(int argc, char *argv[])
             Common::m_logLevel++;
         }
     }
+    IoTClient::getInstance()->start();
 
     int choice;
     do
@@ -170,6 +324,15 @@ int IoTClient::main(int argc, char *argv[])
         cin >> choice;
         switch (choice)
         {
+            case 0:
+                IoTClient::getInstance()->setValue(false);
+                break;
+            case 1:
+                IoTClient::getInstance()->setValue(true);
+                break;
+            case 2:
+                IoTClient::getInstance()->toggle();
+                break;
             case 9:
                 return 0;
             default:

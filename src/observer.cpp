@@ -174,6 +174,11 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
+    bool value = false;
+    rep.getValue(Common::m_propname, value);
+
+    std::cerr << Common::m_propname << "=" << value << std::endl;
+    std::cout << value << std::endl;
 }
 
 
