@@ -43,3 +43,10 @@ void Platform::log(char const *const message)
 {
     cerr << message << endl;
 }
+
+
+void Platform::setValue(bool value)
+{
+    LOG();
+    cout << value << endl;
+}
