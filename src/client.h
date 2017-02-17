@@ -37,9 +37,16 @@ class Resource
     public:
         Resource(std::shared_ptr<OC::OCResource> resource);
         virtual ~Resource();
+        void get();
+        void post(bool);
+    protected:
+        void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+        void onPost(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
     protected:
         std::shared_ptr<OC::OCResource> m_OCResource;
         OC::OCRepresentation m_Representation;
+        OC::GetCallback m_GETCallback;
+        OC::PostCallback m_POSTCallback;
 };
 
 
@@ -50,11 +57,19 @@ class IoTClient
 
         static void input();
 
+        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+
+        static void onObserve(const OC::HeaderOptions /*headerOptions*/,
+                              const OC::OCRepresentation &rep,
+                              const int &eCode, const int &sequenceNumber);
+
     public:
         std::shared_ptr<Resource> getResource();
         void start();
         void print(std::shared_ptr<OC::OCResource> resource);
         static IoTClient *getInstance();
+        bool toggle();
+        bool setValue(bool value);
     private:
         IoTClient();
         virtual ~IoTClient();
@@ -65,6 +80,7 @@ class IoTClient
         std::shared_ptr<Resource> m_Resource;
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::FindCallback m_FindCallback;
+        bool m_value;
 };
 
 #endif /* CLIENT_H_ */
