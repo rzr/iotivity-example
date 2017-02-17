@@ -1,9 +1,9 @@
 [Unit]
-Description="Iotivity example server"
+Description="Iotivity example demo"
 After=network.target
 
 [Service]
-ExecStart=/opt/iotivity-example/bin/server
+ExecStart=/opt/iotivity-example-demo/bin/iotivity-example-demo.sh
 Restart=always
 
 [Install]
