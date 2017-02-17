@@ -4,6 +4,7 @@
 *.o
 *.orig
 *.tmp
+*.tmp.*
 *~
 .#*
 a.out
