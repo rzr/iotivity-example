@@ -97,7 +97,7 @@ all+=deps
 all+=iotivity_out
 
 #TODO
-scons_flags+=LOGGING=1
+scons_flags+=LOGGING=0
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
