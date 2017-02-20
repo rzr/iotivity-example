@@ -21,7 +21,7 @@
 
 # ARTIK10/Pin13
 #CPPFLAGS+=-DCONFIG_GPIO=22
-#CPPFLAGS+=-DCONFIG_LOG=1
+CPPFLAGS+=-DCONFIG_LOG=1
 
 USER?=$(shell echo '${USER}' || echo default)
 
