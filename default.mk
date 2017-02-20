@@ -91,3 +91,9 @@ default/libs: ${iotivity_out}
 
 ${platform}/demo: platform/demo
 	@echo "# $@: $^"
+
+local.mk:
+	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
+ echo "export config_pkgconfig=1" \
+ || echo "export config_pkgconfig=0" > $@
+	@echo "# type make help for usage"
