@@ -47,3 +47,9 @@ endif
 ifeq ("Linux","${TARGET_OS}")
 TARGET_OS=linux
 endif
+
+local.mk:
+	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
+ echo "export config_pkgconfig=1" \
+ || echo "export config_pkgconfig=0" > $@
+	@echo "# type make help for usage"

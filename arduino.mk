@@ -19,7 +19,7 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-arduino/default: arduino/all
+arduino/default: help arduino/all
 	@echo "# $@: $^"
 
 arduino_mk_url?=https://github.com/sudar/Arduino-Makefile
@@ -29,16 +29,16 @@ vpath += src
 config_pkgconfig=0
 include iotivity.mk
 
-ARDUINO_DIR = /usr/share/arduino
-AVR_TOOLS_DIR = ${ARDUINO_DIR}/hardware/tools/avr/
-BOARD_TAG = mega2560
-MONITOR_PORT ?= /dev/ttyUSB* 
-MONITOR_PORT ?= /dev/ttyACM*
-ARCHITECTURE=avr
+ARDUINO_DIR ?= /usr/share/arduino
+AVR_TOOLS_DIR ?= ${ARDUINO_DIR}/hardware/tools/avr/
+BOARD_TAG ?= mega2560
+MONITOR_PORT ?= $(shell ls /dev/ttyUSB* | tail -n1)
+MONITOR_PORT ?= $(shell ls /dev/ttyACM* | tail -n1)
+ARCHITECTURE?=avr
 
-MONITOR_BAUDRATE = 115200
-AVRDUDE = ${ARDUINO_DIR}/hardware/tools/avrdude
-AVRDUDE_CONF = ${ARDUINO_DIR}/hardware/tools/avrdude.conf
+MONITOR_BAUDRATE ?= 115200
+AVRDUDE ?= ${ARDUINO_DIR}/hardware/tools/avrdude
+AVRDUDE_CONF ?= ${ARDUINO_DIR}/hardware/tools/avrdude.conf
 
 # hack to use arduino c++ libraries
 LOCAL_CPP_SRCS += src/server.c.tmp.cpp
@@ -48,10 +48,9 @@ CPPFLAGS+=-Isrc
 #{ configuration
 eth_enabled?=1
 CPPFLAGS += -DARDUINOSERIAL=1
-#CPPFLAGS += -DCONFIG_ARDUINOSERIAL=1
+CPPFLAGS += -DCONFIG_ARDUINOSERIAL=1
 ARDUINO_LIBS += Wire 
 ARDUINO_LIBS += SoftwareSerial
-#ARDUINO_LIBS += HardwareSerial
 #}
 arch=${ARCHITECTURE}
 arch=avr
@@ -59,18 +58,6 @@ iotivity_out=${iotivity_dir}/out/${platform}/${arch}/${iotivity_mode}
 
 #{ iotivity
 CXXFLAGS += -std=gnu++11
-
-iotivity_libs?=\
-${iotivity_out}/resource/csdk/liboctbstack.a \
-${iotivity_out}/resource/csdk/routing/libroutingmanager.a \
-${iotivity_out}/resource/csdk/security/libocsrm.a \
-${iotivity_out}/resource/csdk/logger/liblogger.a \
-${iotivity_out}/resource/c_common/libc_common.a \
-${iotivity_out}/resource/csdk/connectivity/src/libconnectivity_abstraction.a \
-#eol
-#iotivity_libs+=${iotivity_out}/libcoap.a
-
-
 iotivity_libs_eth?=${iotivity_out}/libEthernet.a
 #eol
 
@@ -92,6 +79,9 @@ endif
 iotivity_libs+=\
  ${iotivity_out}/Time/libTime.a \
  ${iotivity_out}/libSPI.a \
+
+LIBS+=build-mega2560/HardwareSerial.o
+
  #eol
 
 #}
@@ -103,7 +93,9 @@ USER_LIB_PATH+= ${iotivity_includedirs}
 #TODO:
 #core_lib=build-${BOARD_TAG}/libcore.a
 core_lib=${iotivity_out}/arduino/libmega_at${BOARD_TAG}_core.a
-#CORE_LIB=${core_lib}
+CORE_LIB=${core_lib}
+
+
 #LIBS+=${core_lib}
 iotivity_libs += ${core_lib}
 LIBS+=${iotivity_libs}
@@ -115,14 +107,18 @@ scons_flags+=BOARD=mega
 scons_flags+=TARGET_ARCH=avr
 scons_flags+=SHIELD=ETH
 
-arduino/all: ${TARGET_ELF}
+arduino/all: ${LIBS} ${TARGET_ELF}
 	@echo "# $@: $^"
 
-arduino/demo: upload arduino/run
+arduino/prepare:
+	-killall xterm server client
+
+arduino/demo: arduino/prepare upload arduino/run
 	@echo "# $@: $^"
 
 arduino/run:
-	sleep 10
+	@echo "# TODO: waiting registration ($@)"
+	sleep 30
 	${MAKE} run platform=default
 	@echo "# $@: $^"
 
@@ -146,11 +142,15 @@ ${ARDUINO_DIR}/Arduino.mk:
 #{
 # http://stackoverflow.com/questions/8188849/avr-linker-error-relocation-truncated-to-fit/38755757#38755757
 include ${ARDUINO_DIR}/Arduino.mk
-
+CORE_LIB=${core_lib}
 LDFLAGS += -lc -lm
 
-$(TARGET_ELF): $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
+
+build-mega2560/libcore.a: ${core_lib}
+	ln -fs ${core_lib} $@
+
+#$(TARGET_ELF): $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
+#	$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
 #}
 
 ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
@@ -158,5 +158,12 @@ ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
 	ls -l ${@}
 
 
+arduino/help:
+	@echo "# TARGET_ELF=${TARGET_ELF}"
+	@echo "# CORE_LIB=${CORE_LIB}"
+	@echo "# core_lib=${core_lib}"
+	@echo "# LIBS=${LIBS}"
+
+
 /dev/ttyACM0: /dev/ttyUSB0
-	echo sudo ln -fs ${<F} $@
+	@echo sudo ln -fs ${<F} $@

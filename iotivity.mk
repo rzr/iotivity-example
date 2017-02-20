@@ -20,9 +20,11 @@
 
 git?=git
 export git
+git_clone?=${git} clone --depth=1
 
 # Override here if needed
-#iotivity_version?=master
+git_clone=${git} clone
+iotivity_version?=master
 #iotivity_version=1.1-rel
 #iotivity_version=1.2-rel
 #iotivity_src?=${HOME}/usr/local/src/
@@ -69,16 +71,24 @@ iotivity_cflags+=\
  #eol
 
 iotivity_cflags+=-I${iotivity_dir}/resource/stack
+#TODO: rm
+iotivity_cflags+=-I${iotivity_dir}/resource/c_common/ocrandom/include
 
 iotivity_libs?=\
  ${iotivity_out}/liboctbstack.a \
- ${iotivity_out}/libroutingmanager.a \
+ ${iotivity_out}/resource/csdk/routing/libroutingmanager.a \
  ${iotivity_out}/libocsrm.a \
- ${iotivity_out}/liblogger.a \
  ${iotivity_out}/libconnectivity_abstraction.a \
- ${iotivity_out}/libc_common.a \
+ ${iotivity_out}/resource/c_common/libc_common.a \
  ${iotivity_out}/libcoap.a \
  #eol
+
+iotivity_libs+=${iotivity_out}/resource/csdk/logger/liblogger.a 
+#iotivity_libs+=tmp/src/iotivity-master/resource/csdk/logger/src/logger.o
+
+ifeq (${iotivity_version}, master)
+iotivity_libs+=${iotivity_out}/libtimer.a
+endif
 
 CPPFLAGS+=${iotivity_cflags}
 
@@ -89,7 +99,7 @@ iotivity_out?=${iotivity_dir}/out/${platform}/${arch}/${iotivity_mode}
 all+=deps
 all+=iotivity_out
 
-scons_flags+=LOGGING=0
+scons_flags+=LOGGING=1 #todo
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
@@ -108,7 +118,7 @@ iotivity_out:
 
 ${iotivity_dir}:
 	mkdir -p ${@D}
-	cd ${@D} && ${git} clone --depth=1 ${iotivity_url} -b ${iotivity_version} ${@}
+	cd ${@D} && ${git_clone} ${iotivity_url} -b ${iotivity_version} ${@}
 
 gtest: ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip
 	@echo "# $@: $^"

@@ -20,6 +20,9 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+default: all
+	@echo "# $@: $^"
+
 rule/task/%: local.mk
 	${MAKE} ${@F}
 
@@ -43,7 +46,7 @@ arch?=$(shell uname -m || echo ${ARCH})
 
 rule/default: ${platform}/default
 
-all: local.mk
+all: help local.mk
 	${MAKE} ${platform}/$@
 
 help: README.md
@@ -54,7 +57,7 @@ help: README.md
 	@echo "# iotivity_cflags=${iotivity_cflags}"
 	@echo "# CPPFLAGS=${CPPFLAGS}"
 
-demo: demo/${platform}
+demo: linux/demo arduino/demo
 	@echo "# $@: $^"
 
 demo/%:
@@ -73,7 +76,10 @@ demo/all: distclean
 	${MAKE} platform=${platform} demo
 
 default/% linux/% arduino/%:
-	${MAKE} platform=${@D} $@
+	${MAKE} platform=${@D} ${@}
+
+arduino: arduino/default
+	@echo "# $@: $^"
 
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
@@ -143,9 +149,3 @@ deps: ${deps}
 
 %.mk:
 	touch $@
-
-local.mk:
-	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
- echo "export config_pkgconfig=1" \
- || echo "export config_pkgconfig=0" > $@
-	@echo "# type make help for usage"
