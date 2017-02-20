@@ -61,8 +61,6 @@ export iotivity_dir
 
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
 
-#iotivity_cflags?=-DTB_LOG=1 -DROUTING_GATEWAY=1
-
 iotivity_cflags+=\
  -I${iotivity_dir}/resource/c_common/ \
  -I${iotivity_dir}/resource/csdk/stack/include \
@@ -84,7 +82,6 @@ iotivity_libs?=\
  #eol
 
 iotivity_libs+=${iotivity_out}/resource/csdk/logger/liblogger.a 
-#iotivity_libs+=tmp/src/iotivity-master/resource/csdk/logger/src/logger.o
 
 ifeq (${iotivity_version}, master)
 iotivity_libs+=${iotivity_out}/libtimer.a
@@ -99,7 +96,8 @@ iotivity_out?=${iotivity_dir}/out/${platform}/${arch}/${iotivity_mode}
 all+=deps
 all+=iotivity_out
 
-#scons_flags+=LOGGING=1 #todo
+#TODO
+scons_flags+=LOGGING=1
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
@@ -108,6 +106,9 @@ scons_flags+=VERBOSE=1
 scons_flags+=WITH_CLOUD=0
 scons_flags+=WITH_PROXY=0
 scons_flags+=WITH_TCP=0
+
+#iotivity_cflags+=-DTB_LOG=1
+#iotivity_cflags+=-DROUTING_GATEWAY=1
 
 ${iotivity_out}: ${iotivity_dir}
 	cd ${<} && scons resource ${scons_flags}
