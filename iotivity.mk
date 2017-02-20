@@ -61,7 +61,7 @@ export iotivity_dir
 
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
 
-iotivity_cflags?=-DTB_LOG=1 -DROUTING_GATEWAY=1
+#iotivity_cflags?=-DTB_LOG=1 -DROUTING_GATEWAY=1
 
 iotivity_cflags+=\
  -I${iotivity_dir}/resource/c_common/ \
@@ -99,7 +99,7 @@ iotivity_out?=${iotivity_dir}/out/${platform}/${arch}/${iotivity_mode}
 all+=deps
 all+=iotivity_out
 
-scons_flags+=LOGGING=1 #todo
+#scons_flags+=LOGGING=1 #todo
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
