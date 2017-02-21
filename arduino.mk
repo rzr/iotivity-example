@@ -101,6 +101,7 @@ iotivity_libs += ${core_lib}
 LIBS+=${iotivity_libs}
 
 scons_flags+=TARGET_OS=${platform}
+scons_flags+=LOGGING=1
 #
 scons_flags+=UPLOAD=false 
 scons_flags+=BOARD=mega
@@ -113,13 +114,13 @@ arduino/all: ${LIBS} ${TARGET_ELF}
 arduino/prepare:
 	-killall xterm server client
 
-arduino/demo: arduino/prepare upload arduino/run
+arduino/demo: arduino arduino/prepare upload arduino/run
 	@echo "# $@: $^"
 
 arduino/run:
 	@echo "# TODO: waiting registration ($@)"
 	sleep 30
-	${MAKE} run platform=default
+	${MAKE} default run platform=default
 	@echo "# $@: $^"
 
 ${iotivity_libs}: ${iotivity_out}
