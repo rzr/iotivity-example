@@ -56,7 +56,7 @@ gtest_url?=https://github.com/google/googletest/archive/release-1.7.0.zip
 
 
 iotivity_src?=${CURDIR}/tmp/src/
-iotivity_dir?=${iotivity_src}iotivity-${iotivity_version}
+iotivity_dir?=${iotivity_src}iotivity-${iotivity_version}-${platform}
 export iotivity_dir
 
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
@@ -97,7 +97,7 @@ all+=deps
 all+=iotivity_out
 
 #TODO
-scons_flags+=LOGGING=0
+#scons_flags+=LOGGING=0
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
@@ -106,15 +106,21 @@ scons_flags+=VERBOSE=1
 scons_flags+=WITH_CLOUD=0
 scons_flags+=WITH_PROXY=0
 scons_flags+=WITH_TCP=0
+export scons_flags
 
 #iotivity_cflags+=-DTB_LOG=1
 #iotivity_cflags+=-DROUTING_GATEWAY=1
 
-${iotivity_out}: ${iotivity_dir}
+V=1
+iotivity/rule/build: ${iotivity_dir} deps
+	@echo "scons_flags=${scons_flags}"
 	cd ${<} && scons resource ${scons_flags}
 
-iotivity_out:
-	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
+${iotivity_out}: iotivity/rule/build
+	@echo "# $@: $^"
+
+iotivity_out: iotivity/rule/build
+#	ls ${iotivity_out} || ${MAKE} platform=${platform} iotivity/rule/build
 	@echo "# $@: $^"
 
 ${iotivity_dir}:
