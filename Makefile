@@ -26,7 +26,7 @@ default: all
 rule/task/%: local.mk
 	${MAKE} ${@F}
 
-exe?=~/bin/exe.sh valgrind
+#exe?=~/bin/exe.sh valgrind
 export exe
 exe_args?=-v
 
