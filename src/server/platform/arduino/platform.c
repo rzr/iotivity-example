@@ -156,18 +156,18 @@ void platform_setup()
         pinMode(gGpio, OUTPUT);
         LOGf("%d",gGpio);
 
-        if (!false) blink(1);
+        if (false) blink(1);
 
 #ifdef CONFIG_ARDUINOSERIAL
         Serial.begin(115200);
         LOGf("%d",gGpio);
 #endif
-        if (!false) blink(2);
+        if (false) blink(2);
         if (true)
         {
             setup_network();
         }
-        if (!false) blink(3);
+        if (false) blink(3);
         platform_log("1");
     }
     delay(4*gDelay);
@@ -178,7 +178,7 @@ void setup()
 {
     platform_setup();
     server_setup();
-    if (!false) blink(4);
+    if (false) blink(4);
 }
 
 
