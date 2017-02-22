@@ -39,6 +39,7 @@ install_dir?=${DESTDIR}/${local_optdir}/${package}/
 demo_time?=20
 log_dir?=${CURDIR}/tmp/log
 platform?=default
+export platform
 
 user?=${USER}
 deps+=local.mk
@@ -86,7 +87,7 @@ arduino: arduino/default
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
 
-include ${platform}.mk
+-include ${platform}.mk
 
 
 install: ${all}
@@ -94,9 +95,8 @@ install: ${all}
 	install $^ ${install_dir}/bin
 	install README.md ${install_dir}
 
-
 iotivity_out:
-	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
+	ls ${iotivity_out} || ${MAKE} platform=${platform} rule/iotivity/build
 	@echo "# $@: $^"
 
 demo/kill: bin/server bin/client
@@ -109,7 +109,7 @@ demo/log: ${log_dir}/server  ${log_dir}/client
 	grep "server.c:" ${log_dir}/server
 	grep "client.c:" ${log_dir}/client
 
-run/%: bin/%
+run/%: bin/% ${iotivity_out}
 	mkdir -p ${log_dir}
 	cd ${iotivity_out} && \
  LD_LIBRARY_PATH=. stdbuf -oL -eL ${exe} \
@@ -120,7 +120,7 @@ xterm/% : bin/%
 	xterm -e ${MAKE} run/${@F}  &
 	sleep 5
 
-run: run/client
+default/run run: run/client
 	@echo "# $@: $^"
 
 platform/demo: xterm/server xterm/client
