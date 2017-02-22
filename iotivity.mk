@@ -112,15 +112,15 @@ export scons_flags
 #iotivity_cflags+=-DROUTING_GATEWAY=1
 
 V=1
-iotivity/rule/build: ${iotivity_dir} deps
+rule/iotivity/build: ${iotivity_dir} deps
 	@echo "scons_flags=${scons_flags}"
 	cd ${<} && scons resource ${scons_flags}
 
-${iotivity_out}: iotivity/rule/build
+${iotivity_out}: rule/iotivity/build
 	@echo "# $@: $^"
 
-iotivity_out: iotivity/rule/build
-#	ls ${iotivity_out} || ${MAKE} platform=${platform} iotivity/rule/build
+iotivity_out: rule/iotivity/build
+#	ls ${iotivity_out} || ${MAKE} platform=${platform} rule/iotivity/build
 	@echo "# $@: $^"
 
 ${iotivity_dir}:
