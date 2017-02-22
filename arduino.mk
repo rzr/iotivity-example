@@ -19,11 +19,12 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-rule/arduino/default: help arduino/all
+rule/arduino/default: rule/arduino/help rule/arduino/all
 	@echo "# $@: $^"
 
 arduino_mk_url?=https://github.com/sudar/Arduino-Makefile
-platform=arduino
+platform?=arduino
+export platform
 vpath += src
 
 config_pkgconfig=0
@@ -95,7 +96,7 @@ USER_LIB_PATH+= ${iotivity_includedirs}
 
 #TODO:
 #core_lib=build-${BOARD_TAG}/libcore.a
-core_lib=${iotivity_out}/arduino/libmega_at${BOARD_TAG}_core.a
+core_lib=${iotivity_out}/rule/arduino/libmega_at${BOARD_TAG}_core.a
 CORE_LIB=${core_lib}
 
 
@@ -111,19 +112,19 @@ scons_flags+=BOARD=mega
 scons_flags+=TARGET_ARCH=avr
 scons_flags+=SHIELD=ETH
 
-arduino/all: ${iotivity_dir} ${LIBS} ${TARGET_ELF}
+rule/arduino/all: ${iotivity_dir} ${LIBS} ${TARGET_ELF}
 	@echo "# $@: $^"
 
-arduino/prep: rule/iotivity/build ${iotivity_libs}
+rule/arduino/prep: rule/iotivity/build ${iotivity_libs}
 	@echo "# $@: $^"
 
-arduino/prepare:
+rule/arduino/prepare:
 	-killall xterm server client
 
-arduino/demo: rule/arduino/default arduino/prepare upload arduino/run default/run
+rule/arduino/demo: rule/arduino/default rule/arduino/prepare upload rule/arduino/run default/run
 	@echo "# $@: $^"
 
-arduino/run:
+rule/arduino/run:
 	@echo "# TODO: waiting iotivity resource registration ($@)"
 	sleep 30
 	@echo "# $@: $^"
@@ -131,7 +132,7 @@ arduino/run:
 ${iotivity_libs}: ${iotivity_out}
 	date
 
-%.c.tmp.cpp: %.c arduino/prep
+%.c.tmp.cpp: %.c rule/arduino/prep
 	@echo '#include "${<F}"' >$@
 
 ${iotivity_out}: ${iotivity_dir} ${iotivity_dir}/extlibs/tinycbor/tinycbor scons
@@ -164,11 +165,13 @@ ${TARGET_ELF}: ${LOCAL_OBJS} ${LIBS}
 	ls -l ${@}
 
 
-arduino/help:
+rule/arduino/help: help
 	@echo "# TARGET_ELF=${TARGET_ELF}"
 	@echo "# CORE_LIB=${CORE_LIB}"
 	@echo "# core_lib=${core_lib}"
 	@echo "# LIBS=${LIBS}"
+	@echo "# platform=${platform}"
+	@echo "# iotivity_out=${iotivity_out}"
 
 
 /dev/ttyACM0: /dev/ttyUSB0

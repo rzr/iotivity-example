@@ -43,11 +43,12 @@ export platform
 
 user?=${USER}
 deps+=local.mk
-export platform
+
 arch?=$(shell uname -m || echo ${ARCH})
 
 
 rule/default: ${platform}/default
+	@echo "# $@: $^"
 
 all: help local.mk
 	${MAKE} ${platform}/$@

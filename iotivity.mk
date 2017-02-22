@@ -54,10 +54,11 @@ gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8c
 # TODO:
 gtest_url?=https://github.com/google/googletest/archive/release-1.7.0.zip
 
-
+platform?=default
+export platform
 iotivity_src?=${CURDIR}/tmp/src/
 iotivity_dir?=${iotivity_src}iotivity-${iotivity_version}-${platform}
-export iotivity_dir
+#export iotivity_dir
 
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
 
