@@ -19,7 +19,7 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-arduino/default: help arduino/all
+rule/arduino/default: help arduino/all
 	@echo "# $@: $^"
 
 arduino_mk_url?=https://github.com/sudar/Arduino-Makefile
@@ -120,7 +120,7 @@ arduino/prep: rule/iotivity/build ${iotivity_libs}
 arduino/prepare:
 	-killall xterm server client
 
-arduino/demo: arduino/default arduino/prepare upload arduino/run default/run
+arduino/demo: rule/arduino/default arduino/prepare upload arduino/run default/run
 	@echo "# $@: $^"
 
 arduino/run:

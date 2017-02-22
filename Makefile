@@ -79,7 +79,7 @@ demo/all: distclean
 	${MAKE} platform=${platform} demo
 
 default/% linux/% arduino/%:
-	${MAKE} platform=${@D} ${@}
+	${MAKE} platform=${@D} rule/${@}
 
 arduino: arduino/default
 	@echo "# $@: $^"
