@@ -25,4 +25,9 @@ CPPFLAGS+=-DCONFIG_LOG=1
 
 USER?=$(shell echo '${USER}' || echo default)
 
+ifeq ("arduino", "${platform}")
+ARDUINO_HOME ?= /usr/local/opt/arduino-1.5.8/
+scons_flags+=ARDUINO_HOME=${ARDUINO_HOME}
+endif
+
 -include config-user-${USER}.mk

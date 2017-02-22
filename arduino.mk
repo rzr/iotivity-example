@@ -29,13 +29,13 @@ vpath += src
 
 config_pkgconfig=0
 include iotivity.mk
-
 ARDUINO_DIR ?= /usr/share/arduino
 AVR_TOOLS_DIR ?= ${ARDUINO_DIR}/hardware/tools/avr/
 BOARD_TAG ?= mega2560
 MONITOR_PORT ?= $(shell ls /dev/ttyUSB* | tail -n1)
 MONITOR_PORT ?= $(shell ls /dev/ttyACM* | tail -n1)
 ARCHITECTURE?=avr
+
 
 MONITOR_BAUDRATE ?= 115200
 AVRDUDE ?= ${ARDUINO_DIR}/hardware/tools/avrdude
@@ -96,7 +96,7 @@ USER_LIB_PATH+= ${iotivity_includedirs}
 
 #TODO:
 #core_lib=build-${BOARD_TAG}/libcore.a
-core_lib=${iotivity_out}/rule/arduino/libmega_at${BOARD_TAG}_core.a
+core_lib=${iotivity_out}/arduino/libmega_at${BOARD_TAG}_core.a
 CORE_LIB=${core_lib}
 
 
@@ -124,7 +124,7 @@ rule/arduino/prepare:
 rule/arduino/demo: rule/arduino/default rule/arduino/prepare upload rule/arduino/run default/run
 	@echo "# $@: $^"
 
-rule/arduino/run:
+rule/arduino/run: upload monitor
 	@echo "# TODO: waiting iotivity resource registration ($@)"
 	sleep 30
 	@echo "# $@: $^"

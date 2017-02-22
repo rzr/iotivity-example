@@ -121,7 +121,10 @@ xterm/% : bin/%
 	xterm -e ${MAKE} run/${@F}  &
 	sleep 5
 
-default/run run: run/client
+default/run: run/client
+	@echo "# $@: $^"
+
+run: default/run
 	@echo "# $@: $^"
 
 platform/demo: xterm/server xterm/client
