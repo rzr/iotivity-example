@@ -49,6 +49,7 @@ tinycbor_version?=v0.4
 endif
 # 
 tinycbor_version?=master
+tinycbor_version=v0.4
 
 gtest_url?=http://pkgs.fedoraproject.org/repo/pkgs/gtest/gtest-1.7.0.zip/2d6ec8ccdf5c46b05ba54a9fd1d130d7/gtest-1.7.0.zip
 # TODO:
@@ -58,7 +59,7 @@ platform?=default
 export platform
 iotivity_src?=${CURDIR}/tmp/src/
 iotivity_dir?=${iotivity_src}iotivity-${iotivity_version}-${platform}
-#export iotivity_dir
+export iotivity_dir
 
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
 
@@ -114,8 +115,8 @@ export scons_flags
 
 V=1
 rule/iotivity/build: ${iotivity_dir} deps
-	@echo "scons_flags=${scons_flags}"
-	cd ${<} && scons resource ${scons_flags}
+	cd $< && scons ${scons_flags}
+
 
 ${iotivity_out}: rule/iotivity/build
 	@echo "# $@: $^"
@@ -133,12 +134,13 @@ gtest: ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip
 
 ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip: 
 	${MAKE} ${iotivity_dir}
-	mkdir ${@D} ; cd ${@D} 
+	mkdir -p ${@D} ; cd ${@D} 
 	wget -c ${gtest_url} -O ${@}
 
+#TODO: 
 ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip/github: 
 	${MAKE} ${iotivity_dir}
-	mkdir ${@D} ; cd ${@D} 
+	mkdir -p ${@D} ; cd ${@D} 
 	wget -c ${gtest_url} -O ${@}
 	cd ${@D} && unp $@ && mv googletest-release-1.7.0 gtest-1.7.0
 

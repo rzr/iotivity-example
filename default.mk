@@ -19,10 +19,10 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-default/default: default/all
+rule/default/default: rule/default/all
 	date
 
-config_pkgconfig?=1
+config_pkgconfig?=0
 PKG_CONFIG?=pkg-config
 
 ifeq (${config_pkgconfig},1)
@@ -59,17 +59,18 @@ all+=${server}
 all+=${client}
 all+=${observer}
 
-default/all: ${all}
+
+rule/default/all: rule/default/libs ${all}
 	@echo "# $@: $^"
 
-default/clean:
+rule/default/clean:
 	-rm -f *.o *~ ${objs} */*.o
 
-default/cleanall: default/clean
+rule/default/cleanall: rule/default/clean
 	-rm -rf bin
 	-rm -f *.o *~ ${objs} */*.o
 
-default/distclean: default/cleanall
+rule/default/distclean: rule/default/cleanall
 	rm -rf typescript build*
 	rm -f ${client} ${server}
 
@@ -85,7 +86,7 @@ ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CC} -o ${@} $^ ${LDFLAGS} ${LIBS}
 
-default/libs: ${iotivity_out}
+rule/default/libs: ${iotivity_out}
 	@echo "sudo dpkg -r iotivity iotivity-dev"
 
 ${platform}/demo: platform/demo

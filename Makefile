@@ -97,7 +97,7 @@ install: ${all}
 	install README.md ${install_dir}
 
 iotivity_out:
-	ls ${iotivity_out} || ${MAKE} platform=${platform} rule/iotivity/build
+	ls ${iotivity_out} || ${MAKE} platform=${platform} deps rule/iotivity/build
 	@echo "# $@: $^"
 
 demo/kill: bin/server bin/client
@@ -141,7 +141,7 @@ clean:
 	find . -iname "*.o" -exec rm -v '{}' \;
 
 cleanall: clean
-	rm -rf bin local.mk *.temp
+	rm -rf bin local.mk *.temp build*
 
 distclean: ${platform}/cleanall cleanall
 	-rm -rf build* tmp temp

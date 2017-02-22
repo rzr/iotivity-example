@@ -126,7 +126,7 @@ rule/arduino/demo: rule/arduino/default rule/arduino/prepare upload rule/arduino
 
 rule/arduino/run: upload monitor
 	@echo "# TODO: waiting iotivity resource registration ($@)"
-	sleep 30
+#	sleep 30
 	@echo "# $@: $^"
 
 ${iotivity_libs}: ${iotivity_out}
