@@ -59,7 +59,6 @@ all+=${server}
 all+=${client}
 all+=${observer}
 
-
 default/all: ${all}
 	@echo "# $@: $^"
 
