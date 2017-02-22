@@ -47,10 +47,7 @@ CPPFLAGS+=-Isrc
 
 #{ configuration
 eth_enabled?=1
-CPPFLAGS += -DARDUINOSERIAL=1
-CPPFLAGS += -DCONFIG_ARDUINOSERIAL=1
-ARDUINO_LIBS += Wire 
-ARDUINO_LIBS += SoftwareSerial
+serial_enabled?=1
 #}
 arch=${ARCHITECTURE}
 arch=avr
@@ -67,6 +64,14 @@ CPPFLAGS += -DARDUINOETH=1
 iotivity_libs += ${iotivity_libs_eth}
 endif
 
+ARDUINO_LIBS += Wire 
+ARDUINO_LIBS += SoftwareSerial
+ifeq (${serial_enabled}, 1)
+LIBS+=build-mega2560/HardwareSerial.o
+CPPFLAGS += -DARDUINOSERIAL=1
+CPPFLAGS += -DCONFIG_ARDUINOSERIAL=1
+endif
+
 
 # for iotivity-1.1.0
 ifeq (${iotivity_version}, TODO_1.1.0)
@@ -79,10 +84,8 @@ endif
 iotivity_libs+=\
  ${iotivity_out}/Time/libTime.a \
  ${iotivity_out}/libSPI.a \
-
-LIBS+=build-mega2560/HardwareSerial.o
-
  #eol
+
 
 #}
 USER_LIB_PATH+= ${iotivity_includedirs}
@@ -108,25 +111,27 @@ scons_flags+=BOARD=mega
 scons_flags+=TARGET_ARCH=avr
 scons_flags+=SHIELD=ETH
 
-arduino/all: ${LIBS} ${TARGET_ELF}
+arduino/all: ${iotivity_dir} ${LIBS} ${TARGET_ELF}
+	@echo "# $@: $^"
+
+arduino/prep: rule/iotivity/build ${iotivity_libs}
 	@echo "# $@: $^"
 
 arduino/prepare:
 	-killall xterm server client
 
-arduino/demo: arduino arduino/prepare upload arduino/run
+arduino/demo: arduino/default arduino/prepare upload arduino/run default/run
 	@echo "# $@: $^"
 
 arduino/run:
-	@echo "# TODO: waiting registration ($@)"
+	@echo "# TODO: waiting iotivity resource registration ($@)"
 	sleep 30
-	${MAKE} default run platform=default
 	@echo "# $@: $^"
 
 ${iotivity_libs}: ${iotivity_out}
 	date
 
-%.c.tmp.cpp: %.c
+%.c.tmp.cpp: %.c arduino/prep
 	@echo '#include "${<F}"' >$@
 
 ${iotivity_out}: ${iotivity_dir} ${iotivity_dir}/extlibs/tinycbor/tinycbor scons
