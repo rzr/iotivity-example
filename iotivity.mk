@@ -32,6 +32,8 @@ iotivity_version?=master
 # Supported configuration
 iotivity_mode?=release
 TARGET_OS?=linux
+iotivity_url?=http://github.com/tizenteam/iotivity
+iotivity_version?=sandbox/pcoval/on/master/arduino
 iotivity_url?=http://github.com/iotivity/iotivity
 iotivity_version?=1.2.1
 export iotivity_version
@@ -99,7 +101,7 @@ all+=deps
 all+=iotivity_out
 
 #TODO
-#scons_flags+=LOGGING=0
+#scons_flags+=LOGGING=1
 scons_flags+=RELEASE=1
 scons_flags+=ROUTING=EP 
 scons_flags+=SECURED=0
@@ -108,6 +110,7 @@ scons_flags+=VERBOSE=1
 scons_flags+=WITH_CLOUD=0
 scons_flags+=WITH_PROXY=0
 scons_flags+=WITH_TCP=0
+scons_flags+=WITH_PRESENCE=0
 export scons_flags
 
 #iotivity_cflags+=-DTB_LOG=1
@@ -115,6 +118,10 @@ export scons_flags
 
 V=1
 rule/iotivity/build: ${iotivity_dir} deps
+	cd $< && scons ${scons_flags}
+
+rule/iotivity/rebuild: ${iotivity_dir} deps
+	cd $< && scons ${scons_flags} -c
 	cd $< && scons ${scons_flags}
 
 
