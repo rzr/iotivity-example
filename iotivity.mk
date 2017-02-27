@@ -32,8 +32,6 @@ iotivity_version?=master
 # Supported configuration
 iotivity_mode?=release
 TARGET_OS?=linux
-iotivity_url?=http://github.com/tizenteam/iotivity
-iotivity_version?=sandbox/pcoval/on/master/arduino
 iotivity_url?=http://github.com/iotivity/iotivity
 iotivity_version?=1.2.1
 export iotivity_version
