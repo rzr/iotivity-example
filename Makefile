@@ -82,10 +82,11 @@ include ${platform}.mk
 
 
 install: ${all}
+	install -d ${install_dir}/docs
+	install LICENSE ${install_dir}/docs
+	install README.md ${install_dir}/docs
 	install -d ${install_dir}/bin
 	install $^ ${install_dir}/bin
-	install README.md ${install_dir}
-
 
 iotivity_out:
 	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
