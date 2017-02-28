@@ -42,12 +42,11 @@ that share an IoTivity resource.
     PLATFORM=TIZEN \
     #eol
 
-make %{name}.service
-
-install -d %{buildroot}%{_unitdir}
-
-install extra/iotivity-example.service \
-  %{buildroot}%{_unitdir}/%{name}.service
+%__make rule/install/service \
+    DESTDIR=%{buildroot}/ \
+    name=%{name} \
+    PLATFORM=TIZEN \
+    #eol
 
 %install_service network.target.wants %{name}.service
 
