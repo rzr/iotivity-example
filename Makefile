@@ -55,7 +55,7 @@ DESTDIR?=/
 local_bindir?=bin
 optdir?=/opt
 install_dir?=${DESTDIR}${optdir}/${name}/
-_unitdir?=/lib/systemd/
+_unitdir?=/usr/lib/systemd/system/
 
 vpath+=src
 VPATH+=src
