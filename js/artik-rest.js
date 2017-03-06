@@ -49,7 +49,7 @@ function send(data, config)
 
 function main()
 {
-    var config = require("./artik-config.js");
+    var config = require("./artik-config.js").Config;
     var value = true;
     var delay = 5000;
     
