@@ -183,7 +183,7 @@ build_()
 #           url="http://github.com/iotivity/${package}"
 #           branch="master"
             url="http://github.com/tizenteam/${package}"
-            branch="sandbox/pcoval/on/previous/tizen"
+            branch="sandbox/pcoval/on/latest/tizen"
             args=" -b "${branch}""
             args=" $args --depth 1"
             ls "$package" || \
