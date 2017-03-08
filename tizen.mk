@@ -75,10 +75,11 @@ ${rpm}: ${rpmdir}
 	ls $@
 
 rpm: ${rpm}
+	-ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 	ls -l $<
-	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 
 rpms: ${rpmdir} ${rpm} ${rpm_devel}
+	ls -l $<
 
 ls:
 	ls ${gbsdir}
@@ -88,6 +89,7 @@ ls:
 
 
 ${rpmdir}: tmp/rule/bootstrap
+	ls -l $<
 
 tmp/rule/bootstrap: extra/setup.sh
 	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
@@ -100,7 +102,7 @@ bootstrap: tmp/rule/bootstrap
 	@echo "# $@: done"
 
 
-rule/import: rpms
+rule/import: local/rpms
 	ls .tproject
 	rm -rf usr lib
 	mkdir -p usr/include lib
