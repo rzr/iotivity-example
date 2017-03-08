@@ -124,7 +124,6 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
 
     if (response)
     {
-        response->setErrorCode(200);
         response->setResponseResult(OC_EH_OK);
         response->setResourceRepresentation(m_Representation);
         result = OCPlatform::sendResponse(response);
