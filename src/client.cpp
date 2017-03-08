@@ -97,7 +97,7 @@ void Resource::post(bool value)
 {
     LOG();
     char const *const message
-        = (value) ? "log: about to post 1" : "log: about to post 0";
+        = (value) ? "log: about to post 1\n" : "log: about to post 0\n";
     Common::log(message);
     QueryParamsMap params;
     OCRepresentation rep;
