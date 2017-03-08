@@ -276,7 +276,7 @@ binaryswitch_()
         log_ "$line"
         sleep 1
         if ! $found ; then
-            $swithclient -v 2>&1 \
+            $switchclient -v 2>&1 \
                 | stdbuf -oL grep --line-buffered -m 1 "$pattern" \
                 | head -n1 | tee "$log" &
             pid=$!
