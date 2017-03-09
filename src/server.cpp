@@ -34,6 +34,10 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
+double IoTServer::m_co = 0;
+double IoTServer::m_co2 = 0;
+double IoTServer::m_offset = 0.001;
+
 IoTServer::IoTServer(string endpoint)
 {
     LOG();
@@ -70,6 +74,18 @@ void IoTServer::setup()
     EntityHandler handler = bind(&IoTServer::handleEntity, this, placeholders::_1);
 
     result = createResource(Common::m_endpoint, Common::m_type, handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myCOResURI", "oic.r.airquality", handler, m_coResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myCO2ResURI", "oic.r.airquality", handler, m_co2ResourceHandle);
     if (OC_STACK_OK != result)
     {
         cerr << "error: Error on createResource" << endl;
@@ -139,6 +155,20 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+            if (requestType == "GET")
+            {
+                cerr << "GET request for platform Resource" << endl;
+                if (response)
+                {
+                    response->setResponseResult(OC_EH_OK);
+                    response->setResourceRepresentation(m_Representation);
+                    if (OCPlatform::sendResponse(response) == OC_STACK_OK)
+                    {
+                        result = OC_EH_OK;
+                    }
+                }
+            }
+            else
             {
                 cerr << "error: unsupported " << requestType << endl;
                 response->setResponseResult(OC_EH_ERROR);
@@ -147,6 +177,24 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
         }
     }
     return result;
+}
+
+
+void IoTServer::update()
+{
+    LOG();
+    {
+        m_co += m_offset;
+        m_co2 += m_offset;
+
+        m_coRepresentation.setValue("contaminantvalue", m_co);
+        m_coRepresentation.setValue("contaminanttype", "CO");
+        m_co2Representation.setValue("contaminantvalue", m_co2);
+        m_co2Representation.setValue("contaminanttype", "CO2");
+
+        cerr << "location: " << std::fixed << m_co << "," << std::fixed << m_co2 << endl;
+    }
+    OCStackResult result = OCPlatform::notifyAllObservers(m_ResourceHandle);
 }
 
 
