@@ -23,6 +23,17 @@
 #CPPFLAGS+=-DCONFIG_GPIO=22
 #CPPFLAGS+=-DCONFIG_LOG=1
 
+# Arduino Address to replace DE-AD-BE-EF-FE-ED
+#CPPFLAGS+=-DCONFIG_MAC_1=0xDE
+#CPPFLAGS+=-DCONFIG_MAC_2=0xAD
+#CPPFLAGS+=-DCONFIG_MAC_3=0xBE
+#CPPFLAGS+=-DCONFIG_MAC_4=0xEF
+#CPPFLAGS+=-DCONFIG_MAC_5=0xFE
+#CPPFLAGS+=-DCONFIG_MAC_6=0xED
+
 USER?=$(shell echo '${USER}' || echo default)
+
+#TODO
+scons_flags+=ARDUINO_HOME=/usr/local/opt/arduino-1.5.8
 
 -include config-user-${USER}.mk
