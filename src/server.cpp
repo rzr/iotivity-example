@@ -91,6 +91,48 @@ void IoTServer::setup()
         cerr << "error: Error on createResource" << endl;
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
+    result = createResource("/myPM2.5ResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myCH20ResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myPM10ResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myVOCResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/mySmokeResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myOdorResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+    result = createResource("/myAirpollutionResURI", "oic.r.airquality", handler, m_ResourceHandle);
+    if (OC_STACK_OK != result)
+    {
+        cerr << "error: Error on createResource" << endl;
+        throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
 }
 
 OCStackResult IoTServer::createResource(string uri, string type, EntityHandler handler,
