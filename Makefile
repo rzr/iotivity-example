@@ -19,7 +19,6 @@
 # // limitations under the License.
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 rule/task/%: local.mk
 	${MAKE} ${@F}
 
@@ -38,12 +37,12 @@ platform?=default
 user?=${USER}
 deps+=local.mk
 export platform
-arch?=$(shell uname -m || echo ${ARCH})
+arch?=$(shell arch || echo ${ARCH})
 
 
 rule/default: ${platform}/default
 
-all: local.mk
+all: help local.mk
 	${MAKE} ${platform}/$@
 
 help: README.md
@@ -54,7 +53,7 @@ help: README.md
 	@echo "# iotivity_cflags=${iotivity_cflags}"
 	@echo "# CPPFLAGS=${CPPFLAGS}"
 
-demo: demo/${platform}
+demo: demo/linux demo/arduino
 	@echo "# $@: $^"
 
 demo/%:
@@ -73,7 +72,7 @@ demo/all: distclean
 	${MAKE} platform=${platform} demo
 
 default/% linux/% arduino/%:
-	${MAKE} platform=${@D} $@
+	${MAKE} platform=${@D} ${@D}/${@F}
 
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
@@ -82,11 +81,10 @@ include ${platform}.mk
 
 
 install: ${all}
-	install -d ${install_dir}/docs
-	install LICENSE ${install_dir}/docs
-	install README.md ${install_dir}/docs
 	install -d ${install_dir}/bin
 	install $^ ${install_dir}/bin
+	install README.md ${install_dir}
+
 
 iotivity_out:
 	ls ${iotivity_out} || ${MAKE} platform=${platform} deps ${iotivity_out}
@@ -125,6 +123,12 @@ check: ${all}
 rebuild: cleanall all
 	@echo "# $@: $^"
 
+local.mk:
+	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
+ echo "export config_pkgconfig=1" \
+ || echo "export config_pkgconfig=0" > $@
+	@echo "# type make help for usage"
+
 clean:
 	find . -iname "*~" -exec rm '{}' \;
 	find . -iname "*.o" -exec rm -v '{}' \;
@@ -144,9 +148,3 @@ deps: ${deps}
 
 %.mk:
 	touch $@
-
-local.mk:
-	ls $(PKG_CONFIG_SYSROOT_DIR)/usr/lib*/pkgconfig/iotivity.pc && \
- echo "export config_pkgconfig=1" \
- || echo "export config_pkgconfig=0" > $@
-	@echo "# type make help for usage"
