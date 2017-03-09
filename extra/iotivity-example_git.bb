@@ -6,7 +6,7 @@ SECTION = "apps"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRCREV = "sandbox/pcoval/switch"
+SRCREV = "sandbox/pcoval/airquality"
 SRC_URI = "git://github.com/TizenTeam/iotivity-example.git/;protocol=http;nobranch=1"
 
 S = "${WORKDIR}/git"
