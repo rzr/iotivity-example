@@ -190,3 +190,26 @@ longhelp:
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
 	set
+
+
+rule/date: all 
+	{ sleep 5 && ${MAKE} xterm/client ;} &
+	while true ; do \
+date -u ; \
+sleep 1; \
+done \
+| ${local_bindir}/server -v
+
+#line_len?=80
+#line_len?=1k # ok
+line_len?=1389 #ok
+# line_len?=1390 #ko
+
+rule/block: all
+	{ sleep 5 && ${MAKE} xterm/client ;} &
+	while true ; do \
+{ date ; xxd /dev/zero ; } | tr -d '\n' | dd bs=${line_len} count=1 ; \
+echo ""; \
+sleep 5; \
+done \
+| ${local_bindir}/server -v
