@@ -37,37 +37,21 @@ OCStackResult server_finish();
 void platform_log(char const *);
 void platform_setup();
 void platform_loop();
-void platform_setValue(bool value);
+int platform_getValue();
 
-OCStackResult createSwitchResource();
+OCStackResult createGeolocationResource();
 
 
-OCStackResult setValue(bool value)
+OCRepPayload *updatePayload(OCRepPayload* payload)
 {
-    OCStackResult result;
-    LOGf("%d", value);
-    gSwitch.value = value;
-    platform_setValue(gSwitch.value);
-    result = OCNotifyAllObservers(gSwitch.handle, gQos);
-    return result;
-}
-
-
-OCRepPayload *createPayload()
-{
-    OCRepPayload *payload = OCRepPayloadCreate();
-
     LOGf("%p", payload);
     if (!payload)
     {
         exit(1);
     }
-    //OCRepPayloadAddResourceType(payload, gIface);
-    //OCRepPayloadAddInterface(payload, DEFAULT_INTERFACE);
+    OCRepPayloadSetPropInt(payload, gResource.name, gResource.value);
 
-    LOGf("%d (payload)", gSwitch.value);
-    OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
-
+    LOGf("%ld", gResource.value);
     return payload;
 }
 
@@ -83,7 +67,6 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
     memset(&response,0,sizeof response);
 
     LOGf("%p", entityHandlerRequest);
-    LOGf("%d (current)", gSwitch.value);
 
     if (entityHandlerRequest && (flag & OC_REQUEST_FLAG))
     {
@@ -91,26 +74,24 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
         OCRepPayload* input = NULL;
         switch (entityHandlerRequest->method)
         {
-        case OC_REST_POST:
-        case OC_REST_PUT:
-            input = (OCRepPayload*) entityHandlerRequest->payload;
-            OCRepPayloadGetPropBool(input, "value", &gSwitch.value);
-            LOGf("%d (update)", gSwitch.value);
-            res = setValue(gSwitch.value);
-            break;
         case OC_REST_GET:
+            payload = OCRepPayloadCreate();
             OCRepPayloadSetUri(payload, gUri);
-            OCRepPayloadSetPropBool(payload, "value", gSwitch.value);
+            payload = updatePayload(payload);
             break;
         default:
             break;
         }
-        payload = (OCRepPayload *) createPayload();
-        if (!payload)
-        {
-            LOGf("%p (error)", payload);
-            return OC_EH_ERROR;
-        }
+        if (payload == 0 ) 
+            payload = OCRepPayloadCreate();
+    
+        //if (!payload)
+        //{
+        //  LOGf("%p (error)", payload);
+        //  return OC_EH_ERROR;
+        //}
+
+        // updatePayload(payload);
         response.payload = (OCPayload *) payload;
 
         response.ehResult = result;
@@ -136,16 +117,15 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
 }
 
 
-OCStackResult createSwitchResource()
+OCStackResult createGeolocationResource()
 {
-    OCStackResult result = OCCreateResource(&(gSwitch.handle),
-                                            gName,
-                                            gIface,
+    OCStackResult result = OCCreateResource(&(gResource.handle),
+                                            gResourceTypeName,
+                                            gResourceInterfaceName,
                                             gUri,
                                             onOCEntity,
                                             NULL,
                                             OC_DISCOVERABLE|OC_OBSERVABLE);
-    LOGf("%s", gIface );
     LOGf("%d", result);
     return result;
 }
@@ -153,14 +133,24 @@ OCStackResult createSwitchResource()
 
 OCStackResult server_loop()
 {
-    LOGf("%d (iterate)", gSwitch.value);
-    OCStackResult result = OCProcess();
+    OCStackResult result = OC_STACK_ERROR;
+    {
+        gResource.value = platform_getValue();
+
+        OCRepPayload* payload = NULL;
+        payload = OCRepPayloadCreate();
+        updatePayload(payload);
+        
+        OCNotifyAllObservers(gResource.handle, gQos);
+        OCRepPayloadDestroy(payload);
+    }
+
+    result = OCProcess();
     if (result != OC_STACK_OK)
     {
         LOGf("%d (error)", result);
         return result;
     }
-
     sleep(gDelay);
     return result;
 }
@@ -176,7 +166,7 @@ OCStackResult server_setup()
         return result;
     }
 
-    result = createSwitchResource();
+    result = createGeolocationResource();
     if (result != OC_STACK_OK)
     {
         LOGf("%d (error)", result);
