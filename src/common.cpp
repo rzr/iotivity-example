@@ -26,8 +26,8 @@
 #include "platform.h"
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
-std::string Common::m_type = "org.example.r.dummy";
-std::string Common::m_endpoint = "/DummyResURI";
+std::string Common::m_type = "oic.r.airquality";
+std::string Common::m_endpoint = "/AirQualityBaselineResURI";
 
 int Common::m_logLevel = 0;
 int Common::m_period = 5;
