@@ -64,6 +64,9 @@ CPPFLAGS+=-DCONFIG_SERVER_MAIN=1
 CPPFLAGS+=-DCONFIG_CLIENT_MAIN=1
 CPPFLAGS+=-DCONFIG_OBSERVER_MAIN=1
 
+CPPFLAGS+=-g -O0
+run_args?=-v
+
 V=1
 
 CXXFLAGS+=-std=c++0x
@@ -130,7 +133,7 @@ iotivity: ${include_dir}
 ${srcs_all}: ${iotivity_dir}
 
 run/%: ${local_bindir}/%
-	${<D}/${<F}
+	${<D}/${<F} ${run_args}
 
 xterm/% : ${local_bindir}/%
 	xterm -T "${@F}" -e ${MAKE} run/${@F} &
