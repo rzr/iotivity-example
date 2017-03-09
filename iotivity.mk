@@ -22,16 +22,16 @@ git?=git
 export git
 
 # Override here if needed
-#iotivity_version?=master
+#iotivity_version=master
 #iotivity_version=1.1-rel
 #iotivity_version=1.2-rel
 #iotivity_src?=${HOME}/usr/local/src/
 
 # Supported configuration
-iotivity_mode?=release
-TARGET_OS?=linux
 iotivity_url?=http://github.com/iotivity/iotivity
 iotivity_version?=1.2.1
+iotivity_mode?=release
+
 export iotivity_version
 
 tinycbor_url?=https://github.com/01org/tinycbor.git
@@ -57,30 +57,34 @@ iotivity_src?=${CURDIR}/tmp/src/
 iotivity_dir?=${iotivity_src}iotivity-${iotivity_version}
 export iotivity_dir
 
+iotivity_mode?=release
+
+
+TARGET_OS=linux
+
 iotivity_out?=${iotivity_dir}/out/${TARGET_OS}/${arch}/${iotivity_mode}
 
-iotivity_cflags?=-DTB_LOG=1 -DROUTING_GATEWAY=1
+iotivity_cppflags?=-DTB_LOG=1 -DROUTING_GATEWAY=1
 
-iotivity_cflags+=\
+iotivity_cppflags+=\
  -I${iotivity_dir}/resource/c_common/ \
  -I${iotivity_dir}/resource/csdk/stack/include \
- -I${iotivity_dir}/resource/csdk/include \
  -I${iotivity_dir}/resource/csdk/logger/include \
  #eol
 
-iotivity_cflags+=-I${iotivity_dir}/resource/stack
+iotivity_cppflags+=-I${iotivity_dir}/resource/stack
 
 iotivity_libs?=\
- ${iotivity_out}/liboctbstack.a \
- ${iotivity_out}/libroutingmanager.a \
- ${iotivity_out}/libocsrm.a \
- ${iotivity_out}/liblogger.a \
- ${iotivity_out}/libconnectivity_abstraction.a \
- ${iotivity_out}/libc_common.a \
+ ${iotivity_out}/resource/csdk/liboctbstack.a \
+ ${iotivity_out}/resource/csdk/routing/libroutingmanager.a \
+ ${iotivity_out}/resource/csdk/security/libocsrm.a \
+ ${iotivity_out}/resource/csdk/logger/liblogger.a \
+ ${iotivity_out}/resource/csdk/connectivity/src/libconnectivity_abstraction.a \
+ ${iotivity_out}/resource/c_common/libc_common.a \
  ${iotivity_out}/libcoap.a \
  #eol
 
-CPPFLAGS+=${iotivity_cflags}
+CPPFLAGS+=${iotivity_cppflags}
 
 deps+=${iotivity_dir} tinycbor gtest
 
@@ -99,6 +103,16 @@ scons_flags+=WITH_CLOUD=0
 scons_flags+=WITH_PROXY=0
 scons_flags+=WITH_TCP=0
 
+iotivity/setup/debian: /etc/debian_version
+	which apt-get
+	which sudo || apt-get install sudo
+	sudo apt-get install make psmisc wget git unp sudo aptitude
+	sudo apt-get install uuid-dev
+	sudo apt-get install libboost1.55-dev libboost1.55-all-dev libboost-thread1.55-dev \
+	|| sudo apt-get install libboost-dev libboost-program-options-dev libexpat1-dev libboost-thread-dev
+
+iotivity/setup: iotivity/setup/debian
+
 ${iotivity_out}: ${iotivity_dir}
 	cd ${<} && scons resource ${scons_flags}
 
@@ -111,7 +125,6 @@ ${iotivity_dir}:
 	cd ${@D} && ${git} clone --depth=1 ${iotivity_url} -b ${iotivity_version} ${@}
 
 gtest: ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip
-	@echo "# $@: $^"
 
 ${iotivity_dir}/extlibs/gtest/gtest-1.7.0.zip: 
 	${MAKE} ${iotivity_dir}
@@ -133,13 +146,5 @@ ${iotivity_dir}/extlibs/tinycbor/tinycbor:
 tinycbor: ${iotivity_dir}/extlibs/tinycbor/tinycbor
 	@echo "# tinycbor_version=${tinycbor_version}"
 
-iotivity/setup/debian: /etc/debian_version
-	which apt-get
-	which sudo || apt-get install sudo
-	sudo apt-get install make psmisc wget git unp sudo aptitude xterm
-	sudo apt-get install uuid-dev
-	sudo apt-get install libboost1.55-dev libboost1.55-all-dev libboost-thread1.55-dev \
-	|| sudo apt-get install libboost-dev libboost-program-options-dev libexpat1-dev libboost-thread-dev
-
-iotivity/setup: iotivity/setup/debian
-	@echo "# $@: $^"
+TODO/iotivity/1.2.0: ${iotivity_dir}/extlibs/tinycbor/tinycbor
+	ln -fs $</src/cbor.h ${iotivity_dir}/resource/csdk/stack/include
