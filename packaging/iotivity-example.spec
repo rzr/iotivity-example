@@ -7,24 +7,18 @@ Url:            http://github.com/TizenTeam/iotivity-example
 Group:          System/Libraries
 #X-Vc-Url:      http://github.com/TizenTeam/iotivity-example
 Group:          Contrib
-
-%if ! 0%{?license:0}
-%define license %doc
-%endif
-
 Source:         %{name}-%{version}.tar.gz
+
 BuildRequires:  make
 BuildRequires:  fdupes
-BuildRequires:  pkgconfig(iotivity)
+BuildRequires:  iotivity-devel
 BuildRequires:  boost-devel
 BuildRequires:  pkgconfig(dlog)
-BuildRequires:  systemd
-Requires:  iotivity
 
 
 %description
-Mimimal client/server application,
-that share an IoTivity resource.
+Mimimal client/server application
+that share a single gpio output as IoTivity resource.
 
 %prep
 %setup -q
@@ -32,26 +26,14 @@ that share an IoTivity resource.
 %build
 
 %__make %{?_smp_mflags} \
-    name=%{name} \
     PLATFORM=TIZEN \
     #eol
 
 %install
 %__make install \
-    DESTDIR=%{buildroot}/ \
-    name=%{name} \
+    DESTDIR=%{buildroot}/opt/%{name}/ \
     PLATFORM=TIZEN \
     #eol
-
-make %{name}.service
-
-install -d %{buildroot}%{_unitdir}
-
-install extra/iotivity-example.service \
-  %{buildroot}%{_unitdir}/%{name}.service
-
-%install_service network.target.wants %{name}.service
-
 
 %fdupes %{buildroot}
 
@@ -62,7 +44,4 @@ install extra/iotivity-example.service \
 
 %files
 %defattr(-,root,root)
-%license LICENSE
 /opt/%{name}/*
-%{_unitdir}/%{name}.service
-%{_unitdir}/network.target.wants/%{name}.service
