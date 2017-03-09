@@ -31,6 +31,10 @@
 #define HAVE_STDIO_H 1
 #endif
 
+#ifdef ARDUINO
+#undef HAVE_UNISTD_H
+#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #else
@@ -58,19 +62,20 @@ unsigned int sleep(unsigned int secs);
 static int gOver = 0;
 static int gVerbose = 0;
 static const int gDelay = 1;
-static const char *gName = "oic.r.switch.binary";
-static const char *gUri = "/BinarySwitchResURI";
-static char const *gIface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
+static const char *gResourceTypeName = "org.example.r.number";
+static const char *gUri = "/NumberResURI";
+static char const *gResourceInterfaceName = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 static OCConnectivityType gConnectivityType = CT_DEFAULT;
 static OCQualityOfService gQos = OC_LOW_QOS;
 
 
-typedef struct SWITCHRESOURCE
+typedef struct ValueResource_t
 {
     OCResourceHandle handle;
-    bool value;
-} SwitchResource;
+    char* name;
+    int64_t value;
+} ValueResource;
 
-static SwitchResource gSwitch = {NULL, false};
+static ValueResource gResource = {NULL, "number", 0};
 
 #endif // common_h_
