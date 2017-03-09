@@ -31,8 +31,7 @@ iotivity_out?=$(PKG_CONFIG_SYSROOT_DIR)/usr/lib
 iotivity_cflags+=$(shell ${PKG_CONFIG} --cflags iotivity)
 iotivity_libs+=$(shell ${PKG_CONFIG} --libs iotivity)
 # TODO: workaround for 1.2.0
-#iotivity_cflags+=-I${iotivity_dir}/resource/stack
-#iotivity_cflags+=-I${iotivity_dir}/..
+iotivity_cflags+=-I${iotivity_dir}/resource/stack
 else
 include iotivity.mk
 LDFLAGS+=-L${iotivity_out}
@@ -47,8 +46,9 @@ endif
 CPPFLAGS+=${iotivity_cflags}
 LIBS+=${iotivity_libs}
 
-CFLAGS+=-fPIC
+CPPFLAGS+=-fPIC -pthread
 CPPFLAGS+=-Isrc
+LDFLAGS+=-fPIC
 
 client?=${local_bindir}/client
 server_objs?=src/server/platform/default/platform.o
