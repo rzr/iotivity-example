@@ -38,7 +38,12 @@ CPPFLAGS+=$(shell pkg-config iotivity --cflags)
 LIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
+arch?=$(shell uname -m)
+os?=linux
+build_dir?=debug
+LDFLAGS+=-L${iotivity_dir}/out/${os}/${arch}/${build_dir}/
 LIBS+=-loc -loc_logger -loctbstack
+LIBS+=-lc_common
 CPPFLAGS+=-I${iotivity_dir}
 CPPFLAGS+=-I${iotivity_dir}/resource
 CPPFLAGS+=-I${iotivity_dir}/resource/c_common
@@ -124,16 +129,16 @@ rule/install/service: ${name}.service
 ${name}.service: extra/iotivity-example.service
 	sed -e "s|ExecStart=.*|ExecStart=${optdir}/${name}/bin/server|g" < $< > $@
 
-iotivity: ${include_dir}
+iotivity:
 	@echo "# TODO: workaround for namespace"
 	-@rm -f $@
-	ls $</iotivity && ln -fs $</iotivity $@ || ln -fs $< $@
+	ls ${include_dir}/iotivity && ln -fs ${include_dir}/iotivity $@ || ln -fs ${include_dir} $@
 	ls -l $@
 
 ${srcs_all}: ${iotivity_dir}
 
 run/%: ${local_bindir}/%
-	${<D}/${<F} ${run_args}
+	${exe_arg} ${<D}/${<F} ${run_args}
 
 xterm/% : ${local_bindir}/%
 	xterm -T "${@F}" -e ${MAKE} run/${@F} &
@@ -144,7 +149,13 @@ run: run/server
 auto: all xterm/server  run/client-auto
 	killall client server
 
-demo:all xterm/server  run/client
+demo: all xterm/server  run/client
+	killall client server
+
+
+rule/demo: all
+	{ sleep 5 ; make xterm/client ; } &
+	${MAKE} run/server
 	killall client server
 
 help: README.md
