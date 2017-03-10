@@ -25,13 +25,14 @@ default: all
 
 name?=iotivity-example
 
-config_pkgconfig?=0
+config_pkgconfig?=1
 export config_pkgconfig
 
 #TODO: workaround missing /usr/include/iotivity namespace
 iotivity_dir?=iotivity
 includedir?=/usr/include
 include_dir?=${PKG_CONFIG_SYSROOT_DIR}/${includedir}
+log_dir?=${CURDIR}/tmp/log
 
 ifeq (${config_pkgconfig},1)
 CPPFLAGS+=$(shell pkg-config iotivity --cflags)
@@ -41,14 +42,17 @@ else
 arch?=$(shell uname -m)
 os?=linux
 build_dir?=debug
-LDFLAGS+=-L${iotivity_dir}/out/${os}/${arch}/${build_dir}/
-LIBS+=-loc -loc_logger -loctbstack
+iotivity_out_dir?=${iotivity_dir}/out/${os}/${arch}/${build_dir}/
+iotivity_include_dir?=${iotivity_out_dir}/include
+LDFLAGS+=-L${iotivity_out_dir}
+LIBS+=-loc -loctbstack -lconnectivity_abstraction -loc_logger 
 LIBS+=-lc_common
-CPPFLAGS+=-I${iotivity_dir}
-CPPFLAGS+=-I${iotivity_dir}/resource
-CPPFLAGS+=-I${iotivity_dir}/resource/c_common
-CPPFLAGS+=-I${iotivity_dir}/resource/oc_logger
-CPPFLAGS+=-I${iotivity_dir}/resource/stack
+iotivity_include_dir?=${iotivity_dir}/
+CPPFLAGS+=-I${iotivity_include_dir}
+CPPFLAGS+=-I${iotivity_include_dir}/resource
+CPPFLAGS+=-I${iotivity_include_dir}/c_common
+CPPFLAGS+=-I${iotivity_include_dir}/resource/oc_logger
+CPPFLAGS+=-I${iotivity_include_dir}/resource/stack
 all+=${iotivity_dir}
 srcs_all+=$(wildcard src/*.cpp)
 endif
@@ -61,6 +65,7 @@ local_bindir?=bin
 optdir?=/opt
 install_dir?=${DESTDIR}${optdir}/${name}/
 _unitdir?=/usr/lib/systemd/system/
+log_dir?=${CURDIR}/tmp/log
 
 vpath+=src
 VPATH+=src
@@ -135,10 +140,27 @@ iotivity:
 	ls ${include_dir}/iotivity && ln -fs ${include_dir}/iotivity $@ || ln -fs ${include_dir} $@
 	ls -l $@
 
+rule/pkg-config/0:
+	@echo "TODO"
+	-ln -fs ${HOME}/mnt/iotivity iotivity
+	-ln -fs . ${iotivity_out_dir}/include/iotivity ||:
+
+iotivity: 
+
+
 ${srcs_all}: ${iotivity_dir}
 
+#exe_args?=stdbuf -oL -eL ${exe} 
+
+exe_args?=\
+ LD_LIBRARY_PATH=${iotivity_out_dir} \
+ stdbuf -oL -eL \
+ ${exe} 
+
 run/%: ${local_bindir}/%
-	${exe_arg} ${<D}/${<F} ${run_args}
+	@mkdir -p ${log_dir}
+	${exe_args} ${<D}/${<F} ${run_args} \
+ | tee ${log_dir}/${@F}
 
 xterm/% : ${local_bindir}/%
 	xterm -T "${@F}" -e ${MAKE} run/${@F} &
@@ -149,8 +171,17 @@ run: run/server
 auto: all xterm/server  run/client-auto
 	killall client server
 
-demo: all xterm/server  run/client
+demo: all xterm/server run/client
 	killall client server
+
+check: rule/check
+
+rule/check: 
+	@rm -fv ${log_dir}/*
+	${MAKE} demo &
+	sleep 30
+	killall client server
+	grep 'ERROR:' ${log_dir}/* && exit 1 || exit 0
 
 
 rule/demo: all
@@ -166,4 +197,5 @@ longhelp:
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
+	@echo "# exe_args=${exe_args}"
 	set
