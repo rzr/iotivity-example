@@ -25,7 +25,7 @@ default: all
 
 name?=iotivity-example
 
-config_pkgconfig?=0
+config_pkgconfig?=1
 export config_pkgconfig
 
 #TODO: workaround missing /usr/include/iotivity namespace
