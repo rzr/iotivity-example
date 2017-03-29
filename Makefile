@@ -34,8 +34,9 @@ includedir?=/usr/include
 include_dir?=${PKG_CONFIG_SYSROOT_DIR}/${includedir}
 
 ifeq (${config_pkgconfig},1)
-CPPFLAGS+=$(shell pkg-config iotivity --cflags)
-LIBS+=$(shell pkg-config iotivity --libs)
+PKG_CONFIG?=pkg-config
+CPPFLAGS+=$(shell ${PKG_CONFIG} iotivity --cflags)
+LIBS+=$(shell ${PKG_CONFIG} iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
 LIBS+=-loc -loc_logger -loctbstack
