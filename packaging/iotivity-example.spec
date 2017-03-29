@@ -1,4 +1,4 @@
-Name:           iotivity-example
+Name:           iotivity-example-geolocation
 Version:        1.2.1
 Release:        0
 License:        Apache-2.0
