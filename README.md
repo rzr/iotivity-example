@@ -1,15 +1,26 @@
-## About : ##
+## IOTIVITY EXAMPLE ##
 
-Minimal IoTivity example
-
-
-## Usage: ##
-
-It has been tested with IoTivity 1.1.1
+URL: http://git.s-osg.org/iotivity-example
 
 
-## Resources: ##
+## ABOUT: ##
 
-https://wiki.iotivity.org/community
+Minimal IoTivity example.
 
-https://wiki.tizen.org/wiki/User:Pcoval
+
+## USAGE: ##
+
+It has been tested with:
+
+* IoTivity 1.2.0+ on various OS (Tizen, Yocto, Debian).
+
+
+## RESOURCES: ##
+
+* https://wiki.iotivity.org/examples
+* https://wiki.iotivity.org/build
+* https://wiki.iotivity.org/community
+* https://blogs.s-osg.org/category/iotivity/
+* https://github.com/tizenteam/iotivity-example
+* https://wiki.tizen.org/wiki/User:Pcoval
+
