@@ -1,4 +1,4 @@
-Name:           iotivity-example
+Name:           iotivity-example-switch
 Version: %{!?version:0}%{?version}
 Release: %{!?release:0}%{?release}
 License:        Apache-2.0
