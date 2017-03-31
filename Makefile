@@ -23,7 +23,7 @@
 
 default: all
 
-name?=iotivity-example
+name?=iotivity-example-geolocation
 
 config_pkgconfig?=0
 export config_pkgconfig
