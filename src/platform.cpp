@@ -41,12 +41,16 @@ Platform::~Platform()
 void Platform::setup(int argc, char *argv[])
 {
     LOG();
-    int gpio = m_gpio;
+    char *var = getenv("IOTIVITY_GPIO");
+    if (var)
+    {
+        m_gpio = atoi(var);
+    }
     if (argc>1 && argv[1])
     {
         m_gpio = atoi(argv[1]);
     }
-    pinMode(gpio,Platform::OUTPUT);
+    pinMode(m_gpio,Platform::OUTPUT);
 }
 
 
