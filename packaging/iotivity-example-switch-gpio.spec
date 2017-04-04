@@ -1,4 +1,4 @@
-Name:           iotivity-example-switch
+Name:           iotivity-example-switch-gpio
 Version:        0.0.0
 Release:        0
 License:        Apache-2.0
