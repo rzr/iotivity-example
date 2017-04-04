@@ -1,0 +1,90 @@
+//TODO
+#define BAR_HEIGHT_PORTRAIT 6
+#define MAP_BAR_TEXT_LAYOUT_HEIGHT_PORTRAIT 9
+#define GET_DIRECTION_BUTTON_WIDTH 6
+#define SCREEN_WIDTH                        480
+#define SCREEN_HEIGHT                       96
+
+collections {
+	base_scale: 1.8;
+
+	group { name: "map_object";
+		parts {
+			part {
+				name: "content";
+				type: SWALLOW;
+				scale: 1;
+				description {
+				state: "default" 0.0;
+					rel1 { relative: 0.0 0.0;}
+					rel2 { relative: 1.0 1.0;}
+					visible: 1;
+					align: 0.5 0.5;
+				}
+			}
+		}
+	}
+
+	group {
+		name: "map-view";
+		parts {
+			part{
+		 		name: "bg";
+				type: RECT;
+				scale: 1;
+					description{
+					state: "default" 0.0;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					color_class:"B041";
+				}
+			}
+
+			part {
+				name: "map";
+				type: SWALLOW;
+				scale: 1;
+				description {
+				state: "default" 0.0;
+					#min : 0 572;
+					#fixed: 0 1;
+					//rel1 { relative: 0.0 1.0; to:"searchbar";}
+					//rel2 { relative: 1.0 0.0; to_x:"bg"; to_y:"map_view_genlist";}
+					rel2 { relative: 1.0 1.0; to:"bg";}
+					visible: 1;
+					align: 0.5 0.5;
+				}
+				description {
+					state: "hide" 0.0;
+					inherit: "default" 0.0;
+					visible: 0;
+				}
+			}
+
+			
+			part {
+				name: "map_view_genlist";
+				type: SWALLOW;
+				scale: 1;
+				description {
+					state: "default" 0.0;
+					#min: 0 96;
+					#fixed: 0 1;
+					#color: 255 0 0 255;
+					fixed: 1 1;
+					rel1 { relative: 0.0 1.0; to:"bg";}
+					rel2 { relative: 1.0 1.0; to:"bg";}
+					visible: 1;
+					align: 0.5 1.0;
+				}
+				description {
+					state: "hide" 0.0;
+					inherit: "default" 0.0;
+					visible: 0;
+				}
+			}
+		}
+	}
+
+  	
+}
