@@ -66,16 +66,6 @@ static char const *const g_usage_text = ""
 appdata_s *g_appdata = 0;  //TODO
 
 
-static void start()
-{
-    static IoTClient *client = NULL;
-    if (client == 0)
-    {
-        client = IoTClient::getInstance();
-        client->start();
-    }
-}
-
 static int quit(char *message)
 {
     int status = 0;
@@ -182,6 +172,19 @@ static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
     IoTObserver::getInstance()->start();
 }
 
+static void toggle_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
+{
+    appdata_s *ad = g_appdata = (appdata_s *) data;
+    ad->thread = thread;
+    ad->len = 0;
+    ad->length = 0;
+    ad->page = 0;
+    char buff[1024];
+    char copy[1024];
+    IoTObserver::getInstance()->start();
+    //start();
+}
+
 
 #if 0
 static void todo_toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
@@ -227,18 +230,6 @@ static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
     }
 }
 #endif
-
-static void toggle_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
-{
-    appdata_s *ad = g_appdata = (appdata_s *) data;
-    ad->thread = thread;
-    ad->len = 0;
-    ad->length = 0;
-    ad->page = 0;
-    char buff[1024];
-    char copy[1024];
-    start();
-}
 
 
 
