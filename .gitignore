@@ -45,4 +45,5 @@ log*
 local.mk
 iotivity
 lib
+res
 usr
