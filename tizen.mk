@@ -1,8 +1,8 @@
 #! /usr/bin/make -f
 
-default: local/rpm local/usr local/lib local/all
-	date
+rule/default: local/rpm local/usr local/lib local/all
 	-ls lib/*.so
+	@date
 
 ### Configuration ###
 
@@ -27,9 +27,9 @@ srcs+=usr
 
 
 ### Default ###
-self?=$(lastword $(MAKEFILE_LIST))
-thisdir:=$(shell dirname $(realpath ${self}))
-make=${MAKE} -f ${self}
+self?=tizen.mk
+thisdir?=$(shell dirname $(realpath ${self}))
+make?=${MAKE} -f ${self}
 export make
 MAKEFLAGS=-j1
 tmpdir?=${CURDIR}/tmp
@@ -50,6 +50,9 @@ tizen_helper_dir?=tmp/tizen-helper
 
 
 ### Rules ###
+
+%: local/%
+	@echo "# $@: $^"
 
 local/%: bootstrap
 	${make} ${@F}
@@ -72,10 +75,11 @@ ${rpm}: ${rpmdir}
 	ls $@
 
 rpm: ${rpm}
+	-ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 	ls -l $<
-	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 
 rpms: ${rpmdir} ${rpm} ${rpm_devel}
+	ls -l $<
 
 ls:
 	ls ${gbsdir}
@@ -85,6 +89,7 @@ ls:
 
 
 ${rpmdir}: tmp/rule/bootstrap
+	ls -l $<
 
 tmp/rule/bootstrap: extra/tizen/setup.sh
 	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
@@ -97,7 +102,7 @@ bootstrap: tmp/rule/bootstrap
 	@echo "# $@: done"
 
 
-rule/import: rpms
+rule/import: local/rpms
 	ls .tproject
 	rm -rf usr lib
 	mkdir -p usr/include lib
@@ -106,9 +111,9 @@ rule/import: rpms
 	unp ${devel_rpm}
 	ln -fs ${rootfs}/usr/include/boost usr/include/
 	@echo "# TODO: fix this upstream"
-	#TODO might not be needed
+	@echo "# TODO: might not be needed"
 	cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||:
-	#TODO might not be needed
+	@echo "# TODO might not be needed"
 	cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||:
 	rm -rf lib
 
