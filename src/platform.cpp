@@ -56,7 +56,6 @@ void Platform::setup(int argc, char *argv[])
 void Platform::log(char const *const message)
 {
     LOG();
-    cout<<"geolocation: "<<lat<<","<<lon<<endl;
     char const *const LOGTAG = "LOG";
 #ifdef __TIZEN__
     dlog_print(DLOG_INFO, LOGTAG, message);
