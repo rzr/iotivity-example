@@ -1,6 +1,6 @@
 
 # Project Name
-APPNAME = iotivityexample
+APPNAME = iotivityexampleswitch
 
 # Project Type
 type = app
