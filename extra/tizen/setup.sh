@@ -217,8 +217,10 @@ unp_()
     rpm2cpio "$1" | cpio -idmv
 }
 
+
 deploy_()
 {
+    cd "${thisdir}"
     ls .tproject || die_ "TODO"
 
     rm -rf usr lib
@@ -241,7 +243,7 @@ main_()
     package="iotivity-example"
 
     thisdir=$(dirname -- "$0")
-    thisdir=$(realpath -- "$thisdir/..")
+    thisdir=$(realpath -- "$thisdir/../..")
 
     [ "" != "${profile}" ] || profile="tizen_2_4_mobile"
 
@@ -256,11 +258,7 @@ main_()
 
     [ "" != "${arch}" ] || arch="armv7l"
     git="git"
-
-    thisdir=$(dirname -- "$0")
-    thisdir=$(realpath -- "$thisdir/..")
     HOME="${home}"
-
     export HOME
 
     gbsdir="${HOME}/tmp/gbs/tmp-GBS-${profile}_${arch}/"
@@ -291,7 +289,6 @@ main_()
     ls ${rpmdir}/iotivity-devel-${version}[0-9]*-*${arch}.rpm \
         || build_ "${profile}" ;
 
-    cd "${thisdir}"
     deploy_
 }
 
