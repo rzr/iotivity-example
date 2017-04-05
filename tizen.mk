@@ -75,10 +75,11 @@ ${rpm}: ${rpmdir}
 	ls $@
 
 rpm: ${rpm}
+	-ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 	ls -l $<
-	ls ${rpmdir}/iotivity-[0-9]*-*${arch}.rpm
 
 rpms: ${rpmdir} ${rpm} ${rpm_devel}
+	ls -l $<
 
 ls:
 	ls ${gbsdir}
@@ -88,8 +89,9 @@ ls:
 
 
 ${rpmdir}: tmp/rule/bootstrap
+	ls -l $<
 
-tmp/rule/bootstrap: extra/setup.sh
+tmp/rule/bootstrap: extra/tizen/setup.sh
 	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
 	echo 'include ${tizen_helper_dir}/bin/mk-tizen-app.mk' > local.mk
 	mkdir -p ${@D}
@@ -100,7 +102,7 @@ bootstrap: tmp/rule/bootstrap
 	@echo "# $@: done"
 
 
-rule/import: rpms
+rule/import: local/rpms
 	ls .tproject
 	rm -rf usr lib
 	mkdir -p usr/include lib
@@ -123,3 +125,11 @@ usr/lib usr/include: usr
 
 usr:
 	ls -l $@ || ${make} rule/import
+
+dist_files?=\
+ lib Release src inc packaging docs README.md *.prop *.xml tizen.mk COPYING extra res shared \
+ .project .cproject .tproject .exportMap Makefile
+
+dist: ${dist_files}
+	${make} clean
+	zip -r9 ${project_name}.zip $^
