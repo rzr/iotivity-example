@@ -1,8 +1,8 @@
 #! /usr/bin/make -f
 
-rule/default: local/rpm local/usr local/lib local/all
+default: local/rpm local/usr local/lib local/all
+	date
 	-ls lib/*.so
-	@date
 
 ### Configuration ###
 
@@ -27,9 +27,9 @@ srcs+=usr
 
 
 ### Default ###
-self?=tizen.mk
-thisdir?=$(shell dirname $(realpath ${self}))
-make?=${MAKE} -f ${self}
+self?=$(lastword $(MAKEFILE_LIST))
+thisdir:=$(shell dirname $(realpath ${self}))
+make=${MAKE} -f ${self}
 export make
 MAKEFLAGS=-j1
 tmpdir?=${CURDIR}/tmp
@@ -50,9 +50,6 @@ tizen_helper_dir?=tmp/tizen-helper
 
 
 ### Rules ###
-
-%: local/%
-	@echo "# $@: $^"
 
 local/%: bootstrap
 	${make} ${@F}
@@ -89,7 +86,7 @@ ls:
 
 ${rpmdir}: tmp/rule/bootstrap
 
-tmp/rule/bootstrap: extra/setup.sh
+tmp/rule/bootstrap: extra/tizen/setup.sh
 	profile="${tizen_profile}" arch="${gbs_arch}" ${SHELL} ${<D}/${<F}
 	echo 'include ${tizen_helper_dir}/bin/mk-tizen-app.mk' > local.mk
 	mkdir -p ${@D}
@@ -109,9 +106,9 @@ rule/import: rpms
 	unp ${devel_rpm}
 	ln -fs ${rootfs}/usr/include/boost usr/include/
 	@echo "# TODO: fix this upstream"
-	@echo "# TODO: might not be needed"
+	#TODO might not be needed
 	cp -av ${rootfs}/usr/lib/libuuid.so.1.3.0 usr/lib/libuuid1.so  ||:
-	@echo "# TODO might not be needed"
+	#TODO might not be needed
 	cp -av ${rootfs}/usr/lib/libconnectivity_abstraction.so  usr/lib/ ||:
 	rm -rf lib
 
@@ -123,3 +120,11 @@ usr/lib usr/include: usr
 
 usr:
 	ls -l $@ || ${make} rule/import
+
+dist_files?=\
+ lib Release src inc packaging docs README.md *.prop *.xml tizen.mk COPYING extra res shared \
+ .project .cproject .tproject .exportMap Makefile
+
+dist: ${dist_files}
+	${make} clean
+	zip -r9 ${project_name}.zip $^
