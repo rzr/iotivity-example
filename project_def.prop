@@ -10,9 +10,10 @@ profile = mobile-2.4
 
 # C/CPP Sources
 USER_SRCS = src/observer.cpp src/client.cpp src/common.cpp src/main.cpp src/platform.cpp 
+USER_SRCS += src/logger.cpp src/main_view.cpp src/util.cpp
 
 # EDC Sources
-USER_EDCS =  
+USER_EDCS = res/edje/mainview.edc
 
 # PO Sources
 USER_POS = 
