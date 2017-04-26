@@ -57,6 +57,7 @@ local_bindir?=bin
 optdir?=/opt
 install_dir?=${DESTDIR}${optdir}/${name}/
 unitdir?=/usr/lib/systemd/system/
+log_dir?=${CURDIR}/tmp/log
 
 vpath+=src
 VPATH+=src
@@ -64,6 +65,9 @@ VPATH+=src
 CPPFLAGS+=-DCONFIG_SERVER_MAIN=1
 CPPFLAGS+=-DCONFIG_CLIENT_MAIN=1
 CPPFLAGS+=-DCONFIG_OBSERVER_MAIN=1
+
+CPPFLAGS+=-g -O0
+run_args?=-v
 
 V=1
 
@@ -131,8 +135,17 @@ iotivity: ${include_dir}
 
 ${srcs_all}: ${iotivity_dir}
 
+#exe_args?=stdbuf -oL -eL ${exe} 
+
+exe_args?=\
+ LD_LIBRARY_PATH=${iotivity_out_dir} \
+ stdbuf -oL -eL \
+ ${exe} 
+
 run/%: ${local_bindir}/%
-	${<D}/${<F}
+	@mkdir -p ${log_dir}
+	${exe_args} ${<D}/${<F} ${run_args} \
+ | tee ${log_dir}/${@F}
 
 xterm/% : ${local_bindir}/%
 	xterm -T "${@F}" -e ${MAKE} run/${@F} &
