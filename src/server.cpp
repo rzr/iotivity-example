@@ -48,17 +48,25 @@ IoTServer::~IoTServer()
     LOG();
 }
 
+static FILE* override_fopen(const char* path, const char* mode)
+{
+    LOG();
+    static const char* SVR_DB_FILE_NAME = "./oic_svr_db_server.dat";
+    return fopen(SVR_DB_FILE_NAME, mode);
+}
 
 void IoTServer::init()
 {
     LOG();
+    static OCPersistentStorage ps{override_fopen, fread, fwrite, fclose, unlink };
 
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, // different service ?
                         ModeType::Server, // other is Client or Both
                         "0.0.0.0", // default ip
                         0, // default random port
-                        OC::QualityOfService::LowQos// qos
+                        OC::QualityOfService::LowQos, // qos
+                        &ps
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
@@ -86,6 +94,7 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
     string resourceType = type;
     string resourceInterface = Common::m_interface;
     uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
+    resourceFlag |= OC_SECURE;
     try
     {
         result = OCPlatform::registerResource//

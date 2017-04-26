@@ -122,16 +122,27 @@ IoTClient *IoTClient::getInstance()
     return mInstance;
 }
 
+
+static FILE* override_fopen(const char* path, const char* mode)
+{
+    LOG();
+    static const char* SVR_DB_FILE_NAME = "./oic_svr_db_client.dat";
+    return fopen(SVR_DB_FILE_NAME, mode);
+}
+
+
 void IoTClient::init()
 {
     LOG();
+    static OCPersistentStorage ps{override_fopen, fread, fwrite, fclose, unlink };
 
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
-                        ModeType::Client, //
+                        ModeType::Both, //
                         "0.0.0.0", //
                         0, //
-                        OC::QualityOfService::LowQos //
+                        OC::QualityOfService::LowQos, //
+                        &ps
                        );
     OCPlatform::Configure(*m_platformConfig);
     m_FindCallback = bind(&IoTClient::onFind, this, placeholders::_1);
