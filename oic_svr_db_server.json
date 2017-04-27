@@ -54,7 +54,7 @@
                     "subjectuuid": "*",
                     "resources": [
                         {
-                            "href": "/BinarySwitchResURI",
+                            "href": "/a/light",
                             "rel": "",
                             "rt": ["oic.core"],
                             "if": ["oic.if.baseline"]
