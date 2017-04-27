@@ -173,5 +173,5 @@ longhelp:
 	set
 
 %.dat: %.json
-	sed -e 's|/a/light|/BinarySwitchResURI|g' -i $<
+	-sed -e 's|/a/light|/BinarySwitchResURI|g' -i $<
 	json2cbor "$<" "$@"
