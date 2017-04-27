@@ -86,6 +86,9 @@ exes?=${client} ${observer}
 exes+=${server}
 all+=${exes}
 
+json_files+=$(wildcard *.json)
+cbor_files?=${json_files=.json:.dat}
+all+=${cbor_files}
 
 ${local_bindir}/server: server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
@@ -168,3 +171,6 @@ longhelp:
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
 	set
+
+%.dat: %.json
+	json2cbor $< $@
