@@ -86,8 +86,8 @@ exes?=${client} ${observer}
 exes+=${server}
 all+=${exes}
 
-json_files+=$(wildcard *.json)
-cbor_files?=${json_files=.json:.dat}
+json_files?=$(wildcard *.json)
+cbor_files?=${json_files:.json=.dat}
 all+=${cbor_files}
 
 ${local_bindir}/server: server.o ${server_objs} ${objs}
@@ -173,4 +173,4 @@ longhelp:
 	set
 
 %.dat: %.json
-	json2cbor $< $@
+	json2cbor < $< > $@
