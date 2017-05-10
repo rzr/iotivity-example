@@ -8,7 +8,7 @@ arch=$(arch)
 
 usage_()
 {
-cat<<EOF
+    cat<<EOF
 https://wiki.iotivity.org/docker
 
 https://docs.docker.com/compose/gettingstarted/
@@ -27,12 +27,9 @@ sources_()
     git clone $url 
 }
 
+
 servers_()
 {
-
-    cat<<EOF
-
-EOF
     #git.sh op rm
     # app.sh -e docker_
     which docker || sudo apt-get install docker-engine # upstream
@@ -49,6 +46,7 @@ EOF
 
     $sudo docker version # > 1.13
 
+    # TODO
     branch=sandbox/pcoval/on/cloud-interface/devel
     git checkout $branch \
         || git checkout -b $branch remotes/origin/$branch
