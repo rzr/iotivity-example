@@ -35,22 +35,22 @@ includedir?=/usr/include
 include_dir?=${PKG_CONFIG_SYSROOT_DIR}/${includedir}
 
 ifeq (${config_pkgconfig},1)
-CPPFLAGS+=$(shell pkg-config iotivity --cflags)
-LIBS+=$(shell pkg-config iotivity --libs)
+override CPPFLAGS+=$(shell pkg-config iotivity --cflags)
+override LIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
-LIBS+=-loc -loc_logger -loctbstack
-CPPFLAGS+=-I${iotivity_dir}
-CPPFLAGS+=-I${iotivity_dir}/resource
-CPPFLAGS+=-I${iotivity_dir}/resource/c_common
-CPPFLAGS+=-I${iotivity_dir}/resource/oc_logger
-CPPFLAGS+=-I${iotivity_dir}/resource/stack
+override LIBS+=-loc -loc_logger -loctbstack
+override CPPFLAGS+=-I${iotivity_dir}
+override CPPFLAGS+=-I${iotivity_dir}/resource
+override CPPFLAGS+=-I${iotivity_dir}/resource/c_common
+override CPPFLAGS+=-I${iotivity_dir}/resource/oc_logger
+override CPPFLAGS+=-I${iotivity_dir}/resource/stack
 all+=${iotivity_dir}
 srcs_all+=$(wildcard src/*.cpp)
 endif
 
 all+=${tmpdir}/${name}.service
-CPPFLAGS+=-I.
+override CPPFLAGS+=-I.
 
 DESTDIR?=/
 local_bindir?=bin
@@ -61,13 +61,13 @@ unitdir?=/usr/lib/systemd/system/
 vpath+=src
 VPATH+=src
 
-CPPFLAGS+=-DCONFIG_SERVER_MAIN=1
-CPPFLAGS+=-DCONFIG_CLIENT_MAIN=1
-CPPFLAGS+=-DCONFIG_OBSERVER_MAIN=1
+override CPPFLAGS+=-DCONFIG_SERVER_MAIN=1
+override CPPFLAGS+=-DCONFIG_CLIENT_MAIN=1
+override CPPFLAGS+=-DCONFIG_OBSERVER_MAIN=1
 
 V=1
 
-CXXFLAGS+=-std=c++0x
+override CXXFLAGS+=-std=c++0x
 
 srcs?=platform.cpp common.cpp
 objs?=${srcs:.cpp=.o}
