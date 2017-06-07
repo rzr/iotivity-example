@@ -45,6 +45,7 @@ override CPPFLAGS+=-I${iotivity_dir}/resource
 override CPPFLAGS+=-I${iotivity_dir}/resource/c_common
 override CPPFLAGS+=-I${iotivity_dir}/resource/oc_logger
 override CPPFLAGS+=-I${iotivity_dir}/resource/stack
+override CPPFLAGS+=-I${iotivity_dir}/c_common
 all+=${iotivity_dir}
 srcs_all+=$(wildcard src/*.cpp)
 endif
