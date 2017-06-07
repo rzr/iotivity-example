@@ -74,7 +74,7 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     }
     else
     {
-        cerr << "errror: in GET response: " << eCode << endl;
+        cerr << "error: in GET response: " << eCode << endl;
     }
 }
 
