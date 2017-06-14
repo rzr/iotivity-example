@@ -12,7 +12,8 @@ which $sudo || sudo=""
 NODE_PATH=/usr/lib/node_modules/ 
 [ ! -d ${NODE_PATH} ] || export NODE_PATH
 
-switchclient=/opt/iotivity-example-gpio/bin/client
+switchclient=${switchclient:=/opt/iotivity-example-switch/bin/client}
+
 
 usage_()
 {
