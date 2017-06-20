@@ -1,5 +1,5 @@
 [Unit]
-Description="Iotivity example demo"
+Description=Iotivity example demo
 After=network.target
 
 [Service]
