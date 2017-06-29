@@ -24,7 +24,7 @@ git_clone?=${git} clone --depth=1
 
 # Override here if needed
 git_clone=${git} clone
-iotivity_version?=master
+#iotivity_version?=master
 #iotivity_version=1.1-rel
 #iotivity_version=1.2-rel
 #iotivity_src?=${HOME}/usr/local/src/
