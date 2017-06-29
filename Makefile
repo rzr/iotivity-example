@@ -32,7 +32,8 @@ install_dir?=${DESTDIR}/${local_optdir}/${package}/
 
 -include local.mk
 demo_time?=20
-log_dir?=${CURDIR}/tmp/log
+TMPDIR?=${CURDIR}/tmp/
+log_dir?=${TMPDIR}/log
 platform?=default
 
 user?=${USER}
