@@ -83,6 +83,14 @@ demo/all: distclean
 	${MAKE} platform=${platform} distclean
 	${MAKE} platform=${platform} demo
 
+#TODO: relocate
+#default/% linux/% arduino/%:
+#	${MAKE} platform=${@F} $@
+
+arduino:
+	-${MAKE} platform=linux #default/all
+	-${MAKE} platform=$@
+	-${MAKE} platform=$@ $@/demo
 
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
