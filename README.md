@@ -7,6 +7,8 @@ Minimal IoTivity example
 
 It has been tested with IoTivity 1.1.1
 
+make arduino
+
 
 ## Resources: ##
 
