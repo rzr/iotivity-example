@@ -33,8 +33,12 @@ iotivity_libs+=$(shell ${PKG_CONFIG} --libs iotivity)
 # TODO: workaround for 1.2.0
 #iotivity_cflags+=-I${iotivity_dir}/resource/stack
 #iotivity_cflags+=-I${iotivity_dir}/..
+# TODO: workaround for 1.2-rel
+iotivity_libs+=-luuid
+iotivity_libs+=-lpthread
+iotivity_libs+=-lm
 else
-include iotivity.mk
+include rules/iotivity.mk
 LDFLAGS+=-L${iotivity_out}
 iotivity_libs+=-loctbstack
 iotivity_libs+=-lconnectivity_abstraction
@@ -44,6 +48,7 @@ iotivity_libs+=-lpthread
 iotivity_libs+=-lm
 iotivity_cflags+=-pthread 
 endif
+
 CPPFLAGS+=${iotivity_cflags}
 LIBS+=${iotivity_libs}
 

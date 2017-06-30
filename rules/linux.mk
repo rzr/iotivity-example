@@ -1,6 +1,7 @@
 # //******************************************************************
+# //
 # // Copyright 2016 Samsung Electronics France SAS All Rights Reserved.
-# //******************************************************************
+# //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 # //
 # // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +18,34 @@
 # //
 # //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-# Configuration settings
+include rules/default.mk
+platform=linux
 
-# ARTIK10/Pin13
+ifeq (${PLATFORM}, TIZEN)
+CPPFLAGS+=-D__TIZEN__=1 
+CPPFLAGS+=$(shell pkg-config dlog --cflags)
+LIBS+=$(shell pkg-config dlog --libs)
+endif
+scons_flags+=TARGET_OS=linux TARGET_ARCH=${arch}
+
+# For artik10
 #CPPFLAGS+=-DCONFIG_GPIO=22
-#CPPFLAGS+=-DCONFIG_LOG=1
+#CPPFLAGS+=-DCONFIG_WANT_GPIO=1
+server_objs+=src/server/platform/${platform}/platform.o
 
-USER?=$(shell echo '${USER}' || echo default)
+OSTYPE?=$(shell echo "$${OSTYPE}")
+uname?=$(shell echo `uname -s` || echo "")
 
--include config-user-${USER}.mk
+TARGET_OS?=${uname}
+ifeq ("",${TARGET_OS})
+TARGET_OS=${OSTYPE}
+endif
+
+ifeq ("linux-gnu","${TARGET_OS}")
+TARGET_OS=linux
+endif
+ifeq ("Linux","${TARGET_OS}")
+TARGET_OS=linux
+endif
+
+linux/default: default/default
