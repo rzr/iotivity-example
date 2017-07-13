@@ -34,9 +34,9 @@ iotivity_libs+=$(shell ${PKG_CONFIG} --libs iotivity)
 #iotivity_cflags+=-I${iotivity_dir}/resource/stack
 #iotivity_cflags+=-I${iotivity_dir}/..
 # TODO: workaround for 1.2-rel
-iotivity_libs+=-luuid
-iotivity_libs+=-lpthread
-iotivity_libs+=-lm
+#iotivity_libs+=-luuid
+#iotivity_libs+=-lpthread
+#iotivity_libs+=-lm
 else
 include rules/iotivity.mk
 LDFLAGS+=-L${iotivity_out}
@@ -90,9 +90,6 @@ ${local_bindir}/client: src/client.o ${client_objs} ${objs} ${libs}
 ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CC} -o ${@} $^ ${LDFLAGS} ${LIBS}
-
-default/libs: ${iotivity_out}
-	@echo "sudo dpkg -r iotivity iotivity-dev"
 
 ${platform}/demo: platform/demo
 	@echo "# $@: $^"

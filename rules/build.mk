@@ -70,7 +70,7 @@ demo: demo/${platform}
 demo/%:
 	${MAKE} ${@F}/${@D}
 
-demo/${platform}: rule/iotivity/out demo/kill
+demo/${platform}: demo/kill
 	${MAKE} platform=${@F} platform/demo &
 	@echo "# please check it change state on server"
 	sleep ${demo_time}
@@ -87,7 +87,7 @@ demo/all: distclean
 platform/demo: xterm/server xterm/client
 	@echo "# $@: $^"
 
-include rules/iotivity.mk
+#include rules/iotivity.mk
 include rules/${platform}.mk
 
 
@@ -108,15 +108,25 @@ demo/log: ${log_dir}/server  ${log_dir}/client
 	grep "server.c:" ${log_dir}/server
 	grep "client.c:" ${log_dir}/client
 
+
 run/%: bin/%
+	-killall ${@F}
 	mkdir -p ${log_dir}
-	cd ${iotivity_out} && \
+	stdbuf -oL -eL ${exe} \
+ ${CURDIR}/${<D}/${<F} ${exe_args} \
+ | tee ${log_dir}/${@F}
+
+
+todo/run/%: bin/%
+	-killall ${@F}
+	mkdir -p ${log_dir}
+	cd ${<D} && \
  LD_LIBRARY_PATH=. stdbuf -oL -eL ${exe} \
  ${CURDIR}/${<D}/${<F} ${exe_args} \
  | tee ${log_dir}/${@F}
 
 xterm/% : bin/%
-	xterm -e ${MAKE} run/${@F}  &
+	xterm -T "$@" -e ${MAKE} run/${@F}  &
 	sleep 5
 
 run: run/client
@@ -151,3 +161,6 @@ deps: ${deps}
 rules/config.mk:
 	touch $@
 
+
+rules/iotivity-config.mk:
+	touch $@
