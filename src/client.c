@@ -53,7 +53,7 @@ OCStackResult post();
 
 unsigned int gDiscovered = 0;
 static OCDevAddr gDestination;
-int gObversable= 1;
+int gObversable = 1;
 
 
 OCRepPayload *createPayload()
@@ -86,6 +86,7 @@ OCStackApplicationResult handleResponse(void *ctx,
         LOGf("%p (error)", clientResponse);
         return result;
     }
+    LOGf("%d\n", clientResponse->result);
     OCRepPayload *payload = (OCRepPayload *)(clientResponse->payload);
     if (!payload)
     {
@@ -113,8 +114,7 @@ OCStackApplicationResult onGet(void *ctx,
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
 
     LOGf("%p", clientResponse);
-    if (!true)
-        result = handleResponse(ctx, handle, clientResponse);
+    result = handleResponse(ctx, handle, clientResponse);
     if (result != OC_STACK_OK)
     {
         LOGf("%d (error)", result);
@@ -187,9 +187,10 @@ OCStackResult post()
     return result;
 }
 
+
 OCStackApplicationResult onObserve(void* ctx, 
-                                       OCDoHandle handle,
-                                       OCClientResponse * clientResponse)
+                                   OCDoHandle handle,
+                                   OCClientResponse * clientResponse)
 {
     LOGf("%d {", gSwitch.value);
     OCStackApplicationResult result = OC_STACK_KEEP_TRANSACTION;
@@ -201,6 +202,7 @@ OCStackApplicationResult onObserve(void* ctx,
     LOGf("%d }", gSwitch.value);
     return OC_STACK_KEEP_TRANSACTION;
 }
+
 
 // This is a function called back when a device is discovered
 OCStackApplicationResult onDiscover(void *ctx,
@@ -240,16 +242,33 @@ OCStackApplicationResult onDiscover(void *ctx,
             {
                 gDestination = clientResponse->devAddr;
                 LOGf("%s", gDestination.addr);
-                gConnectivityType = clientResponse->connType;
-                gSwitch.handle = handle;
-                if (gObversable)
-                {
-                    OCCallbackData callback = {NULL, NULL, NULL};
-                    callback.cb = onObserve;
-                    OCStackResult ret;
-                    ret = OCDoResource(&gSwitch.handle, OC_REST_OBSERVE,
-                                       gUri, &gDestination, NULL,
-                                       gConnectivityType, gQos, &callback, NULL, 0);
+                static char const * const COAPS_STR = "coaps";
+                for( resource->eps; resource->eps; resource->eps = resource->eps->next) {
+                    LOGf("%s", resource->eps->tps);
+                    
+                    if ( 0 == strcmp(COAPS_STR, resource->eps->tps)) 
+                    {
+                        LOGf("%s", gDestination.addr);
+                        strcpy(gDestination.addr, resource->eps->addr);
+                        LOGf("%s", gDestination.addr);
+                        LOGf("%d", gDestination.port);
+                        gDestination.port = resource->eps->port;
+                        LOGf("%d", gDestination.port);
+                        LOGf("%d", gDestination.flags);
+                        gDestination.flags = resource->eps->family;
+                        LOGf("%d", gDestination.flags);
+                        gSwitch.handle = handle;
+                        if (gObversable)
+                        {
+                            OCCallbackData callback = {NULL, NULL, NULL};
+                            callback.cb = onObserve;
+                            OCStackResult ret;
+                            ret = OCDoResource(&gSwitch.handle, OC_REST_OBSERVE,
+                                               gUri, &gDestination, NULL,
+                                               gConnectivityType, gQos, &callback, NULL, 0);
+                        }
+                        return OC_STACK_KEEP_TRANSACTION;
+                    }
                 }
             }
         }
@@ -308,6 +327,17 @@ OCStackResult client_loop()
 }
 
 
+static FILE* override_fopen(const char* path, const char* mode)
+{
+    static const char* CRED_FILE_NAME = "oic_svr_db_client_devowner.dat";
+    char const * const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME))
+        ? CRED_FILE_NAME : path;
+    FILE* file = fopen(filename, mode);
+    return file;
+}
+
+
 OCStackResult client_setup()
 {
     int i = 0;
@@ -315,8 +345,9 @@ OCStackResult client_setup()
     static int gInit = 0;
     if (gInit++ == 0)
     {
-        result = OCInit1(OC_CLIENT, // or OC_CLIENT_SERVER,
-                         OC_DEFAULT_FLAGS, OC_DEFAULT_FLAGS);
+        static OCPersistentStorage ps = {override_fopen, fread, fwrite, fclose, unlink };
+        OCRegisterPersistentStorageHandler(&ps);
+        result = OCInit1(OC_CLIENT_SERVER, OC_DEFAULT_FLAGS, OC_DEFAULT_FLAGS);
 
         if (result != OC_STACK_OK)
         {
@@ -346,7 +377,7 @@ OCStackResult client_setup()
                               &cbData, //
                               NULL, // options
                               0 // numOptions
-                             );
+            );
 
         if (result != OC_STACK_OK)
         {

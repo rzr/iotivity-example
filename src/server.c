@@ -138,13 +138,15 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
 
 OCStackResult createSwitchResource()
 {
+    uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
+    resourceFlag = resourceFlag | OC_SECURE;
     OCStackResult result = OCCreateResource(&(gSwitch.handle),
                                             gName,
                                             gIface,
                                             gUri,
                                             onOCEntity,
                                             NULL,
-                                            OC_DISCOVERABLE|OC_OBSERVABLE);
+                                            resourceFlag);
     LOGf("%s", gIface );
     LOGf("%d", result);
     return result;
@@ -166,9 +168,25 @@ OCStackResult server_loop()
 }
 
 
+static FILE* override_fopen(const char* path, const char* mode)
+{
+    static const char* CRED_FILE_NAME = "./oic_svr_db_server.dat";
+    char const * const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) ? CRED_FILE_NAME : path;
+    LOGf("io: %s", filename);   
+    FILE* file = fopen(filename, mode);
+    LOGf("io: %p", file);   
+
+    return file;
+}
+
+
 OCStackResult server_setup()
 {
     OCStackResult result;
+    static OCPersistentStorage ps = {override_fopen, fread, fwrite, fclose, unlink };
+    OCRegisterPersistentStorageHandler(&ps);
+
     result = OCInit(NULL, 0, OC_SERVER);
     if (result != OC_STACK_OK)
     {
