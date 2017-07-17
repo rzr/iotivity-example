@@ -182,3 +182,22 @@ ${iotivity_libs}: ${iotivity_out}
 	ls $@ $^
 
 rule/iotivity/libs: rule/print/iotivity_libs ${iotivity_libs}
+
+certs: dats
+
+dat_files?=oic_svr_db_server.dat oic_svr_db_client_devowner.dat
+json_files?=${dat_files:.dat=.json}
+
+%.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
+	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+
+PATH+=:/usr/lib/iotivity/examples/
+
+%.dat: %.json
+	json2cbor $< $@
+
+json: ${json_files}
+	ls $^
+
+dats: ${dat_files} 
+	ls $^
