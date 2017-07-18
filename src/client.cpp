@@ -126,8 +126,11 @@ IoTClient *IoTClient::getInstance()
 static FILE* override_fopen(const char* path, const char* mode)
 {
     LOG();
-    static const char* SVR_DB_FILE_NAME = "./oic_svr_db_client.dat";
-    return fopen(SVR_DB_FILE_NAME, mode);
+    static char const* const CRED_FILE_NAME = "oic_svr_db_client.dat";
+    char const * const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME))
+          ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
 }
 
 
@@ -135,7 +138,6 @@ void IoTClient::init()
 {
     LOG();
     static OCPersistentStorage ps{override_fopen, fread, fwrite, fclose, unlink };
-
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
                         ModeType::Both, //
@@ -187,19 +189,30 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
-                m_Resource = make_shared<Resource>(resource);
-                if (true)   // multi client need observe (for flip/flop)
-                {
-                    QueryParamsMap test;
-                    resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
-                }
-                else     // simple client can only use get once
-                {
-                    m_Resource->get();
-                }
-                input();
-            }
 
+                for (auto &resourceEndpoint: resource->getAllHosts())
+                {
+                    if (std::string::npos != resourceEndpoint.find("coaps"))
+                    {
+                        // Change Resource host if another host exists
+                        std::cout << "\tChange host of resource endpoints" << std::endl;
+                        std::cout << "\t\t" << "Current host is "
+                                  << resource->setHost(resourceEndpoint) << std::endl;
+                        m_Resource = make_shared<Resource>(resource);
+                        if (true)   // multi client need observe (for flip/flop)
+                        {
+                            QueryParamsMap test;
+                            resource->observe(OC::ObserveType::Observe, test, &IoTClient::onObserve);
+                        }
+                        else     // simple client can only use get once
+                        {
+                            m_Resource->get();
+                        }
+                        input();
+                        break;
+                    }
+                }
+            }
         }
     }
     catch (OCException &ex)
@@ -223,6 +236,10 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     for (auto &interface : resource->getResourceInterfaces())
     {
         cerr << "log: Resource: interface: " << interface << endl;
+    }
+    for (auto &endpoint : resource->getAllHosts())
+    {
+        cerr << "log: Resource: endpoint: " << endpoint << endl;
     }
 }
 

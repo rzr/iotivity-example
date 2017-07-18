@@ -48,12 +48,16 @@ IoTServer::~IoTServer()
     LOG();
 }
 
+
 static FILE* override_fopen(const char* path, const char* mode)
 {
     LOG();
-    static const char* SVR_DB_FILE_NAME = "./oic_svr_db_server.dat";
-    return fopen(SVR_DB_FILE_NAME, mode);
+    static const char* CRED_FILE_NAME = "oic_svr_db_server.dat";
+    char const * const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
 }
+
 
 void IoTServer::init()
 {
@@ -131,7 +135,7 @@ void IoTServer::postResourceRepresentation()
 OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> response)
 {
     LOG();
-    OCStackResult result =  OC_STACK_ERROR;
+    OCStackResult result = OC_STACK_ERROR;
 
     if (response)
     {
@@ -167,7 +171,9 @@ OCStackResult IoTServer::handlePost(shared_ptr<OCResourceRequest> request)
         return result;
     }
     m_Representation = requestRep;
-    postResourceRepresentation();
+    if (!true) {
+        postResourceRepresentation();
+    }
 
     return result;
 }
