@@ -40,6 +40,8 @@ override LDLIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
 override LDLIBS+=-loc -loc_logger -loctbstack
+override LDLIBS+=-locpmapi
+override CPPFLAGS+=-D__WITH_DTLS__=1
 override CPPFLAGS+=-I${iotivity_dir}
 override CPPFLAGS+=-I${iotivity_dir}/resource
 override CPPFLAGS+=-I${iotivity_dir}/resource/c_common
@@ -165,3 +167,26 @@ longhelp:
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
 	set
+
+#TODO: use installed files
+dat_files?=oic_svr_db_server.dat oic_svr_db_client.dat
+json_files?=${dat_files:.dat=.json}
+
+json2cbor?=${HOME}/mnt/iotivity/out/linux/x86_64/release/resource/csdk/security/tool/json2cbor
+
+%.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
+	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+
+ oic_svr_db_client.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
+	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+
+PATH+=:/usr/lib/iotivity/examples/
+
+%.dat: %.json
+	${json2cbor} $< $@
+
+json: ${json_files}
+	ls $^
+
+dats: ${dat_files} 
+	ls $^
