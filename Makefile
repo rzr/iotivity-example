@@ -25,7 +25,7 @@ default: all
 
 name?=iotivity-example-switch
 
-config_pkgconfig?=1
+config_pkgconfig?=0
 export config_pkgconfig
 
 tmpdir?=tmp
