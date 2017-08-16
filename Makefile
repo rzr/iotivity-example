@@ -36,10 +36,10 @@ include_dir?=${PKG_CONFIG_SYSROOT_DIR}/${includedir}
 
 ifeq (${config_pkgconfig},1)
 override CPPFLAGS+=$(shell pkg-config iotivity --cflags)
-override LIBS+=$(shell pkg-config iotivity --libs)
+override LDLIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
-override LIBS+=-loc -loc_logger -loctbstack
+override LDLIBS+=-loc -loc_logger -loctbstack
 override CPPFLAGS+=-I${iotivity_dir}
 override CPPFLAGS+=-I${iotivity_dir}/resource
 override CPPFLAGS+=-I${iotivity_dir}/resource/c_common
@@ -87,23 +87,23 @@ exes+=${server}
 all+=${exes}
 
 
+all: ${all}
+
 ${local_bindir}/server: server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
-	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
 ${local_bindir}/client: client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
-	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
 ${local_bindir}/observer: observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
-	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
-
-all: ${all}
+	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
 ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
-	${CXX} -o ${@} $^ ${LDFLAGS} ${LIBS}
+	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
 clean:
 	rm -f *.o *~ ${objs} */*.o
