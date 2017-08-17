@@ -181,7 +181,7 @@ build_()
             package="iotivity"
             url="https://git.tizen.org/cgit/platform/upstream/${package}"
             branch="tizen"
-            # TODO: support Tizen:2.4 at tizen.org
+            # TODO: unsupported release can be set here
             # url="https://github.com/tizenteam/${package}"
             # branch="sandbox/pcoval/on/latest/tizen"
             args=" -b ${branch} "
