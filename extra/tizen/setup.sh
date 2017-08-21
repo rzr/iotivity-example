@@ -181,9 +181,10 @@ build_()
             package="iotivity"
             url="https://git.tizen.org/cgit/platform/upstream/${package}"
             branch="tizen"
-            # TODO: support Tizen:2.4 at tizen.org
-            url="https://github.com/tizenteam/${package}"
-            branch="sandbox/pcoval/on/tizen/tizen"
+            #{ TODO: support Tizen:2.4 at tizen.org
+            # url="https://github.com/tizenteam/${package}"
+            branch="sandbox/pcoval/on/tizen/review"
+            #} TODO
             args=" -b ${branch} "
             args=" $args --depth 1"
             gbs_arch=${arch}
