@@ -185,9 +185,10 @@ build_()
             gbs_arch=${arch}
             gbs_profile=${profile}_${gbs_arch}
             # TODO: unsupported release can be set here
-            # url="https://github.com/tizenteam/${package}"
-            # branch="sandbox/pcoval/on/latest/tizen"
-            # args=" $args --depth 1"
+            url="https://github.com/tizenteam/${package}"
+#           branch="sandbox/pcoval/on/latest/tizen"
+            branch="sandbox/pcoval/on/master/tizen"
+            args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}" "${package}"
             cd "${package}"
