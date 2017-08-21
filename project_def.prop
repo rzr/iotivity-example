@@ -27,7 +27,8 @@ USER_UNDEFS =
 USER_CPP_UNDEFS = 
 
 # User Libraries
-USER_LIBS = oc oc_logger octbstack connectivity_abstraction uuid1 
+USER_LIBS = oc oc_logger octbstack 
+USER_LIBS += uuid1 
 
 # User Objects
 USER_OBJS = 
@@ -41,6 +42,9 @@ USER_CPP_INC_DIRS = inc
 USER_CPP_INC_DIRS += usr/include
 USER_CPP_INC_DIRS += usr/include/iotivity
 USER_CPP_INC_DIRS += usr/include/iotivity/resource
+USER_CPP_INC_DIRS += usr/include/iotivity/resource/stack
+USER_CPP_INC_DIRS += usr/include/iotivity/resource/c_common
+USER_CPP_INC_DIRS += usr/include/iotivity/resource/oc_logger
 USER_CPP_INC_FILES = 
 
 USER_INC_DIRS = $(USER_C_INC_DIRS) $(USER_CPP_INC_DIRS)
