@@ -153,7 +153,6 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
     string hostAddress = resource->host();
     cerr << "host: " << hostAddress << endl;
 
-
     cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
     for (auto &resourceTypes : resource->getResourceTypes())
     {
@@ -166,7 +165,6 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
         cerr << "\t" << resourceInterfaces << endl;
     }
     cerr << "Resource uri: " << resourceUri << endl;
-
 }
 
 
