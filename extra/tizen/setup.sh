@@ -183,10 +183,10 @@ build_()
             branch="tizen"
             #{ TODO: support Tizen:2.4 at tizen.org
             # url="https://github.com/tizenteam/${package}"
+            # args=" $args --depth 1"
             branch="sandbox/pcoval/on/tizen/review"
             #} TODO
             args=" -b ${branch} "
-            args=" $args --depth 1"
             gbs_arch=${arch}
             gbs_profile=${profile}_${gbs_arch}
             ls "$package" || \
