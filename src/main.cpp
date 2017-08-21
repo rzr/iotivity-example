@@ -99,7 +99,7 @@ static void end_func(void *data, Ecore_Thread *thread)
 {
     appdata_s *ad =  (appdata_s *) data;
     ad->thread = 0;
-    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_TRUE);
+    elm_object_disabled_set(ad->toggle_button, EINA_TRUE);
 }
 
 static void cancel_func(void *user_data, Ecore_Thread *thread)
@@ -168,41 +168,14 @@ static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
     ad->len = 0;
     ad->length = 0;
     ad->page = 0;
-
+    
     IoTObserver::getInstance()->start();
 }
-
-static void toggle_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
-{
-    appdata_s *ad = g_appdata = (appdata_s *) data;
-    ad->thread = thread;
-    ad->len = 0;
-    ad->length = 0;
-    ad->page = 0;
-    char buff[1024];
-    char copy[1024];
-    IoTObserver::getInstance()->start();
-    //start();
-}
-
-
-#if 0
-static void todo_toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
-{
-    appdata_s *ad = (appdata_s *) user_data;
-
-    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_FALSE);
-
-    ad->client_thread = ecore_thread_feedback_run(toggle_client_heavy_func, notify_func,
-                        end_func, cancel_func, ad, EINA_FALSE);
-}
-#else
 
 static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
 {
-
     appdata_s *ad = (appdata_s *) user_data;
-    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_FALSE);
+    elm_object_disabled_set(ad->toggle_button, EINA_FALSE);
 
     if (ad->thread == 0)
     {
@@ -229,8 +202,6 @@ static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
         }
     }
 }
-#endif
-
 
 
 static void
@@ -437,7 +408,6 @@ main(int argc, char *argv[])
         i = strtol(mode, 0, 8);
         i = chmod (filename, i);
     }
-
 
     ui_app_lifecycle_callback_s event_callback = { 0, };
     app_event_handler_h handlers[5] = { NULL, };
