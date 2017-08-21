@@ -181,13 +181,13 @@ build_()
             package="iotivity"
             url="https://git.tizen.org/cgit/platform/upstream/${package}"
             branch="tizen"
+            args=" -b ${branch} "
+            gbs_arch=${arch}
+            gbs_profile=${profile}_${gbs_arch}
             # TODO: unsupported release can be set here
             # url="https://github.com/tizenteam/${package}"
             # branch="sandbox/pcoval/on/latest/tizen"
-            args=" -b ${branch} "
-            args=" $args --depth 1"
-            gbs_arch=${arch}
-            gbs_profile=${profile}_${gbs_arch}
+            # args=" $args --depth 1"
             ls "$package" || \
                 $git clone $args -- "${url}" "${package}"
             cd "${package}"
