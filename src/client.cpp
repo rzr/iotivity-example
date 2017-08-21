@@ -42,6 +42,7 @@ Resource::Resource(shared_ptr<OCResource> resource)
                           placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
+
 Resource::~Resource()
 {
 }
@@ -63,6 +64,7 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     }
     IoTClient::input();
 }
+
 
 void Resource::onPost(const HeaderOptions &headerOptions,
                       const OCRepresentation &representation, int eCode)
@@ -100,19 +102,21 @@ void Resource::post(bool value)
 }
 
 
+IoTClient *IoTClient::mInstance = nullptr;
+
+
 IoTClient::IoTClient()
 {
     LOG();
     init();
 }
 
+
 IoTClient::~IoTClient()
 {
     LOG();
 }
 
-
-IoTClient *IoTClient::mInstance = nullptr;
 
 IoTClient *IoTClient::getInstance()
 {
@@ -217,6 +221,7 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     }
 }
 
+
 void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
                           const int &eCode, const int &sequenceNumber)
 {
@@ -259,6 +264,7 @@ void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentat
     }
 
 }
+
 
 void IoTClient::input()
 {
