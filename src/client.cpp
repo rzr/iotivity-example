@@ -89,6 +89,7 @@ void Resource::get()
     m_OCResource->get(params, m_GETCallback);
 }
 
+
 void Resource::post(bool value)
 {
     LOG();
