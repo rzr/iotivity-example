@@ -34,7 +34,9 @@ typedef struct appdata
     Evas_Object *conform;
     Evas_Object *box;
     Evas_Object *output;
+    Evas_Object *on_button;
     Evas_Object *toggle_button;
+    Evas_Object *off_button;
     Ecore_Thread *thread;
     Ecore_Thread *client_thread;
     Eina_Lock mutex;
@@ -47,10 +49,10 @@ typedef struct appdata
 
 static char const *const g_usage_text = ""
                                         "<b>"
-                                        "IoTivity Example"
+                                        "IoTivity Binary Switch example"
                                         "</b>"
                                         "<br/><br/>"
-                                        "<i>URL:</i> http://git.s-osg.org/iotivity-example"
+                                        "<i>URL:</i> https://quitter.is/tizenhelper"
                                         "<br/>"
                                         "https://blogs.s-osg.org/author/pcoval/"
                                         "<br/>"
@@ -100,6 +102,8 @@ static void end_func(void *data, Ecore_Thread *thread)
     appdata_s *ad =  (appdata_s *) data;
     ad->thread = 0;
     elm_object_disabled_set(ad->toggle_button, EINA_TRUE);
+    elm_object_disabled_set(ad->on_button, EINA_TRUE);
+    elm_object_disabled_set(ad->off_button, EINA_TRUE);
 }
 
 static void cancel_func(void *user_data, Ecore_Thread *thread)
@@ -172,7 +176,7 @@ static void heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
     IoTObserver::getInstance()->start();
 }
 
-static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
+static void eval_cb(void *user_data, Evas_Object *obj, void *event_info)
 {
     appdata_s *ad = (appdata_s *) user_data;
     elm_object_disabled_set(ad->toggle_button, EINA_FALSE);
@@ -203,6 +207,88 @@ static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
     }
 }
 
+static void toggle_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
+{
+    appdata_s *ad = g_appdata = (appdata_s *) data;
+    ad->thread = thread;
+    ad->len = 0;
+    ad->length = 0;
+    ad->page = 0;
+    char buff[1024];
+    char copy[1024];
+
+    setValue(2);
+}
+
+static void on_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
+{
+    appdata_s *ad = g_appdata = (appdata_s *) data;
+    ad->thread = thread;
+    ad->len = 0;
+    ad->length = 0;
+    ad->page = 0;
+    char buff[1024];
+    char copy[1024];
+
+    setValue(1);
+}
+
+
+static void off_client_heavy_func(void *data /*__UNUSED__*/, Ecore_Thread *thread)
+{
+    appdata_s *ad = g_appdata = (appdata_s *) data;
+    ad->thread = thread;
+    ad->len = 0;
+    ad->length = 0;
+    ad->page = 0;
+    char buff[1024];
+    char copy[1024];
+    static IoTClient *client = 0;
+
+    setValue(0);
+}
+
+
+static void toggle_cb(void *user_data, Evas_Object *obj, void *event_info)
+{
+    appdata_s *ad = (appdata_s *) user_data;
+
+    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->on_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->off_button, EINA_FALSE);
+
+    ad->client_thread = ecore_thread_feedback_run(toggle_client_heavy_func, notify_func,
+                        end_func, cancel_func, ad, EINA_FALSE);
+}
+
+
+static void on_cb(void *user_data, Evas_Object *obj, void *event_info)
+{
+
+    appdata_s *ad = (appdata_s *) user_data;
+
+    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->on_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->off_button, EINA_FALSE);
+
+    ad->client_thread = ecore_thread_feedback_run(on_client_heavy_func, notify_func,
+                        end_func, cancel_func, ad, EINA_FALSE);
+
+}
+
+
+static void off_cb(void *user_data, Evas_Object *obj, void *event_info)
+{
+    appdata_s *ad = (appdata_s *) user_data;
+
+    elm_entry_input_panel_enabled_set(ad->toggle_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->on_button, EINA_FALSE);
+    elm_entry_input_panel_enabled_set(ad->off_button, EINA_FALSE);
+
+    ad->client_thread = ecore_thread_feedback_run(off_client_heavy_func, notify_func,
+                        end_func, cancel_func, ad, EINA_FALSE);
+
+}
 
 static void
 create_base_gui(appdata_s *ad)
@@ -265,6 +351,19 @@ create_base_gui(appdata_s *ad)
     }
 
     {
+        char const *const text = "ON !";
+        Evas_Object *button = ad->on_button = elm_button_add(box);
+
+        evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, 0);
+        evas_object_size_hint_align_set(button, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+        elm_object_text_set(button, text);
+        evas_object_smart_callback_add(button, "clicked", on_cb, ad);
+
+        elm_box_pack_end(box, button);
+        evas_object_show(button);
+    }
+    {
         char const *const text = "TOGGLE";
         Evas_Object *button = ad->toggle_button = elm_button_add(box);
 
@@ -278,6 +377,18 @@ create_base_gui(appdata_s *ad)
         evas_object_show(button);
     }
 
+    {
+        char const *const text = "OFF !";
+        Evas_Object *button = ad->off_button = elm_button_add(box);
+        evas_object_size_hint_weight_set(button, EVAS_HINT_EXPAND, 0);
+        evas_object_size_hint_align_set(button, EVAS_HINT_FILL, EVAS_HINT_FILL);
+        elm_object_text_set(button, text);
+
+        evas_object_smart_callback_add(button, "clicked", off_cb, ad);
+
+        elm_box_pack_end(box, button);
+        evas_object_show(button);
+    }
 
     evas_object_show(ad->box);
     evas_object_show(ad->conform);
@@ -306,6 +417,37 @@ void printlog(char const *const message)
 }
 
 
+static void setValue(int value)
+{
+    static IoTClient *client = NULL;
+    if (client == 0)
+    {
+        client = IoTClient::getInstance();
+        client->start();
+    }
+    else
+    {
+        if (value <= 1)
+            IoTClient::getInstance()->setValue(value);
+        else
+            IoTClient::getInstance()->toggle();
+    }
+}
+
+
+void handleValue(bool value)
+{
+    printlog( (value) ? "1" : "0" );
+    if (g_appdata)
+    {
+        ecore_thread_main_loop_begin();
+        elm_object_text_set(g_appdata->toggle_button, (value) ? "TOGGLE : ! 1" : "TOGGLE : ! 0");
+        elm_object_text_set(g_appdata->on_button, (value) ? "ON : 1 =" : "ON : 1 !");
+        elm_object_text_set(g_appdata->off_button, (value) ? "OFF : 0 !" : "OFF : 0 =");
+        ecore_thread_main_loop_end();
+    }
+
+}
 static bool
 app_create(void *data)
 {
