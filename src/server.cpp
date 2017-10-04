@@ -38,6 +38,7 @@ IoTServer::IoTServer(string endpoint)
 {
     LOG();
     Common::m_endpoint = endpoint;
+    m_FindCallback = bind(&IoTServer::onFind, this, placeholders::_1);
     init();
     setup();
 }
@@ -55,13 +56,14 @@ void IoTServer::init()
 
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, // different service ?
-                        ModeType::Server, // other is Client or Both
+                        ModeType::Both, // other is Client or Both
                         "0.0.0.0", // default ip
                         0, // default random port
                         OC::QualityOfService::LowQos// qos
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
+
 
 void IoTServer::setup()
 {
@@ -74,6 +76,25 @@ void IoTServer::setup()
     {
         cerr << "error: Error on createResource" << endl;
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
+    }
+
+    sleep(10);
+
+    if ( !false ) {
+    string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
+    OCConnectivityType connectivityType(CT_ADAPTER_IP);
+    cerr<<"log: "<< coap_multicast_discovery <<endl;
+    try
+    {
+        OCPlatform::findResource("", //
+                                 coap_multicast_discovery.c_str(),
+                                 connectivityType,
+                                 m_FindCallback,
+                                 OC::QualityOfService::LowQos);
+    } catch(OCException& e) {
+        cerr << "error: Exception in main: "<<e.what() <<endl;
+        exit(1);
+    }
     }
 }
 
@@ -237,6 +258,28 @@ void IoTServer::handle_signal(int signal)
 }
 
 
+void IoTServer::onFind(shared_ptr<OCResource> resource)
+{
+    LOG();
+    try
+    {
+        if (resource)
+        {
+            string resourceUri = resource->uri();
+            if (Common::m_endpoint == resourceUri)
+            {
+                cerr << "resourceUri=" << resourceUri << endl;
+            }
+
+        }
+    }
+    catch (OCException &ex)
+    {
+        cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
+    }
+}
+
+
 int IoTServer::main(int argc, char *argv[])
 {
     LOG();
@@ -266,6 +309,7 @@ int IoTServer::main(int argc, char *argv[])
     Platform::getInstance().setup(subargc, subargv);
 
     IoTServer server;
+
     try
     {
         int delay = Common::m_period;
