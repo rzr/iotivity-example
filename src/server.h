@@ -45,11 +45,13 @@ class IoTServer
         OCStackResult createResource(std::string, std::string, OC::EntityHandler, OCResourceHandle &);
         OCEntityHandlerResult handleEntity(std::shared_ptr<OC::OCResourceRequest>);
         OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
+        void onFind(std::shared_ptr<OC::OCResource>);
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::OCRepresentation m_representation;
         OCResourceHandle m_resourceHandle;
         static bool m_over;
+        OC::FindCallback m_FindCallback;
 };
 
 #endif /* SERVER_H_ */
