@@ -117,7 +117,7 @@ cleanall: clean
 distclean: cleanall
 	-rm iotivity
 
-install: ${exes}
+install: ${exes} ${dat_files}
 	install -d ${install_dir}/bin
 	install -m755 $^ ${install_dir}/bin
 
