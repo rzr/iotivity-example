@@ -14,6 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: Usage:
+// npm install -g lodash
+
 var sampleUri = "/BinarySwitchResURI";
 var sampleResourceType = "oic.r.switch.binary";
 var gLogEnabled = false;
@@ -24,18 +27,22 @@ function log( object )
 		console.log("log: " + object );
 }
 
-var myResource, device,
-	_ = require( "lodash" ),
-	observerCount = 0;
+log("init");
 
+var myResource, device,
+_ = require( "lodash" ),
+	observerCount = 0;
 log( "Acquiring OCF device" + sampleUri + "#"  + sampleResourceType );
 
+
 device = require( "iotivity-node" );
+/*
 _.extend( device.device, {
 	coreSpecVersion: "res.1.1.0",
 	dataModels: [ "something.1.1.0" ],
-	name: sampleResourceType
+	name: "example"
 } );
+
 _.extend( device.platform, {
 	manufacturerName: "Example",
 	manufactureDate: new Date( "Tue Dec 20 14:48:07 CET 2016" ),
@@ -43,7 +50,7 @@ _.extend( device.platform, {
 	firmwareVersion: "0.0.1",
 	supportUrl: "https://wiki.tizen.org/wiki/User:Pcoval"
 } );
-
+*/
 function handleError( theError ) {
 	console.error( theError );
 	process.exit( 1 );
