@@ -26,6 +26,7 @@ var stdin = Object.getPrototypeOf(process.stdin);
 
 function update(value, destination)
 {
+    value = (1 == value);
     console.log( "post: value=" + value + "\n" );
     console.log(destination);
 
@@ -35,8 +36,6 @@ function update(value, destination)
             return; 
         } else { destination = gDestination; }
     }
-
-    value = (1 == value);
 
     postHandleReceptacle = {};
     postResponseHandler = function( handle, response ) {
