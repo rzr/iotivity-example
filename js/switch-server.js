@@ -20,22 +20,10 @@ var delay = 1000;
 var gValues = { value: false };
 var EventEmitter = require('events').EventEmitter;
 
-function Source()
-{
-    var self = this;
-    self.start = function() {
-   
-        var interval = setInterval(function(){
-            gValues.value != gValues.value;
-            emit
-        }, delay);
-    }
-}
-
 exports.main = function()
 {
-    var sampleUri = "/BinaryResURI";
-    var sampleResourceType = "oic.switch.binary";
+    var sampleUri = "/BinarySwitchResURI";
+    var sampleResourceType = "oic.r.switch.binary";
 
     var intervalId,
     handleReceptacle = {},
@@ -48,18 +36,6 @@ exports.main = function()
 
     // Start iotivity and set up the processing loop
     iotivity.OCInit( null, 0, iotivity.OCMode.OC_SERVER );
-
-    iotivity.OCSetDeviceInfo( {
-        specVersion: "res.1.0.0",
-        dataModelVersions: [ "abc.0.0.1" ],
-        deviceName: "server.get",
-        types: []
-    } );
-    iotivity.OCSetPlatformInfo( {
-        platformID: "server.get.sample",
-        manufacturerName: "iotivity-node"
-    } );
-
 
     console.log( "Registering resource" );
 
@@ -117,6 +93,8 @@ exports.main = function()
 	    }
 
 	    if ( request) {
+                console.log( JSON.stringify( request) );
+
 	        iotivity.OCDoResponse( {
 		    requestHandle: request.requestHandle,
 		    resourceHandle: request.resource,
@@ -154,17 +132,6 @@ exports.main = function()
         // Exit
         process.exit( 0 );
     } );
-
-    var source = Source();
-    
-    source.start();
-    source.on("update", function update(values){
-        console.log(values);
-        if ( gValues != values) {
-            gValues = values;
-            notify(gValues);
-        }
-    });
 
     intervalId = setInterval( function() {
         iotivity.OCProcess();
