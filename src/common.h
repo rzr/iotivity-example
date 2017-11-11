@@ -27,9 +27,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__TIZEN__) || defined(__TIZENRT__)
 #define HAVE_STDIO_H 1
 #endif
+
+#ifdef __linux__
+#ifndef HAVE_UNISTD_H
+#define HAVE_UNISTD_H
+#endif
+#define HAVE_SIGNAL_H
+#endif
+
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
