@@ -20,19 +20,14 @@
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
+#include "common.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <octypes.h>
 #include <ocstack.h>
 #include <ocpayload.h>
-
-#ifdef __linux__
-#ifndef HAVE_UNISTD_H
-#define HAVE_UNISTD_H
-#endif
-#define HAVE_SIGNAL_H
-#endif
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
@@ -41,14 +36,13 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_SYS_IOTCL_H
 #include <sys/ioctl.h>
 #include <termios.h>
+#endif
 
-#include "common.h"
-
-
-OCStackResult client_setup();
-OCStackResult post();
+OCStackResult client_setup(void);
+OCStackResult post(void);
 
 
 unsigned int gDiscovered = 0;
@@ -56,7 +50,11 @@ static OCDevAddr gDestination;
 int gObversable= 1;
 
 
-OCRepPayload *createPayload()
+#ifndef SIGINT
+#define SIGINT  2
+#endif
+
+OCRepPayload *createPayload(void)
 {
     OCRepPayload *payload = OCRepPayloadCreate();
 
@@ -115,7 +113,7 @@ OCStackApplicationResult onGet(void *ctx,
     LOGf("%p", clientResponse);
     if (!true)
         result = handleResponse(ctx, handle, clientResponse);
-    if (result != OC_STACK_OK)
+    if (result != OC_STACK_DELETE_TRANSACTION)
     {
         LOGf("%d (error)", result);
     }
@@ -124,7 +122,7 @@ OCStackApplicationResult onGet(void *ctx,
 }
 
 
-OCStackResult get()
+OCStackResult get(void)
 {
     LOGf("%d {", gSwitch.value);
     OCStackResult result = OC_STACK_OK;
@@ -162,7 +160,7 @@ OCStackApplicationResult onPost(void *ctx,
 }
 
 
-OCStackResult post()
+OCStackResult post(void)
 {
     LOGf("%d {", gSwitch.value);
     OCStackResult result = OC_STACK_OK;
@@ -187,6 +185,7 @@ OCStackResult post()
     return result;
 }
 
+
 OCStackApplicationResult onObserve(void* ctx, 
                                        OCDoHandle handle,
                                        OCClientResponse * clientResponse)
@@ -202,13 +201,14 @@ OCStackApplicationResult onObserve(void* ctx,
     return OC_STACK_KEEP_TRANSACTION;
 }
 
+
 // This is a function called back when a device is discovered
 OCStackApplicationResult onDiscover(void *ctx,
                                     OCDoHandle handle,
                                     OCClientResponse *clientResponse)
 {
-    OCStackResult result = OC_STACK_OK;
-
+    //OCStackResult result = OC_STACK_OK;
+    
     LOGf("%p", ctx);
     LOGf("%p", clientResponse);
 
@@ -260,7 +260,8 @@ OCStackApplicationResult onDiscover(void *ctx,
 }
 
 
-int kbhit()
+#ifdef HAVE_SYS_IOTCL_H
+int kbhit(void)
 {
     struct termios term, oterm;
     int fd = 0;
@@ -275,9 +276,15 @@ int kbhit()
     tcsetattr(fd, TCSANOW, &oterm);
     return (c);
 }
+#else
+int kbhit(void)
+{
+return 0;
+}
+#endif
 
 
-OCStackResult client_loop()
+OCStackResult client_loop(void)
 {
     OCStackResult result;
     LOGf("%d (iterate)", gSwitch.value);
@@ -308,7 +315,7 @@ OCStackResult client_loop()
 }
 
 
-OCStackResult client_setup()
+OCStackResult client_setup(void)
 {
     int i = 0;
     OCStackResult result;
@@ -340,7 +347,7 @@ OCStackResult client_setup()
                               OC_REST_DISCOVER, // method
                               queryUri, //requestUri: /oic/res
                               NULL, // destination
-                              NULL,  // opayload
+                              NULL, // opayload
                               gConnectivityType, //
                               gQos, // OC_LOW_QOS
                               &cbData, //
@@ -360,7 +367,7 @@ OCStackResult client_setup()
 }
 
 
-void client_finish()
+void client_finish(void)
 {
     OCStackResult result = OCStop();
 
@@ -383,13 +390,18 @@ void onSignal(int signum)
 
 int client_main(int argc, char *argv[])
 {
+    (void) gName;
+    (void) gIface;
     if (argc>1 && (0 == strcmp("-v", argv[1])))
     {
         gVerbose++;
     }
     LOGf("%d", gVerbose);
+
+#ifdef HAVE_SIGNAL_H
     LOGf("%s", "Break from loop with Ctrl+C");
     signal(SIGINT, onSignal);
+#endif
 
     client_setup();
 
