@@ -22,7 +22,7 @@ include rules/default.mk
 platform=linux
 
 ifeq (${PLATFORM}, TIZEN)
-CPPFLAGS+=-D__TIZEN__=1 
+CPPFLAGS+=-D__TIZEN__=1
 CPPFLAGS+=$(shell pkg-config dlog --cflags)
 LIBS+=$(shell pkg-config dlog --libs)
 endif
