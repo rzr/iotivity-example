@@ -30,16 +30,16 @@
 
 #include "common.h"
 
-OCStackResult server_setup();
-OCStackResult server_loop();
-OCStackResult server_finish();
+OCStackResult server_setup(void);
+OCStackResult server_loop(void);
+OCStackResult server_finish(void);
 
 void platform_log(char const *);
-void platform_setup();
-void platform_loop();
+void platform_setup(void);
+void platform_loop(void);
 void platform_setValue(bool value);
 
-OCStackResult createSwitchResource();
+OCStackResult createSwitchResource(void);
 
 
 OCStackResult setValue(bool value)
@@ -53,7 +53,7 @@ OCStackResult setValue(bool value)
 }
 
 
-OCRepPayload *createPayload()
+OCRepPayload *createPayload(void)
 {
     OCRepPayload *payload = OCRepPayloadCreate();
 
@@ -136,7 +136,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
 }
 
 
-OCStackResult createSwitchResource()
+OCStackResult createSwitchResource(void)
 {
     OCStackResult result = OCCreateResource(&(gSwitch.handle),
                                             gName,
@@ -151,7 +151,7 @@ OCStackResult createSwitchResource()
 }
 
 
-OCStackResult server_loop()
+OCStackResult server_loop(void)
 {
     LOGf("%d (iterate)", gSwitch.value);
     OCStackResult result = OCProcess();
@@ -166,9 +166,10 @@ OCStackResult server_loop()
 }
 
 
-OCStackResult server_setup()
+OCStackResult server_setup(void)
 {
     OCStackResult result;
+    (void) gConnectivityType;
     result = OCInit(NULL, 0, OC_SERVER);
     if (result != OC_STACK_OK)
     {
@@ -188,7 +189,7 @@ OCStackResult server_setup()
 }
 
 
-OCStackResult server_finish()
+OCStackResult server_finish(void)
 {
     OCStackResult result = OCStop();
     if (result != OC_STACK_OK)
@@ -201,7 +202,7 @@ OCStackResult server_finish()
 
 int server_main(int argc, char* argv[])
 {
-    OCStackResult result;    
+    OCStackResult result;
     if (argc>1 && (0 == strcmp("-v", argv[1])))
     {
         gVerbose++;
