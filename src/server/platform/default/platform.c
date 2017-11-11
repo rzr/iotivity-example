@@ -26,12 +26,12 @@
 #include "common.h"
 
 
-void platform_setup()
+void platform_setup(void)
 {
 }
 
 
-void platform_loop()
+void platform_loop(void)
 {
 }
 
