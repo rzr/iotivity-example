@@ -47,8 +47,8 @@
 #include "common.h"
 
 
-OCStackResult client_setup();
-OCStackResult post();
+OCStackResult client_setup(void);
+OCStackResult post(void);
 
 
 unsigned int gDiscovered = 0;
@@ -56,7 +56,7 @@ static OCDevAddr gDestination;
 int gObversable = 1;
 
 
-OCRepPayload *createPayload()
+OCRepPayload *createPayload(void)
 {
     OCRepPayload *payload = OCRepPayloadCreate();
 
@@ -124,7 +124,7 @@ OCStackApplicationResult onGet(void *ctx,
 }
 
 
-OCStackResult get()
+OCStackResult get(void)
 {
     LOGf("%d {", gSwitch.value);
     OCStackResult result = OC_STACK_OK;
@@ -162,7 +162,7 @@ OCStackApplicationResult onPost(void *ctx,
 }
 
 
-OCStackResult post()
+OCStackResult post(void)
 {
     LOGf("%d {", gSwitch.value);
     OCStackResult result = OC_STACK_OK;
@@ -279,7 +279,7 @@ OCStackApplicationResult onDiscover(void *ctx,
 }
 
 
-int kbhit()
+int kbhit(void)
 {
     struct termios term, oterm;
     int fd = 0;
@@ -296,7 +296,7 @@ int kbhit()
 }
 
 
-OCStackResult client_loop()
+OCStackResult client_loop(void)
 {
     OCStackResult result;
     LOGf("%d (iterate)", gSwitch.value);
@@ -338,7 +338,7 @@ static FILE* override_fopen(const char* path, const char* mode)
 }
 
 
-OCStackResult client_setup()
+OCStackResult client_setup(void)
 {
     int i = 0;
     OCStackResult result;
@@ -391,7 +391,7 @@ OCStackResult client_setup()
 }
 
 
-void client_finish()
+void client_finish(void)
 {
     OCStackResult result = OCStop();
 
@@ -414,6 +414,8 @@ void onSignal(int signum)
 
 int client_main(int argc, char *argv[])
 {
+    (void) gIface;  // TODO: unused
+    (void) gName; //TODO: unused
     if (argc>1 && (0 == strcmp("-v", argv[1])))
     {
         gVerbose++;
@@ -422,7 +424,7 @@ int client_main(int argc, char *argv[])
     LOGf("%s", "Break from loop with Ctrl+C");
     signal(SIGINT, onSignal);
 
-    client_setup();
+    client_setup(void);
 
     for (; !gOver;)
     {
