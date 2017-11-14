@@ -100,7 +100,7 @@ void onSignal(int signum)
 }
 
 
-void platform_setup()
+void platform_setup(void)
 {
     struct sigaction sa;
     sigfillset(&sa.sa_mask);
@@ -114,7 +114,7 @@ void platform_setup()
 }
 
 
-void platform_loop()
+void platform_loop(void)
 {
 }
 
