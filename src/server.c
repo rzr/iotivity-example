@@ -30,16 +30,16 @@
 
 #include "common.h"
 
-OCStackResult server_setup();
-OCStackResult server_loop();
-OCStackResult server_finish();
+OCStackResult server_setup(void);
+OCStackResult server_loop(void);
+OCStackResult server_finish(void);
 
 void platform_log(char const *);
-void platform_setup();
-void platform_loop();
+void platform_setup(void);
+void platform_loop(void);
 void platform_setValue(bool value);
 
-OCStackResult createSwitchResource();
+OCStackResult createSwitchResource(void);
 
 
 OCStackResult setValue(bool value)
@@ -53,7 +53,7 @@ OCStackResult setValue(bool value)
 }
 
 
-OCRepPayload *createPayload()
+OCRepPayload *createPayload(void)
 {
     OCRepPayload *payload = OCRepPayloadCreate();
 
@@ -136,7 +136,7 @@ OCEntityHandlerResult onOCEntity(OCEntityHandlerFlag flag,
 }
 
 
-OCStackResult createSwitchResource()
+OCStackResult createSwitchResource(void)
 {
     uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
     resourceFlag = resourceFlag | OC_SECURE;
@@ -153,7 +153,7 @@ OCStackResult createSwitchResource()
 }
 
 
-OCStackResult server_loop()
+OCStackResult server_loop(void)
 {
     LOGf("%d (iterate)", gSwitch.value);
     OCStackResult result = OCProcess();
@@ -181,7 +181,7 @@ static FILE* override_fopen(const char* path, const char* mode)
 }
 
 
-OCStackResult server_setup()
+OCStackResult server_setup(void)
 {
     OCStackResult result;
     static OCPersistentStorage ps = {override_fopen, fread, fwrite, fclose, unlink };
@@ -206,7 +206,7 @@ OCStackResult server_setup()
 }
 
 
-OCStackResult server_finish()
+OCStackResult server_finish(void)
 {
     OCStackResult result = OCStop();
     if (result != OC_STACK_OK)
