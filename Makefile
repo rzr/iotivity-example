@@ -62,7 +62,7 @@ install_dir?=${DESTDIR}${optdir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
-version?=$(shell ls .git && git describe || echo 0.0.0)
+version?=$(shell ls ${CURDIR}/.git && git describe || echo 0.0.0)
 package?=${name}-${version}
 distdir?=${CURDIR}/..
 tarball?=${distdir}/${package}.tar.gz
@@ -135,7 +135,8 @@ ${tarball}: ${CURDIR} distclean
 #{ TODO: use installed files
 dat_files?=oic_svr_db_server.dat oic_svr_db_client.dat
 json_files?=${dat_files:.dat=.json}
-json2cbor?=%(ls ${HOME}/mnt/iotivity/out/linux/*/*/resource/csdk/security/tool/json2cbor | head -n1)
+json2cbor?=$(shell ls ${HOME}/mnt/iotivity/out/linux/*/*/resource/csdk/security/tool/json2cbor \
+	| head -n1 || echo json2cbor)
 export PATH := /usr/lib/iotivity/examples/:${PATH}
 
 %.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
