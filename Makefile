@@ -139,23 +139,23 @@ dat_files?=${json_files:.json=.dat}
 json: ${json_files}
 	ls $^
 
-dats: ${dat_files} 
+dat: ${dat_files} 
 	ls $^
 
 #{ TODO: use installed files
-iotivity_src_dir?= $(shell ls ${HOME}/mnt/iotivity || echo /usr/src/iotivity)
-json2cbor?=$(shell ls ${iotivity_src_dir}/out/linux/*/*/resource/csdk/security/tool/json2cbor )\
-	| head -n1 || echo json2cbor)
-export PATH := /usr/lib/iotivity/examples/:${PATH}
+# iotivity_src_dir?= $(shell ls ${HOME}/mnt/iotivity || echo /usr/src/iotivity)
+# json2cbor?=$(shell ls ${iotivity_src_dir}/out/linux/*/*/resource/csdk/security/tool/json2cbor )\
+# 	| head -n1 || echo json2cbor)
+# export PATH := /usr/lib/iotivity/examples/:${PATH}
 
-TODO/%.json: ${iotivity_src_dir}/resource/csdk/stack/samples/linux/secure/%.json
-	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+# %.json: ${iotivity_src_dir}/resource/csdk/stack/samples/linux/secure/%.json
+# 	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
 
-TODO/oic_svr_db_client.json: ${iotivity_src_dir}/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
-	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+# oic_svr_db_client.json: ${iotivity_src_dir}/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
+# 	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
 
-TODO/%.dat: %.json ${json2cbor}
-	${json2cbor} $< $@
+# %.dat: %.json ${json2cbor}
+# 	${json2cbor} $< $@
 #}
 
 install: ${exes} ${dat_files}
