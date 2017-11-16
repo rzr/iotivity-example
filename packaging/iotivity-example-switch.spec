@@ -55,23 +55,28 @@ cp %{SOURCE1001} .
  PLATFORM=TIZEN \
  #EOL
 
+%if 0%{?install_service:1}
 %install_service network.target.wants %{name}.service
+%endif
 
-
-%if 0%{?fdupes:0}
+%if 0%{?fdupes:1}
 %fdupes %{buildroot}
 %endif
 
 %post
+%if 0%{?install_service:1}
 systemctl enable %{name}
 systemctl daemon-reload
 systemctl start %{name}
+%endif
 
 %preun
+%if 0%{?install_service:1}
 if [ 0 -eq $1 ] ; then
 systemctl disable %{name}
 systemctl daemon-reload
 fi
+%endif
 
 %files
 %defattr(-,root,root)
@@ -79,4 +84,6 @@ fi
 %manifest %{name}.manifest
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
+%if 0%{?install_service:0}
 %{_unitdir}/network.target.wants/%{name}.service
+%endif
