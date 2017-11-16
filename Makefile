@@ -190,3 +190,9 @@ longhelp:
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
 	set
+
+check:
+	${make} demo &
+	sleep 20
+	grep 'setValue' ${log_dir}/${@F}
+
