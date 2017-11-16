@@ -101,37 +101,40 @@ RUN echo "#log: Building RPMs" \
  && sync
 
 RUN echo "#log: Installing RPMs" \
- && find /root/rpmbuild/ -iname "*.*rpm" -exec rpm -i {} \; \
+ && find /root/rpmbuild/ -iname "*.rpm" -exec rpm -i {} \; \
  && rpm -ql ${project} \
+ && rpm -ql ${project}-service \
  && rpm -ql ${project}-devel \
  && rpm -ql ${project}-test \
+ && rpm -ql ${project}-debuginfo \
  && sync
 
-ENV example_URL http://github.com/tizenteam/${project}
+ENV example_URL http://github.com/tizenteam/${project}-example
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
+ENV example_project iotivity-example-switch
 
-RUN echo "#log: Building example: ${example_URl}#${example_branch}"
- && git clone -b "${branch}" "${URL}" ${package}-example --depth 1 \
- && make -C "${package}-example" dist name="${project}" version="${version}" \
+RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}"
+ && git clone -b "${branch}" "${URL}" ${example_project} --depth 1 \
+ && make -C "${example_project}" dist name="${example_project}" version="${version}" \
  && sync
 
-RUN echo "#log: Setup rpm-build for example" \
+RUN echo "#log: ${example_project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
- && cp -a "packaging/"* "/root/rpmbuild/SOURCES/" \
- && ln -fs "${project_dir}/../${package}-example"*".tar.gz"  "/root/rpmbuild/SOURCES/" \
+ && ln -fs "packaging/${example_project}.spec" "/root/rpmbuild/SOURCES/" \
+ && ln -fs "${project_dir}/../${example_project}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
-RUN echo "#log: Building RPMs for example" \
+RUN echo "#log: ${example_project}: Building RPMs" \
  && cd "/root/rpmbuild/SOURCES/" \
  && ls \
- && time rpmbuild -ba "${project}-example"*".spec" \
+ && time rpmbuild -ba "${example_project}.spec" \
   --define "version ${version}" \
   --define "release ${release}" \
  && find /root/rpmbuild/ -iname "*.*rpm" \
  && sync
 
-RUN echo "#log: Installing RPMs for example" \
- && find /root/rpmbuild/ -iname "${project}-example*.*rpm" -exec rpm -i {} \; \
- && rpm -ql ${project}-example-switch \
+RUN echo "#log: ${example_project}: Installing RPMs" \
+ && find /root/rpmbuild/ -iname "${example_project}*.rpm" -exec rpm -i {} \; \
+ && rpm -ql ${example_project} \
  && sync
