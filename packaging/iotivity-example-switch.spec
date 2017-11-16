@@ -15,10 +15,12 @@ Group:          Contrib
 Source:         %{name}-%{version}.tar.gz
 Source1001:     %{name}.manifest
 BuildRequires:  make
-BuildRequires:  fdupes
 BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
+%if 0%{?tizen:1}
 BuildRequires:  pkgconfig(dlog)
+BuildRequires:  fdupes
+%endif
 BuildRequires:  systemd
 Requires:  iotivity
 Requires(post): systemd
