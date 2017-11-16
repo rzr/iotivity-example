@@ -38,14 +38,10 @@ cp %{SOURCE1001} .
 
 %build
 
-
 %__make %{?_smp_mflags} \
  PLATFORM=TIZEN \
  #EOL
 
-%__make check \
- PLATFORM=TIZEN \
- #EOL
 
 %install
 %__make install \
