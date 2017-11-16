@@ -117,7 +117,8 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && rpm -ql ${project}-debuginfo \
  && sync
 
-ENV example_project ${project}-example
+ENV project ${project}-example
+ENV example_project ${project}
 ENV example_project ${project}-example-switch
 ENV example_URL http://github.com/${team}/${project}-example
 ARG example_branch
