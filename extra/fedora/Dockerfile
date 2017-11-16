@@ -112,7 +112,7 @@ RUN echo "#log: ${project}: Installing RPMs" \
 
 
 ARG user
-ENV user ${user:-${USER}}
+ENV user ${user:-pcoval}
 ARG team
 #TODO: use upstream when ready
 ENV team ${team:-tizenteam}
