@@ -81,7 +81,7 @@ fi
 %files
 %defattr(-,root,root)
 %license LICENSE
-%manifest %{name}.manifest
+#%manifest %{name}.manifest
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
 %if 0%{?tizen:1}
