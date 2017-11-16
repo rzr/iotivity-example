@@ -62,6 +62,11 @@ install_dir?=${DESTDIR}${optdir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
+version?=$(shell git describe || echo 0.0.0)
+package?=${name}-${version}
+distdir?=${CURDIR}/..
+tarball?=${distdir}/${package}.tar.gz
+
 vpath+=src
 VPATH+=src
 
@@ -107,7 +112,7 @@ ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-clean:
+clean: Makefile
 	rm -f *.o *~ ${objs} */*.o
 
 cleanall: clean
@@ -116,6 +121,16 @@ cleanall: clean
 
 distclean: cleanall
 	-rm iotivity
+
+dist: ${tarball}
+	ls -l $<
+
+${tarball}: ${CURDIR} distclean
+	cd ${<} && tar cvfz \
+ ${@} \
+ --transform "s|^./|${name}-${version}/|" \
+ --exclude 'debian' --exclude-vcs \
+ ./
 
 install: ${exes} ${dat_files}
 	install -d ${install_dir}/bin
