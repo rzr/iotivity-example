@@ -83,7 +83,7 @@ V=1
 
 override CXXFLAGS+=-std=c++0x
 
-srcs?=platform.cpp common.cpp
+srcs?=src/platform.cpp src/common.cpp
 objs?=${srcs:.cpp=.o}
 
 client?=${local_bindir}/client
