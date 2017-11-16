@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fedora:24
+FROM fedora:22
 MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 
 ENV project iotivity
@@ -128,7 +128,7 @@ ENV example_project_dir /home/abuild/${example_project}
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
  && grep tarball ${example_project}/Makefile \
- && make -C "${example_project}" longhelp name="${example_project}" version="${version} TODO=TODO" \
+ && make -C "${example_project}" longhelp name="${example_project}" TODO=check-release-is-iotivity-while-it-should-be-iotivity-example" \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
   longhelp package=${example_project}-${version} TODO=TODO \
  && ls ${example_project}-${version}.tar.gz \
