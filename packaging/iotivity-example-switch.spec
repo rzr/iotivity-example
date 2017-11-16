@@ -1,6 +1,6 @@
 Name:           iotivity-example-switch
 Version:        0.0.0
-Release:        0
+Release:        20171116.100726philippe0+0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
 Url:            http://git.s-osg.org/iotivity-example/plain/README.md
