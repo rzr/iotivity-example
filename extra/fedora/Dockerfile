@@ -19,18 +19,25 @@ MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 ENV project iotivity
 ARG version
 ENV version ${version:-1.3.1}
-ARG release
-ENV release ${release:-0~0+fedora24}
 ENV package ${project}-${version}
 
+ARG user
+ENV user ${user:-pcoval}
+
+ARG release
+ENV release ${release:-0~${user}0+${DISTTAG}}
+
+ARG team
+#TODO: use upstream when ready
+ENV team ${team:-tizenteam}
 ENV archive_url http://mirrors.kernel.org/${project}/${version}/${project}-${version}.tar.gz
-ENV URL http://github.com/tizenteam/${project}
+ENV URL http://github.com/${team}/${project}
 ARG branch
-ENV branch ${branch:-sandbox/pcoval/on/next/devel}
+ENV branch ${branch:-sandbox/${user}/on/previous/devel}
 ENV EMAIL ${EMAIL:-nobody@localhost}
 ENV NAME ${NAME:-Nobody}
 
-RUN echo "#log: Preparing system for ${project}-${version}-${release}" \
+RUN echo "#log: ${project}: Preparing system (DISTTAG=${DISTTAG})" \
  && dnf update -y \
  && dnf install -y \
   git \
@@ -61,13 +68,13 @@ RUN echo "#log: Preparing system for ${project}-${version}-${release}" \
  && dnf clean -y all \
  && sync
 
-RUN useradd -ms /bin/bash abuild
+RUN useradd -ms /bin/bash ${user}
 
-USER abuild
-WORKDIR /home/abuild/
-ENV project_dir /home/abuild/${package}
+USER ${user}
+WORKDIR /home/${user}/
+ENV project_dir /home/${user}/${package}
 
-RUN echo "#log: TODO: ADD ${archive_url} # once patches merged" \
+RUN echo "#log: TODO: ${project}: ADD ${archive_url} # once patches merged" \
  && git config --global user.name "${NAME}" \
  && git config --global user.email "${EMAIL}" \
  && git clone -b "${branch}" "${URL}" ${package} --depth 1 \
@@ -76,22 +83,23 @@ RUN echo "#log: TODO: ADD ${archive_url} # once patches merged" \
 
 USER root
 
-RUN echo "#log: TODO: Upgrade unsupported tools (ie: scon-2.4.1-1.fc24)" \
+RUN echo "#log: ${project}: TODO: Upgrade unsupported tools (ie: scon-2.4.1-1.fc24)" \
  && scons --version \
  && dnf remove -y scons \
  && rpm -i ${project_dir}/tools/tizen/scons*.rpm \
  && scons --version \
  && sync
 
-RUN echo "#log: Setup rpm-build" \
+RUN echo "#log: ${project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
- && cp -a "${project_dir}/tools/tizen/"* "/root/rpmbuild/SOURCES/" \
+ && ln -fs "${project_dir}/tools/tizen/"* "/root/rpmbuild/SOURCES/" \
  && ln -fs "${project_dir}/../${package}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
-ADD tools/tizen/${project}.spec "/root/rpmbuild/SOURCES/" 
+#TODO: Spec can be overriden while developing
+#ADD tools/tizen/${project}.spec "/root/rpmbuild/SOURCES/" 
 
-RUN echo "#log: Building RPMs" \
+RUN echo "#log: ${project}: Building RPMs (${project}-${version}.${release})" \
  && cd "/root/rpmbuild/SOURCES/" \
  && ls \
  && time rpmbuild -ba "${project}.spec" \
@@ -100,38 +108,48 @@ RUN echo "#log: Building RPMs" \
  && find /root/rpmbuild/ -iname "*.*rpm" \
  && sync
 
-RUN echo "#log: Installing RPMs" \
- && find /root/rpmbuild/ -iname "*.*rpm" -exec rpm -i {} \; \
+RUN echo "#log: ${project}: Installing RPMs" \
+ && rpm -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${project} \
+ && rpm -ql ${project}-service \
  && rpm -ql ${project}-devel \
  && rpm -ql ${project}-test \
+ && rpm -ql ${project}-debuginfo \
  && sync
 
-ENV example_URL http://github.com/tizenteam/${project}
+ENV project ${project}-example
+ENV example_project ${project}
+ENV example_URL http://github.com/${team}/${project}
+ENV example_project ${project}-switch
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
+ENV example_package ${example_project}-${version}
+ENV example_project_dir /home/${user}/${example_project}
 
-RUN echo "#log: Building example: ${example_URl}#${example_branch}"
- && git clone -b "${branch}" "${URL}" ${package}-example --depth 1 \
- && make -C "${package}-example" dist name="${project}" version="${version}" \
+RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
+ && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
+ && grep tarball ${example_project}/Makefile \
+ && unset package \
+ && make -C "${example_project}" dist name="${example_project}" version="${version}" \
+ && ls ${example_project}-${version}.tar.gz \
  && sync
 
-RUN echo "#log: Setup rpm-build for example" \
+RUN echo "#log: ${example_project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
- && cp -a "packaging/"* "/root/rpmbuild/SOURCES/" \
- && ln -fs "${project_dir}/../${package}-example"*".tar.gz"  "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/packaging/"* "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/../${example_project}-${version}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
-RUN echo "#log: Building RPMs for example" \
+RUN echo "#log: ${example_project}: Building RPMs" \
  && cd "/root/rpmbuild/SOURCES/" \
  && ls \
- && time rpmbuild -ba "${project}-example"*".spec" \
+ && time rpmbuild -ba "${example_project}.spec" \
   --define "version ${version}" \
   --define "release ${release}" \
  && find /root/rpmbuild/ -iname "*.*rpm" \
  && sync
 
-RUN echo "#log: Installing RPMs for example" \
- && find /root/rpmbuild/ -iname "${project}-example*.*rpm" -exec rpm -i {} \; \
- && rpm -ql ${project}-example-switch \
+RUN echo "#log: ${example_project}: Installing RPMs" \
+ && rpm --force -i /root/rpmbuild/RPMS/*/*.rpm \
+ && rpm -ql ${example_project} \
  && sync
