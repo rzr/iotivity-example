@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fedora:22
+FROM fedora:24
 MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 
 ENV project iotivity
@@ -24,10 +24,15 @@ ARG release
 ENV release ${release:-0~0+${DISTTAG}}
 ENV package ${project}-${version}
 
+ARG user
+ENV user ${user:-pcoval}
+ARG team
+#TODO: use upstream when ready
+ENV team ${team:-tizenteam}
 ENV archive_url http://mirrors.kernel.org/${project}/${version}/${project}-${version}.tar.gz
-ENV URL http://github.com/tizenteam/${project}
+ENV URL http://github.com/${team}/${project}
 ARG branch
-ENV branch ${branch:-sandbox/pcoval/on/next/devel}
+ENV branch ${branch:-sandbox/${user}/on/next/devel}
 ENV EMAIL ${EMAIL:-nobody@localhost}
 ENV NAME ${NAME:-Nobody}
 
@@ -111,12 +116,6 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && rpm -ql ${project}-debuginfo \
  && sync
 
-
-ARG user
-ENV user ${user:-pcoval}
-ARG team
-#TODO: use upstream when ready
-ENV team ${team:-tizenteam}
 ENV example_project ${project}-example
 ENV example_project ${project}-example-switch
 ENV example_URL http://github.com/${team}/${project}-example
@@ -128,8 +127,9 @@ ENV example_project_dir /home/abuild/${example_project}
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
  && grep tarball ${example_project}/Makefile \
+ && unset package \
  && make -C "${example_project}" longhelp name="${example_project}" \
- TODO=check-release-is-iotivity-while-it-should-be-iotivity-example" \
+ TODO=check-package-is-iotivity-while-it-should-be-iotivity-example" \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
   longhelp package=${example_project}-${version} TODO=TODO \
  && ls ${example_project}-${version}.tar.gz \
