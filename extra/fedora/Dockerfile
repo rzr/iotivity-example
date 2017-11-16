@@ -30,7 +30,7 @@ ENV branch ${branch:-sandbox/pcoval/on/next/devel}
 ENV EMAIL ${EMAIL:-nobody@localhost}
 ENV NAME ${NAME:-Nobody}
 
-RUN echo "#log: Preparing system for ${project}-${version}-${release}" \
+RUN echo "#log: ${project}: Preparing system" \
  && dnf update -y \
  && dnf install -y \
   git \
@@ -67,7 +67,7 @@ USER abuild
 WORKDIR /home/abuild/
 ENV project_dir /home/abuild/${package}
 
-RUN echo "#log: TODO: ADD ${archive_url} # once patches merged" \
+RUN echo "#log: TODO: ${project}: ADD ${archive_url} # once patches merged" \
  && git config --global user.name "${NAME}" \
  && git config --global user.email "${EMAIL}" \
  && git clone -b "${branch}" "${URL}" ${package} --depth 1 \
@@ -76,22 +76,23 @@ RUN echo "#log: TODO: ADD ${archive_url} # once patches merged" \
 
 USER root
 
-RUN echo "#log: TODO: Upgrade unsupported tools (ie: scon-2.4.1-1.fc24)" \
+RUN echo "#log: ${project}: TODO: Upgrade unsupported tools (ie: scon-2.4.1-1.fc24)" \
  && scons --version \
  && dnf remove -y scons \
  && rpm -i ${project_dir}/tools/tizen/scons*.rpm \
  && scons --version \
  && sync
 
-RUN echo "#log: Setup rpm-build" \
+RUN echo "#log: ${project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
- && cp -a "${project_dir}/tools/tizen/"* "/root/rpmbuild/SOURCES/" \
+ && ln -fs "${project_dir}/tools/tizen/"* "/root/rpmbuild/SOURCES/" \
  && ln -fs "${project_dir}/../${package}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
-ADD tools/tizen/${project}.spec "/root/rpmbuild/SOURCES/" 
+#TODO: Spec can be overriden while developing
+#ADD tools/tizen/${project}.spec "/root/rpmbuild/SOURCES/" 
 
-RUN echo "#log: Building RPMs" \
+RUN echo "#log: ${project}: Building RPMs" \
  && cd "/root/rpmbuild/SOURCES/" \
  && ls \
  && time rpmbuild -ba "${project}.spec" \
@@ -100,8 +101,8 @@ RUN echo "#log: Building RPMs" \
  && find /root/rpmbuild/ -iname "*.*rpm" \
  && sync
 
-RUN echo "#log: Installing RPMs" \
- && find /root/rpmbuild/ -iname "*.rpm" -exec rpm -i {} \; \
+RUN echo "#log: ${project}: Installing RPMs" \
+ && rpm -i /root/rpmbuild/RPMS/*.rpm \
  && rpm -ql ${project} \
  && rpm -ql ${project}-service \
  && rpm -ql ${project}-devel \
@@ -114,7 +115,7 @@ ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
 ENV example_project iotivity-example-switch
 
-RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}"
+RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${branch}" "${URL}" ${example_project} --depth 1 \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
  && sync
@@ -135,6 +136,6 @@ RUN echo "#log: ${example_project}: Building RPMs" \
  && sync
 
 RUN echo "#log: ${example_project}: Installing RPMs" \
- && find /root/rpmbuild/ -iname "${example_project}*.rpm" -exec rpm -i {} \; \
+ && rpm -i /root/rpmbuild/RPMS/*.rpm \
  && rpm -ql ${example_project} \
  && sync
