@@ -181,6 +181,7 @@ longhelp:
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
+	@echo "# package=${package}"
 	set
 
 #TODO: use installed files
