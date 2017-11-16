@@ -129,7 +129,7 @@ RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" 
  && grep tarball ${example_project}/Makefile \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
   package=${example_project}-${version} \
- && ls ${example_project}-${version}.tar.* \
+ && ls ${example_project}-${version}.tar.gz \
  && sync
 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
