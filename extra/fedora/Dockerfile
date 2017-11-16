@@ -129,7 +129,6 @@ ENV example_project_dir /home/${user}/${example_project}
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
  && grep tarball ${example_project}/Makefile \
- && sync
  && unset package \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
  && ls ${example_project}-${version}.tar.gz \
