@@ -84,6 +84,6 @@ fi
 %manifest %{name}.manifest
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
-%if 0%{?install_service:0}
+%if 0%{?install_service:1}
 %{_unitdir}/network.target.wants/%{name}.service
 %endif
