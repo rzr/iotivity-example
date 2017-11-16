@@ -134,7 +134,7 @@ RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" 
 RUN date \
  && unset package \
  && make -C "${example_project}" longhelp name="${example_project}" \
- TODO=check-package-is-iotivity-while-it-should-be-iotivity-example" \
+ TODO="check-package-is-iotivity-while-it-should-be-iotivity-example" \
  && sync
 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
