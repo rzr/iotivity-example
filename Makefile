@@ -99,15 +99,15 @@ all+=${exes}
 
 all: ${all}
 
-${local_bindir}/server: server.o ${server_objs} ${objs}
+${local_bindir}/server: src/server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/client: client.o ${client_objs} ${objs}
+${local_bindir}/client: src/client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/observer: observer.o ${observer_objs} ${objs}
+${local_bindir}/observer: src/observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
