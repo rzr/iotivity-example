@@ -135,7 +135,7 @@ RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
  && ln -vfs "${example_project_dir}/packaging/${example_project}.spec" "/root/rpmbuild/SOURCES/" \
- && ln -vfs "${example_project_dir}/../${example_project}*.tar.gz"  "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/../${example_project}-${version}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
 RUN echo "#log: ${example_project}: Building RPMs" \
