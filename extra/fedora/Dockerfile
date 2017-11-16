@@ -19,12 +19,14 @@ MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 ENV project iotivity
 ARG version
 ENV version ${version:-1.3.1}
-ARG release
-ENV release ${release:-0~0+${DISTTAG}}
 ENV package ${project}-${version}
 
 ARG user
 ENV user ${user:-pcoval}
+
+ARG release
+ENV release ${release:-0~${user}0+${DISTTAG}}
+
 ARG team
 #TODO: use upstream when ready
 ENV team ${team:-tizenteam}
@@ -66,11 +68,11 @@ RUN echo "#log: ${project}: Preparing system (${DISTTAG})" \
  && dnf clean -y all \
  && sync
 
-RUN useradd -ms /bin/bash abuild
+RUN useradd -ms /bin/bash ${user}
 
-USER abuild
-WORKDIR /home/abuild/
-ENV project_dir /home/abuild/${package}
+USER ${user}
+WORKDIR /home/${user}/
+ENV project_dir /home/${user}/${package}
 
 RUN echo "#log: TODO: ${project}: ADD ${archive_url} # once patches merged" \
  && git config --global user.name "${NAME}" \
@@ -121,7 +123,7 @@ ENV example_URL http://github.com/${team}/${project}-example
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
 ENV example_package ${example_project}-${version}
-ENV example_project_dir /home/abuild/${example_project}
+ENV example_project_dir /home/${user}/${example_project}
 
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
