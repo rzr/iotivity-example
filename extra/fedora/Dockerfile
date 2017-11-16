@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fedora:25
+FROM fedora:24
 MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 
 ENV project iotivity
