@@ -102,7 +102,7 @@ RUN echo "#log: ${project}: Building RPMs" \
  && sync
 
 RUN echo "#log: ${project}: Installing RPMs" \
- && rpm -i /root/rpmbuild/RPMS/*.rpm \
+ && rpm -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${project} \
  && rpm -ql ${project}-service \
  && rpm -ql ${project}-devel \
@@ -110,20 +110,25 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && rpm -ql ${project}-debuginfo \
  && sync
 
+ARG user
+ENV user ${user:-pcoval}
+ENV example_project ${project}-example-switch
 ENV example_URL http://github.com/tizenteam/${project}-example
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
-ENV example_project iotivity-example-switch
+ENV example_package ${example_project}-${version}
+ENV example_project_dir /home/abuild/${example_project}
 
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
- && git clone -b "${branch}" "${URL}" ${example_project} --depth 1 \
+ && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
+ && ls ../${example_project}-${version}.tar.* \
  && sync
 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
- && ln -fs "packaging/${example_project}.spec" "/root/rpmbuild/SOURCES/" \
- && ln -fs "${project_dir}/../${example_project}.tar.gz"  "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/packaging/${example_project}.spec" "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/../${example_project}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
 RUN echo "#log: ${example_project}: Building RPMs" \
@@ -136,6 +141,6 @@ RUN echo "#log: ${example_project}: Building RPMs" \
  && sync
 
 RUN echo "#log: ${example_project}: Installing RPMs" \
- && rpm -i /root/rpmbuild/RPMS/*.rpm \
+ && rpm -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${example_project} \
  && sync
