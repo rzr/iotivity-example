@@ -47,6 +47,9 @@ override LDLIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
 override LDLIBS+=-loc -loc_logger -loctbstack
+#TODO: Enable security here
+#override LDLIBS+=-locpmapi
+#override CPPFLAGS+=-D__WITH_DTLS__=1
 override CPPFLAGS+=-I${iotivity_dir}
 override CPPFLAGS+=-I${iotivity_dir}/resource
 override CPPFLAGS+=-I${iotivity_dir}/resource/c_common
@@ -132,7 +135,11 @@ ${tarball}: ${CURDIR} distclean
  ./
 	ls -l $@
 
-install: ${exes}
+#TODO: Add Security related files if SECURED
+json_files?=
+dat_files?=${json_files:.json=.dat}
+
+install: ${exes} ${dat_files}
 	install -d ${install_dir}/bin
 	install -m755 $^ ${install_dir}/bin
 
