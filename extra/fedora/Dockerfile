@@ -33,7 +33,7 @@ ENV team ${team:-tizenteam}
 ENV archive_url http://mirrors.kernel.org/${project}/${version}/${project}-${version}.tar.gz
 ENV URL http://github.com/${team}/${project}
 ARG branch
-ENV branch ${branch:-sandbox/${user}/on/previous/devel}
+ENV branch ${branch:-sandbox/${user}/on/master/devel}
 ENV EMAIL ${EMAIL:-nobody@localhost}
 ENV NAME ${NAME:-Nobody}
 
@@ -122,7 +122,7 @@ ENV example_project ${project}
 ENV example_URL http://github.com/${team}/${project}
 ENV example_project ${project}-switch
 ARG example_branch
-ENV example_branch ${example_branch:-sandbox/pcoval/previous}
+ENV example_branch ${example_branch:-sandbox/pcoval/devel}
 ENV example_package ${example_project}-${version}
 ENV example_project_dir /home/${user}/${example_project}
 
