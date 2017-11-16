@@ -31,7 +31,7 @@ export config_pkgconfig
 
 tmpdir?=tmp
 
-version?=$(shell test -d ${CURDIR}/.git && git describe || echo 0.0.0)
+version?=$(shell test -d ${CURDIR}/.git && git describe --always || echo 0.0.0)
 package?=${name}-${version}
 distdir?=${CURDIR}/..
 tarball?=${distdir}/${package}.tar.gz
@@ -65,8 +65,8 @@ override CPPFLAGS+=-I.
 
 DESTDIR?=/
 local_bindir?=bin
-optdir?=/opt
-install_dir?=${DESTDIR}${optdir}/${name}/
+extradir?=/opt
+install_dir?=${DESTDIR}${extradir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
@@ -83,7 +83,7 @@ V=1
 
 override CXXFLAGS+=-std=c++0x
 
-srcs?=platform.cpp common.cpp
+srcs?=src/platform.cpp src/common.cpp
 objs?=${srcs:.cpp=.o}
 
 client?=${local_bindir}/client
@@ -99,15 +99,15 @@ all+=${exes}
 
 all: ${all}
 
-${local_bindir}/server: server.o ${server_objs} ${objs}
+${local_bindir}/server: src/server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/client: client.o ${client_objs} ${objs}
+${local_bindir}/client: src/client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/observer: observer.o ${observer_objs} ${objs}
+${local_bindir}/observer: src/observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
@@ -149,7 +149,7 @@ rule/systemd/install: ${tmpdir}/${name}.service
 
 ${tmpdir}/${name}.service: extra/systemd/iotivity-example.service
 	-mkdir -p ${@D}
-	sed -e "s|ExecStart=.*|ExecStart=${optdir}/${name}/bin/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${extradir}/${name}/bin/server|g" < $< > $@
 
 iotivity: ${include_dir}
 	@echo "# TODO: workaround for namespace"
