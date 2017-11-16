@@ -28,7 +28,14 @@ name?=iotivity-example
 config_pkgconfig?=1
 export config_pkgconfig
 
+
 tmpdir?=tmp
+
+version?=$(shell test -d ${CURDIR}/.git && git describe || echo 0.0.0)
+package?=${name}-${version}
+distdir?=${CURDIR}/..
+tarball?=${distdir}/${package}.tar.gz
+
 #TODO: workaround missing /usr/include/iotivity namespace
 iotivity_dir?=iotivity
 includedir?=/usr/include
@@ -105,8 +112,8 @@ ${local_bindir}/%: %.o ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-clean:
-	rm -f *.o *~ ${objs} */*.o
+clean: Makefile
+	${RM} *.o *~ ${objs} */*.o
 
 cleanall: clean
 	rm -f ${client} ${server}
@@ -114,6 +121,16 @@ cleanall: clean
 
 distclean: cleanall
 	-rm iotivity
+
+dist: ${tarball}
+	ls -l $<
+
+${tarball}: ${CURDIR} distclean
+	cd ${<} && tar cfz "$@" \
+ --transform "s|^./|${name}-${version}/|" \
+ --exclude 'debian' --exclude-vcs \
+ ./
+	ls -l $@
 
 install: ${exes}
 	install -d ${install_dir}/bin
@@ -161,6 +178,7 @@ help: README.md
 	@echo "# type make longhelp for more"
 
 longhelp:
+	@echo "# package=${package}"
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
