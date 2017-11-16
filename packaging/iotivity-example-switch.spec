@@ -58,6 +58,7 @@ cp %{SOURCE1001} .
  PLATFORM=TIZEN \
  #EOL
 
+rpm --eval '0%{?tizen:1}'
 %if 0%{?tizen:1}
 # install_service network.target.wants %{name}.service
 %endif
