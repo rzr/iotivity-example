@@ -55,7 +55,7 @@ cp %{SOURCE1001} .
  PLATFORM=TIZEN \
  #EOL
 
-%if 0%{tizen:1}
+%if 0%{?tizen:1}
 %install_service network.target.wants %{name}.service
 %endif
 
@@ -84,6 +84,6 @@ fi
 %manifest %{name}.manifest
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
-%if 0%{?install_service:1}
+%if 0%{?tizen:1}
 %{_unitdir}/network.target.wants/%{name}.service
 %endif
