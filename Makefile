@@ -62,7 +62,7 @@ install_dir?=${DESTDIR}${optdir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
-version?=$(shell git describe || echo 0.0.0)
+version?=$(shell ls .git && git describe || echo 0.0.0)
 package?=${name}-${version}
 distdir?=${CURDIR}/..
 tarball?=${distdir}/${package}.tar.gz
@@ -113,7 +113,7 @@ ${local_bindir}/%: %.o ${objs}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
 clean: Makefile
-	rm -f *.o *~ ${objs} */*.o
+	${RM} *.o *~ ${objs} */*.o
 
 cleanall: clean
 	rm -f ${client} ${server}
@@ -187,16 +187,14 @@ longhelp:
 #TODO: use installed files
 dat_files?=oic_svr_db_server.dat oic_svr_db_client.dat
 json_files?=${dat_files:.dat=.json}
-
-json2cbor?=${HOME}/mnt/iotivity/out/linux/x86_64/release/resource/csdk/security/tool/json2cbor
+json2cbor?=%(ls ${HOME}/mnt/iotivity/out/linux/*/*/resource/csdk/security/tool/json2cbor | head -n1)
+export PATH := /usr/lib/iotivity/examples/:${PATH}
 
 %.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
 	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
 
  oic_svr_db_client.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
 	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
-
-PATH+=:/usr/lib/iotivity/examples/
 
 %.dat: %.json
 	${json2cbor} $< $@
