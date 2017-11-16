@@ -56,7 +56,9 @@ cp %{SOURCE1001} .
 %install_service network.target.wants %{name}.service
 
 
+%if 0%{?fdupes:0}
 %fdupes %{buildroot}
+%endif
 
 %post
 systemctl enable %{name}
