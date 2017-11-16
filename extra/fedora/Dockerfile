@@ -99,7 +99,7 @@ RUN echo "#log: ${project}: Setup rpm-build" \
 #TODO: Spec can be overriden while developing
 #ADD tools/tizen/${project}.spec "/root/rpmbuild/SOURCES/" 
 
-RUN echo "#log: ${project}: Building RPMs" \
+RUN echo "#log: ${project}: Building RPMs (${project}-${version}.${release})" \
  && cd "/root/rpmbuild/SOURCES/" \
  && ls \
  && time rpmbuild -ba "${project}.spec" \
