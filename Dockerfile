@@ -118,7 +118,6 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && sync
 
 ENV project ${project}-example
-ENV example_project ${project}
 ENV example_URL http://github.com/${team}/${project}
 ENV example_project ${project}-switch
 ARG example_branch
@@ -126,15 +125,15 @@ ENV example_branch ${example_branch:-sandbox/pcoval/previous}
 ENV example_package ${example_project}-${version}
 ENV example_project_dir /home/${user}/${example_project}
 
-RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
- && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
- && grep tarball ${example_project}/Makefile \
+RUN echo "#log: ${project}: Building: ${example_URl}#${example_branch}" \
+ && git clone -b "${example_branch}" "${example_URL}" ${project} --depth 1 \
+ && grep tarball ${project}/Makefile \
  && unset package \
- && make -C "${example_project}" dist name="${example_project}" version="${version}" \
+ && make -C "${project}" dist name="${example_project}" version="${version}" \
  && ls ${example_project}-${version}.tar.gz \
  && sync
 
-RUN echo "#log: ${example_project}: Setup rpm-build" \
+RUN echo "#log: ${project}: Setup rpm-build" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
  && ln -vfs "${example_project_dir}/packaging/"* "/root/rpmbuild/SOURCES/" \
  && ln -vfs "${example_project_dir}/../${example_project}-${version}.tar.gz"  "/root/rpmbuild/SOURCES/" \
