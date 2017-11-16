@@ -37,7 +37,7 @@ ENV branch ${branch:-sandbox/${user}/on/next/devel}
 ENV EMAIL ${EMAIL:-nobody@localhost}
 ENV NAME ${NAME:-Nobody}
 
-RUN echo "#log: ${project}: Preparing system (${DISTTAG})" \
+RUN echo "#log: ${project}: Preparing system (DISTTAG=${DISTTAG})" \
  && dnf update -y \
  && dnf install -y \
   git \
