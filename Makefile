@@ -132,27 +132,29 @@ ${tarball}: ${CURDIR} distclean
  ./
 	ls -l $@
 
-#{ TODO: use installed files
-dat_files?=oic_svr_db_server.dat oic_svr_db_client.dat
-json_files?=${dat_files:.dat=.json}
-json2cbor?=$(shell ls ${HOME}/mnt/iotivity/out/linux/*/*/resource/csdk/security/tool/json2cbor \
-	| head -n1 || echo json2cbor)
-export PATH := /usr/lib/iotivity/examples/:${PATH}
-
-%.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
-	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
-
- oic_svr_db_client.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
-	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
-
-%.dat: %.json
-	${json2cbor} $< $@
+# Security related files
+json_files?=oic_svr_db_server.json oic_svr_db_client.json
+dat_files?=${dat_files:.dat=.json}
 
 json: ${json_files}
 	ls $^
 
 dats: ${dat_files} 
 	ls $^
+
+#{ TODO: use installed files
+json2cbor?=$(shell ls ${HOME}/mnt/iotivity/out/linux/*/*/resource/csdk/security/tool/json2cbor \
+	| head -n1 || echo json2cbor)
+export PATH := /usr/lib/iotivity/examples/:${PATH}
+
+TODO/%.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/%.json
+	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+
+TODO/oic_svr_db_client.json: ${HOME}/mnt/iotivity/resource/csdk/stack/samples/linux/secure/oic_svr_db_client_devowner.json
+	sed -e 's|/a/led|/BinarySwitch|g' < $< > $@
+
+TODO/%.dat: %.json
+	${json2cbor} $< $@
 #}
 
 install: ${exes} ${dat_files}
