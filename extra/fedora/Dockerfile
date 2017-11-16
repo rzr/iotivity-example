@@ -135,6 +135,9 @@ RUN date \
  && unset package \
  && make -C "${example_project}" longhelp name="${example_project}" \
  TODO="check-package-is-iotivity-while-it-should-be-iotivity-example" \
+ && make -C "${example_project}" dist name="${example_project}" version="${version}" \
+  longhelp package=${example_project}-${version} TODO=TODO \
+ && ls ${example_project}-${version}.tar.gz \
  && sync
 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
