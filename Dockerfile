@@ -130,6 +130,7 @@ ENV example_package ${example_project}-${version}
 
 RUN echo "#log: ${project}: Building: ${example_URl}#${example_branch}" \
  && git clone --depth 1 -b "${example_branch}" "${example_URL}" "${project}" \
+ && echo "TODO: possible conflicts on variables name" \
  && unset package \
  && make -C "${project}" dist name="${example_project}" version="${version}" \
  && ls ${example_project}-${version}.tar.gz \
