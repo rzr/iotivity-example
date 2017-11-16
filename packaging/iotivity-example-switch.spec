@@ -42,7 +42,6 @@ cp %{SOURCE1001} .
  PLATFORM=TIZEN \
  #EOL
 
-
 %install
 %__make install \
  DESTDIR=%{buildroot}/ \
