@@ -129,12 +129,6 @@ ENV example_project_dir /home/${user}/${example_project}
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
  && grep tarball ${example_project}/Makefile \
- && unset package \
- && make -C "${example_project}" longhelp name="${example_project}" \
- TODO=check-package-is-iotivity-while-it-should-be-iotivity-example" \
- && make -C "${example_project}" dist name="${example_project}" version="${version}" \
-  longhelp package=${example_project}-${version} TODO=TODO \
- && ls ${example_project}-${version}.tar.gz \
  && sync
 
 RUN echo "#log: ${example_project}: Setup rpm-build" \
