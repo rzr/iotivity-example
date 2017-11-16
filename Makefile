@@ -126,11 +126,11 @@ dist: ${tarball}
 	ls -l $<
 
 ${tarball}: ${CURDIR} distclean
-	cd ${<} && tar cvfz \
- ${@} \
+	cd ${<} && tar cfz "$@" \
  --transform "s|^./|${name}-${version}/|" \
  --exclude 'debian' --exclude-vcs \
  ./
+	ls -l $@
 
 install: ${exes} ${dat_files}
 	install -d ${install_dir}/bin
