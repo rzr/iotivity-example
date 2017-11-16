@@ -134,7 +134,7 @@ ${tarball}: ${CURDIR} distclean
 
 # Security related files
 json_files?=oic_svr_db_server.json oic_svr_db_client.json
-dat_files?=${dat_files:.dat=.json}
+dat_files?=${json_files:.dat=.json}
 
 json: ${json_files}
 	ls $^
