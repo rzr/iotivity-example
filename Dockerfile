@@ -156,13 +156,11 @@ RUN echo "#log: ${example_project}: Installing RPMs" \
  && rpm -ql ${example_project} \
  && sync
 
-RUN echo "#log: ${example_project}: Testing" \
-  && /opt/${example_project}/bin/server -v 2>&1 tee server.log & \
-  && server=$! \
-  && sleep 10 \
-  && { sleep 5 && echo 1;} | /opt/${example_project}/bin/client -v 2>&1 tee client.log & \
-  && client=$! \
-  && sleep 10 \
+RUN echo "#log: ${example_project}: Checking" \
+  && { /opt/${example_project}/bin/server -v & server=$!; } \
+  && sleep 5 \
+  && { /opt/${example_project}/bin/client -v & client=$!; } \
+  && sleep 5 \
   && kill -9 ${client} ${server} \
-  && grep 'setValue' server.log \
   && sync
+
