@@ -85,7 +85,7 @@ fi
 %defattr(-,root,root)
 %license LICENSE
 %manifest %{name}.manifest
-/opt/%{name}/*
+%{exlibdir}/%{name}/*
 %{_unitdir}/%{name}.service
 %if 0%{?install_service:1}
 %{_unitdir}/network.target.wants/%{name}.service
