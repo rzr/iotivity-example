@@ -117,26 +117,28 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && rpm -ql ${project}-debuginfo \
  && sync
 
+
 ENV project ${project}-example
 ENV example_URL http://github.com/${team}/${project}
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/previous}
-ENV example_project_dir /home/${user}/${example_project}
+ENV example_project_dir /home/${user}/${project}
+ENV example_project ${project}
+#TODO:
 ENV example_project ${project}-switch
 ENV example_package ${example_project}-${version}
 
 RUN echo "#log: ${project}: Building: ${example_URl}#${example_branch}" \
- && git clone -b "${example_branch}" "${example_URL}" ${project} --depth 1 \
- && grep tarball ${project}/Makefile \
+ && git clone --depth 1 -b "${example_branch}" "${example_URL}" "${project}" \
  && unset package \
  && make -C "${project}" dist name="${example_project}" version="${version}" \
  && ls ${example_project}-${version}.tar.gz \
  && sync
 
-RUN echo "#log: ${project}: Setup rpm-build ()" \
+RUN echo "#log: ${project}: Setup rpm-build (${example_package})" \
  && mkdir -p "/root/rpmbuild/SOURCES/" \
  && ln -vfs "${example_project_dir}/packaging/"* "/root/rpmbuild/SOURCES/" \
- && ln -vfs "${example_project_dir}/../${example_project_project}-${version}.tar.gz"  "/root/rpmbuild/SOURCES/" \
+ && ln -vfs "${example_project_dir}/../${example_project}-${version}.tar.gz"  "/root/rpmbuild/SOURCES/" \
  && sync 
 
 RUN echo "#log: ${example_project}: Building RPMs" \
@@ -152,3 +154,14 @@ RUN echo "#log: ${example_project}: Installing RPMs" \
  && rpm --force -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${example_project} \
  && sync
+
+RUN echo "#log: ${example_project}: Testing" \
+  && /opt/${example_project}/bin/server -v 2>&1 tee server.log & \
+  && server=$! \
+  && sleep 10 \
+  && { sleep 5 && echo 1;} | /opt/${example_project}/bin/client -v 2>&1 tee client.log & \
+  && client=$! \
+  && sleep 10 \
+  && kill -9 ${client} ${server} \
+  && grep 'setValue' server.log \
+  && sync
