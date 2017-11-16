@@ -20,7 +20,6 @@ ENV project iotivity
 ARG version
 ENV version ${version:-1.3.1}
 ARG release
-# TODO FGC=f24 DISTTAG=f24docker
 ENV release ${release:-0~0+${DISTTAG}}
 ENV package ${project}-${version}
 
