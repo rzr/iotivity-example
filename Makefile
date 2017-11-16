@@ -192,7 +192,7 @@ longhelp:
 	set
 
 check:
-	${make} demo &
+	${MAKE} demo &
 	sleep 20
 	grep 'setValue' ${log_dir}/${@F}
 
