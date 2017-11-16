@@ -12,9 +12,8 @@ Group:          Contrib
 %define license %doc
 %endif
 
-%if ! 0%{?manifest:0}
-%define manifest %doc
-%endif
+%{!?license: %define license %doc}
+%{!?manifest: %define manifest %doc}
 
 Source:         %{name}-%{version}.tar.gz
 Source1001:     %{name}.manifest
@@ -85,7 +84,7 @@ fi
 %files
 %defattr(-,root,root)
 %license LICENSE
-#%manifest %{name}.manifest
+%manifest %{name}.manifest
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
 %if 0%{?tizen:1}
