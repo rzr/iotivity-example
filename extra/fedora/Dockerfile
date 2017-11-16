@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fedora:24
+FROM fedora:26
 MAINTAINER Philippe Coval (philippe.coval@osg.samsung.com)
 
 ENV project iotivity
@@ -150,6 +150,6 @@ RUN echo "#log: ${example_project}: Building RPMs" \
  && sync
 
 RUN echo "#log: ${example_project}: Installing RPMs" \
- && rpm -i --force /root/rpmbuild/RPMS/*/*.rpm \
+ && rpm -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${example_project} \
  && sync
