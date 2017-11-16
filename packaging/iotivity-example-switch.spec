@@ -12,6 +12,10 @@ Group:          Contrib
 %define license %doc
 %endif
 
+%if ! 0%{?manifest:0}
+%define manifest %doc
+%endif
+
 Source:         %{name}-%{version}.tar.gz
 Source1001:     %{name}.manifest
 BuildRequires:  make
