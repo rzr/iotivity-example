@@ -120,7 +120,7 @@ RUN echo "#log: ${project}: Installing RPMs" \
 ENV project ${project}-example
 ENV example_project ${project}
 ENV example_URL http://github.com/${team}/${project}
-ENV example_project ${project}-example-switch
+ENV example_project ${project}-switch
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
 ENV example_package ${example_project}-${version}
