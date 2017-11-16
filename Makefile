@@ -31,7 +31,7 @@ export config_pkgconfig
 
 tmpdir?=tmp
 
-version?=$(shell test -d ${CURDIR}/.git && git describe || echo 0.0.0)
+version?=$(shell test -d ${CURDIR}/.git && git describe --always || echo 0.0.0)
 package?=${name}-${version}
 distdir?=${CURDIR}/..
 tarball?=${distdir}/${package}.tar.gz
