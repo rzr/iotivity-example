@@ -110,10 +110,15 @@ RUN echo "#log: ${project}: Installing RPMs" \
  && rpm -ql ${project}-debuginfo \
  && sync
 
+
 ARG user
 ENV user ${user:-pcoval}
+ARG team
+#TODO: use upstream when ready
+ENV team ${team:-tizenteam}
+ENV example_project ${project}-example
 ENV example_project ${project}-example-switch
-ENV example_URL http://github.com/tizenteam/${project}-example
+ENV example_URL http://github.com/${team}/${project}-example
 ARG example_branch
 ENV example_branch ${example_branch:-sandbox/pcoval/devel}
 ENV example_package ${example_project}-${version}
@@ -121,6 +126,7 @@ ENV example_project_dir /home/abuild/${example_project}
 
 RUN echo "#log: ${example_project}: Building: ${example_URl}#${example_branch}" \
  && git clone -b "${example_branch}" "${example_URL}" ${example_project} --depth 1 \
+ && cat  ${example_project}/Makefile \
  && make -C "${example_project}" dist name="${example_project}" version="${version}" \
  && ls ../${example_project}-${version}.tar.* \
  && sync
