@@ -150,6 +150,6 @@ RUN echo "#log: ${example_project}: Building RPMs" \
  && sync
 
 RUN echo "#log: ${example_project}: Installing RPMs" \
- && rpm --force -i /root/rpmbuild/RPMS/*/*.rpm \
+ && rpm -v --force -i /root/rpmbuild/RPMS/*/*.rpm \
  && rpm -ql ${example_project} \
  && sync
