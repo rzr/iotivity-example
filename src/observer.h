@@ -63,7 +63,7 @@ class IoTObserver
 
     private:
         static IoTObserver *mInstance;
-        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        std::shared_ptr<OC::PlatformConfig> m_PlatformConfig;
         OC::FindCallback m_FindCallback;
         static const OC::ObserveType OBSERVE_TYPE_TO_USE;
 };
