@@ -62,7 +62,7 @@ install_dir?=${DESTDIR}${optdir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
-version?=$(shell ls ${CURDIR}/.git && git describe || echo 0.0.0)
+version?=$(shell ls ${CURDIR}/.git && git describe --always || echo 0.0.0)
 package?=${name}-${version}
 distdir?=${CURDIR}/..
 tarball?=${distdir}/${package}.tar.gz
