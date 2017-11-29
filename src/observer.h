@@ -36,22 +36,16 @@ int observer_main(int argc, char *argv[]);
 class IoTObserver
 {
     public:
-        IoTObserver();
-        virtual ~IoTObserver();
-        static IoTObserver *getInstance();
-
-        void init();
-        void start();
-    public:
         static int main(int argc, char *argv[]);
 
+    public:
+        static IoTObserver *getInstance();
+        void start();
 
-    protected:
-        std::shared_ptr<OC::PlatformConfig> m_PlatformConfig;
-
-        OC::FindCallback m_FindCallback;
-
-        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
+    private:
+        IoTObserver();
+        virtual ~IoTObserver();
+        void init();
 
         void onFind(std::shared_ptr<OC::OCResource>);
 
@@ -69,6 +63,9 @@ class IoTObserver
 
     private:
         static IoTObserver *mInstance;
+        std::shared_ptr<OC::PlatformConfig> m_platformConfig;
+        OC::FindCallback m_FindCallback;
+        static const OC::ObserveType OBSERVE_TYPE_TO_USE;
 };
 
 #endif /* OBSERVER_H_ */
