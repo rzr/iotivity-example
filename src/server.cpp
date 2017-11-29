@@ -34,6 +34,7 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
+
 IoTServer::IoTServer(string endpoint)
 {
     LOG();
@@ -49,16 +50,28 @@ IoTServer::~IoTServer()
 }
 
 
+static FILE *override_fopen(const char *path, const char *mode)
+{
+    LOG();
+    static const char *CRED_FILE_NAME = "oic_svr_db_anon-clear.dat";
+    char const *const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
+}
+
+
 void IoTServer::init()
 {
     LOG();
 
+    static OCPersistentStorage ps {override_fopen, fread, fwrite, fclose, unlink };
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, // different service ?
                         ModeType::Server, // other is Client or Both
                         "0.0.0.0", // default ip
                         0, // default random port
-                        OC::QualityOfService::LowQos // qos
+                        OC::QualityOfService::LowQos, // qos
+                        &ps // Security credentials
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
