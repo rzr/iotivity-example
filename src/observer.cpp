@@ -155,7 +155,8 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
                          const int &eCode, const int &sequenceNumber)
 {
     LOG();
-    cerr << "TODO: override with your business logic in " << __PRETTY_FUNCTION__ <<endl;
+    rep.getValue("brightness", Common::m_brightness);
+    cout << Common::m_type << ": { "<< Common::m_brightness << " }" << endl;
 }
 
 

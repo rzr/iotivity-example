@@ -48,6 +48,9 @@ class Common
         /** log enabled if positive **/
         static int m_logLevel;
     public:
+        /** Resource properties **/
+        static double m_brightness;
+    public:
         static void log(char const *const message);
 };
 

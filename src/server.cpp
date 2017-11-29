@@ -153,6 +153,26 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
 }
 
 
+void IoTServer::update()
+{
+    LOG();
+
+    static double offset=1;
+    Common::m_brightness += offset;
+    if (100 < Common::m_brightness)
+    {
+        Common::m_brightness = 100;
+        offset=-offset;
+    } else if (0 > Common::m_brightness)
+    {
+        Common::m_brightness = 0;
+        offset=-offset;
+    }
+
+    m_representation.setValue("brightness", Common::m_brightness);
+    cout << Common::m_type << ": { " << Common::m_brightness << " }" << endl;
+    OCStackResult result = OCPlatform::notifyAllObservers(m_resourceHandle);
+}
 void IoTServer::handle_signal(int signal)
 {
     LOG();
@@ -198,6 +218,7 @@ int IoTServer::main(int argc, char *argv[])
     {
         do
         {
+            server.update();
             sleep(delay);
         }
         while (!IoTServer::m_over );
