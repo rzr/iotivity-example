@@ -57,11 +57,11 @@ void IoTObserver::init()
     cerr << __PRETTY_FUNCTION__ << endl;
 
     m_PlatformConfig = make_shared<PlatformConfig>
-                       ( ServiceType::InProc, //
-                         ModeType::Client, //
-                         "0.0.0.0", //
-                         0, //
-                         OC::QualityOfService::HighQos);
+                       (ServiceType::InProc, //
+                        ModeType::Client, //
+                        "0.0.0.0", //
+                        0, //
+                        OC::QualityOfService::HighQos);
 
     OCPlatform::Configure(*m_PlatformConfig);
     m_FindCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
@@ -170,12 +170,11 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 }
 
 
-// TODO: overide with your business logic
+// TODO: override with your business logic
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
 }
-
 
 
 int IoTObserver::main(int argc, char *argv[])
