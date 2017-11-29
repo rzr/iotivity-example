@@ -9,11 +9,11 @@ Group:          System/Libraries
 Group:          Contrib
 
 %{!?license: %define license %doc}
-%{!?manifest: %define manifest %doc}
-
 
 Source:         %{name}-%{version}.tar.gz
+%if 0%{?manifest:1}
 Source1001:     %{name}.manifest
+%endif
 BuildRequires:  make
 BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
@@ -21,11 +21,18 @@ BuildRequires:  systemd
 %if 0%{?tizen:1}
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  fdupes
+%define PLATFORM=TIZEN
 %endif
-
 Requires:  iotivity
 Requires(post): systemd
 Requires(preun): systemd
+
+%define EXTRA_MAKE_FLAGS \\\
+ %{?_smp_mflags} \\\
+ extradir=/opt \\\
+ name=%{name} \\\
+ DESTDIR=%{buildroot}/ \\\
+ %{?PLATFORM}
 
 
 %description
@@ -34,32 +41,23 @@ that share an IoTivity resource.
 
 %prep
 %setup -q
+%if 0%{?manifest:1}
 cp %{SOURCE1001} .
+%endif
 
 %build
 
 
-%__make %{?_smp_mflags} \
- PLATFORM=TIZEN \
- #EOL
+%__make %{EXTRA_MAKE_FLAGS}
 
 %install
-%__make install \
- DESTDIR=%{buildroot}/ \
- name=%{name} \
- PLATFORM=TIZEN \
- #EOL
+%__make install %{EXTRA_MAKE_FLAGS}
 
-%__make rule/systemd/install \
- DESTDIR=%{buildroot}/ \
- name=%{name} \
- PLATFORM=TIZEN \
- #EOL
+%__make rule/systemd/install  %{EXTRA_MAKE_FLAGS}
 
 %if 0%{?install_service:1}
 install_service network.target.wants %{name}.service
 %endif
-
 
 %if 0%{?fdupes:1}
 %fdupes %{buildroot}
@@ -83,8 +81,10 @@ fi
 %files
 %defattr(-,root,root)
 %license LICENSE
+%if 0%{?manifest:1}
 %manifest %{name}.manifest
-/opt/%{name}/*
+%endif
+%{extradir}/%{name}/*
 %{_unitdir}/%{name}.service
 %if 0%{?install_service:1}
 %{_unitdir}/network.target.wants/%{name}.service
