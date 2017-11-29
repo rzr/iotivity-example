@@ -42,6 +42,7 @@ Resource::Resource(shared_ptr<OCResource> resource)
                           placeholders::_1, placeholders::_2, placeholders::_3);
 }
 
+
 Resource::~Resource()
 {
 }
@@ -63,6 +64,7 @@ void Resource::onGet(const HeaderOptions &headerOptions,
     }
     IoTClient::input();
 }
+
 
 void Resource::onPost(const HeaderOptions &headerOptions,
                       const OCRepresentation &representation, int eCode)
@@ -104,6 +106,7 @@ IoTClient::IoTClient()
     LOG();
     init();
 }
+
 
 IoTClient::~IoTClient()
 {
@@ -163,8 +166,10 @@ void IoTClient::start()
                                  connectivityType,
                                  m_FindCallback,
                                  OC::QualityOfService::LowQos);
-    } catch(OCException& e) {
-        oclog() << "Exception in main: "<<e.what();
+    }
+    catch (OCException &e)
+    {
+        cerr << "error: Exception: " << e.what();
         exit(1);
     }
 }
@@ -285,6 +290,7 @@ void IoTClient::onObserve(const HeaderOptions headerOptions, const OCRepresentat
     }
 
 }
+
 
 void IoTClient::input()
 {
