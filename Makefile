@@ -29,6 +29,12 @@ config_pkgconfig?=1
 export config_pkgconfig
 
 tmpdir?=tmp
+
+version?=$(shell test -d ${CURDIR}/.git && git describe --always || echo 0.0.0)
+package?=${name}-${version}
+distdir?=${CURDIR}/..
+tarball?=${distdir}/${package}.tar.gz
+
 #TODO: workaround missing /usr/include/iotivity namespace
 iotivity_dir?=iotivity
 includedir?=/usr/include
@@ -57,15 +63,11 @@ override CPPFLAGS+=-I.
 
 DESTDIR?=/
 local_bindir?=bin
-optdir?=/opt
-install_dir?=${DESTDIR}${optdir}/${name}/
+extradir?=/opt
+install_dir?=${DESTDIR}${extradir}/${name}/
 unitdir?=/usr/lib/systemd/system/
 log_dir?=${CURDIR}/tmp/log
 
-version?=$(shell ls ${CURDIR}/.git && git describe --always || echo 0.0.0)
-package?=${name}-${version}
-distdir?=${CURDIR}/..
-tarball?=${distdir}/${package}.tar.gz
 
 vpath+=src
 VPATH+=src
@@ -80,7 +82,7 @@ V=1
 
 override CXXFLAGS+=-std=c++0x
 
-srcs?=platform.cpp common.cpp
+srcs?=src/platform.cpp src/common.cpp
 objs?=${srcs:.cpp=.o}
 
 client?=${local_bindir}/client
@@ -96,15 +98,15 @@ all+=${exes}
 
 all: ${all}
 
-${local_bindir}/server: server.o ${server_objs} ${objs}
+${local_bindir}/server: src/server.o ${server_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/client: client.o ${client_objs} ${objs}
+${local_bindir}/client: src/client.o ${client_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
-${local_bindir}/observer: observer.o ${observer_objs} ${objs}
+${local_bindir}/observer: src/observer.o ${observer_objs} ${objs}
 	@-mkdir -p ${@D}
 	${CXX} ${LDFLAGS} $^ ${LDLIBS} -o ${@}
 
@@ -132,15 +134,19 @@ ${tarball}: ${CURDIR} distclean
  ./
 	ls -l $@
 
-# Security related files
-json_files?=oic_svr_db_server.json oic_svr_db_client.json
+#TODO: Add Security related files if SECURED
+json_files?=$(wildcard *.json)
 dat_files?=${json_files:.json=.dat}
+#json2cbor?=$(shell ls /usr/lib*/iotivity/resource/csdk/security/tool/json2cbor | head -n1 || echo json2cbor)
+#TODO
+json2cbor?=/tmp/lib/iotivity/resource/csdk/security/tool/json2cbor
 
-json: ${json_files}
-	ls $^
+dats: ${dat_files} ${json_files}
+	ls -l $<
 
-dat: ${dat_files} 
-	ls $^
+%.dat: %.json
+	${json2cbor} $< $@
+	ls -l $@
 
 #{ TODO: use installed files
 # iotivity_src_dir?= $(shell ls ${HOME}/mnt/iotivity || echo /usr/src/iotivity)
@@ -168,7 +174,7 @@ rule/systemd/install: ${tmpdir}/${name}.service
 
 ${tmpdir}/${name}.service: extra/systemd/iotivity-example.service
 	-mkdir -p ${@D}
-	sed -e "s|ExecStart=.*|ExecStart=${optdir}/${name}/bin/server|g" < $< > $@
+	sed -e "s|ExecStart=.*|ExecStart=${extradir}/${name}/bin/server|g" < $< > $@
 
 iotivity: ${include_dir}
 	@echo "# TODO: workaround for namespace"
@@ -194,19 +200,19 @@ xterm/% : ${local_bindir}/%
 run: run/server
 
 auto: all xterm/server  run/client-auto
-	killall client server
+	killall client server observer
 
 demo:all xterm/server  run/client
-	killall client server
+	killall client server observer
 
 help: README.md
 	cat $<
 	@echo "# type make longhelp for more"
 
 longhelp:
+	@echo "# package=${package}"
 	@echo "# iotivity_dir=${iotivity_dir}"
 	@echo "# all=${all}"
 	@echo "# config_pkgconfig=${config_pkgconfig}"
-	@echo "# package=${package}"
 	set
 
