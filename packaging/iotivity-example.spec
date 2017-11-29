@@ -27,9 +27,12 @@ Requires:  iotivity
 Requires(post): systemd
 Requires(preun): systemd
 
+
+%{!?extradir: %define extradir /opt/}
+
 %define EXTRA_MAKE_FLAGS \\\
  %{?_smp_mflags} \\\
- extradir=/opt \\\
+ extradir=%{extradir} \\\
  name=%{name} \\\
  DESTDIR=%{buildroot}/ \\\
  %{?PLATFORM}
