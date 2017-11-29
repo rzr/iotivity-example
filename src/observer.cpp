@@ -52,10 +52,20 @@ IoTObserver::~IoTObserver()
     cerr << __PRETTY_FUNCTION__ << endl;
 }
 
+static FILE* override_fopen(const char* path, const char* mode)
+{
+    LOG();
+    static char const* const CRED_FILE_NAME = "oic_svr_db_client.dat";
+    char const * const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME))
+          ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
+}
+
 void IoTObserver::init()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-
+    LOG();
+    static OCPersistentStorage ps{override_fopen, fread, fwrite, fclose, unlink };
     m_PlatformConfig = make_shared<PlatformConfig>
                        ( ServiceType::InProc, //
                          ModeType::Client, //
@@ -69,23 +79,28 @@ void IoTObserver::init()
 
 void IoTObserver::start()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-    string uri = string(OC_RSRVD_WELL_KNOWN_URI);
-
-    cerr << "URI: " << uri << endl;
+    LOG();
+    string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
+    try
+    {
     OCPlatform::findResource("",  //
-                             uri.c_str(), //
-                             connectivityType, // IP
-                             m_FindCallback, //cb
-                             OC::QualityOfService::HighQos // TODO
-                            );
+                                 coap_multicast_discovery.c_str(),
+                                 connectivityType,
+                                 m_FindCallback,
+                                 OC::QualityOfService::LowQos);
+    }
+    catch (OCException &e)
+    {
+        cerr << "error: Exception: " << e.what();
+        exit(1);
+    }
 }
 
 
 void IoTObserver::onFind(shared_ptr<OC::OCResource> resource)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     try
     {
         if (resource)
@@ -170,7 +185,7 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 }
 
 
-// TODO: overide with your business logic
+// TODO: override with your business logic
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
