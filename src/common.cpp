@@ -27,7 +27,7 @@
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 std::string Common::m_type = "oic.r.switch.binary";
-std::string Common::m_endpoint = "/BinarySwitchResURI";
+std::string Common::m_endpoint = "/BinarySwitch";
 std::string Common::m_propname = "value";
 
 int Common::m_logLevel = 0;
