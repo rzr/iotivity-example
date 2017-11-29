@@ -1,25 +1,36 @@
 Name:           iotivity-example
-Version:        0.0.0
-Release:        0
+Version: %{!?version:0.0.0}%{?version}
+Release: %{!?release:0}%{?release}
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
-Url:            http://github.com/TizenTeam/iotivity-example
+Url:            http://git.s-osg.org/iotivity-example/plain/README.md
 Group:          System/Libraries
-#X-Vc-Url:      http://github.com/TizenTeam/iotivity-example
+#X-Vc-Url:      http://git.s-osg.org/iotivity-example
 Group:          Contrib
 
 %if ! 0%{?license:0}
 %define license %doc
 %endif
 
+%{!?license: %define license %doc}
+
 Source:         %{name}-%{version}.tar.gz
+%if 0%{?manifest:1}
+Source1001:     %{name}.manifest
+%endif
+
 BuildRequires:  make
-BuildRequires:  fdupes
 BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
+%if 0%{?tizen:1}
 BuildRequires:  pkgconfig(dlog)
+BuildRequires:  fdupes
+%define EXTRA_MAKE_FLAGS PLATFORM=TIZEN
+%endif
 BuildRequires:  systemd
 Requires:  iotivity
+Requires(post): systemd
+Requires(preun): systemd
 
 
 %description
@@ -28,41 +39,61 @@ that share an IoTivity resource.
 
 %prep
 %setup -q
-
+%if 0%{?manifest:1}
+cp %{SOURCE1001} .
+%endif
 %build
+
 
 %__make %{?_smp_mflags} \
     name=%{name} \
-    PLATFORM=TIZEN \
+    %EXTRA_MAKE_FLAGS \
     #eol
 
 %install
 %__make install \
     DESTDIR=%{buildroot}/ \
     name=%{name} \
-    PLATFORM=TIZEN \
+    %EXTRA_MAKE_FLAGS \
     #eol
 
-make %{name}.service
+%__make rule/systemd/install \
+ DESTDIR=%{buildroot}/ \
+ name=%{name} \
+ PLATFORM=TIZEN \
+ #EOL
 
-install -d %{buildroot}%{_unitdir}
+%if 0%{?install_service:1}
+install_service network.target.wants %{name}.service
+%endif
 
-install extra/iotivity-example.service \
-  %{buildroot}%{_unitdir}/%{name}.service
-
-%install_service network.target.wants %{name}.service
-
-
+%if 0%{?fdupes:1}
 %fdupes %{buildroot}
+%endif
 
-%post -p /sbin/ldconfig
+%post
+%if 0%{?install_service:1}
+systemctl enable %{name}
+systemctl daemon-reload
+systemctl start %{name}
+%endif
 
-%postun -p /sbin/ldconfig
-
+%preun
+%if 0%{?install_service:1}
+if [ 0 -eq $1 ] ; then
+systemctl disable %{name}
+systemctl daemon-reload
+fi
+%endif
 
 %files
 %defattr(-,root,root)
 %license LICENSE
+%if 0%{?manifest:1}
+%manifest %{name}.manifest
+%endif
 /opt/%{name}/*
 %{_unitdir}/%{name}.service
+%if 0%{?install_service:1}
 %{_unitdir}/network.target.wants/%{name}.service
+%endif
