@@ -37,6 +37,7 @@ Resource::Resource(shared_ptr<OCResource> resource)
     m_OCResource = resource;
 }
 
+
 Resource::~Resource()
 {
     LOG();
@@ -48,6 +49,7 @@ IoTClient::IoTClient()
     LOG();
     init();
 }
+
 
 IoTClient::~IoTClient()
 {
@@ -69,7 +71,6 @@ IoTClient *IoTClient::getInstance()
 void IoTClient::init()
 {
     LOG();
-
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
                         ModeType::Client, //

@@ -23,6 +23,7 @@
 #include "common.h"
 
 #include <csignal>
+#include <ctime>
 #include <functional>
 
 #include "server.h"
@@ -31,13 +32,13 @@
 using namespace std;
 using namespace OC;
 
-
 bool IoTServer::m_over = false;
 
 IoTServer::IoTServer(string endpoint)
 {
     LOG();
     Common::m_endpoint = endpoint;
+    m_countDown = 0xFFFF;
     init();
     setup();
 }
@@ -52,7 +53,6 @@ IoTServer::~IoTServer()
 void IoTServer::init()
 {
     LOG();
-
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, // different service ?
                         ModeType::Server, // other is Client or Both
@@ -62,6 +62,7 @@ void IoTServer::init()
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
+
 
 void IoTServer::setup()
 {
@@ -76,6 +77,7 @@ void IoTServer::setup()
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
 }
+
 
 OCStackResult IoTServer::createResource(string uri, string type, EntityHandler handler,
                                         OCResourceHandle &handle)
@@ -153,6 +155,22 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
 }
 
 
+void IoTServer::update()
+{
+    LOG();
+    time_t now;
+    time(&now);
+    static char datetime[sizeof "2037-12-31T23:59:59Z"];
+    strftime(datetime, sizeof datetime, "%FT%TZ", gmtime(&now));
+    m_dateTime = string(datetime);
+    m_representation.setValue("datetime", m_dateTime);
+    m_countDown--;
+    m_representation.setValue("countdown", m_countDown);
+    cout << Common::m_type << ": { " << m_dateTime << ", " << m_countDown << "}" << endl;
+    OCStackResult result = OCPlatform::notifyAllObservers(m_resourceHandle);
+}
+
+
 void IoTServer::handle_signal(int signal)
 {
     LOG();
@@ -198,6 +216,7 @@ int IoTServer::main(int argc, char *argv[])
     {
         do
         {
+            server.update();
             sleep(delay);
         }
         while (!IoTServer::m_over );

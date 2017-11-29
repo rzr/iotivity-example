@@ -64,6 +64,7 @@ void IoTObserver::init()
     m_findCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
 }
 
+
 void IoTObserver::start()
 {
     LOG();
@@ -71,7 +72,7 @@ void IoTObserver::start()
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     try
     {
-        OCPlatform::findResource("",  //
+        OCPlatform::findResource("", //
                                  uri.c_str(), // coap_multicast_discovery
                                  connectivityType, // IP, BT, BLE etc
                                  m_findCallback, // callback object
@@ -155,7 +156,11 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
                          const int &eCode, const int &sequenceNumber)
 {
     LOG();
-    cerr << "TODO: override with your business logic in " << __PRETTY_FUNCTION__ <<endl;
+    rep.getValue("datetime", m_dateTime);
+    cerr << "log: " << "datetime" << "=" << m_dateTime << endl;
+    rep.getValue("countdown", m_countDown);
+    cerr << "log: " << "countdown" << "=" << m_countDown << endl;
+    cout << Common::m_type << ": { " << m_dateTime << ", " << m_countDown << "}" << endl;
 }
 
 
@@ -168,6 +173,7 @@ int IoTObserver::main(int argc, char *argv[])
             Common::m_logLevel++;
         }
     }
+
     IoTObserver::getInstance()->start();
 
     int choice = 0;
