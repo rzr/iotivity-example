@@ -33,6 +33,8 @@ IoTObserver::IoTObserver()
     LOG();
     init();
 }
+
+
 IoTObserver::~IoTObserver()
 {
     LOG();
@@ -50,15 +52,29 @@ IoTObserver *IoTObserver::getInstance()
 }
 
 
+/// Needs iotivity-1.3
+static FILE *override_fopen(const char *path, const char *mode)
+{
+    LOG();
+    static char const *const CRED_FILE_NAME = "oic_svr_db_anon-clear.dat";
+    char const *const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) // 1.3-rel
+          ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
+}
+
+
 void IoTObserver::init()
 {
     LOG();
+    static OCPersistentStorage ps {override_fopen, fread, fwrite, fclose, unlink };
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
-                        ModeType::Client, //
+                        ModeType::Both, // Client will work but complain about RI
                         "0.0.0.0", //
                         0, //
-                        OC::QualityOfService::LowQos //
+                        OC::QualityOfService::LowQos, //
+                        &ps // Security credentials
                        );
     OCPlatform::Configure(*m_platformConfig);
     m_findCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
@@ -159,9 +175,9 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
     rep.getValue("datetime", m_dateTime);
     cerr << "log: " << "datetime" << "=" << m_dateTime << endl;
     rep.getValue("countdown", m_countDown);
-    cerr << "log: " << "countdown" << "=" << (unsigned long) m_countDown << endl;
+    cerr << "log: " << "countdown" << "=" << (int) m_countDown << endl;
     cout << Common::m_type << ": { " << m_dateTime 
-         << ", " <<  (unsigned long) m_countDown << "}" << endl;
+         << ", " <<  (int) m_countDown << "}" << endl;
 }
 
 
