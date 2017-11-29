@@ -46,6 +46,7 @@ override LDLIBS+=$(shell pkg-config iotivity --libs)
 iotivity_dir=${include_dir}/iotivity
 else
 override LDLIBS+=-loc -loc_logger -loctbstack
+#TODO: Enable security here
 override LDLIBS+=-locpmapi
 override CPPFLAGS+=-D__WITH_DTLS__=1
 override CPPFLAGS+=-I${iotivity_dir}
@@ -199,11 +200,14 @@ xterm/% : ${local_bindir}/%
 
 run: run/server
 
+stop:
+	-killall client server observer
+	-killall -9 client server observer
 auto: all xterm/server  run/client-auto
 	killall client server observer
 
-demo:all xterm/server  run/client
-	killall client server observer
+demo: stop all xterm/server  run/client force/stop
+	@echo "$@: $^"
 
 help: README.md
 	cat $<
