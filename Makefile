@@ -206,7 +206,7 @@ stop:
 auto: all xterm/server  run/client-auto
 	killall client server observer
 
-demo: stop all xterm/server  run/client force/stop
+demo: stop all xterm/server run/observer force/stop
 	@echo "$@: $^"
 
 help: README.md
