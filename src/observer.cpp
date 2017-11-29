@@ -62,6 +62,7 @@ static FILE* override_fopen(const char* path, const char* mode)
     return fopen(filename, mode);
 }
 
+
 void IoTObserver::init()
 {
     LOG();
@@ -76,6 +77,7 @@ void IoTObserver::init()
     OCPlatform::Configure(*m_PlatformConfig);
     m_FindCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
 }
+
 
 void IoTObserver::start()
 {
@@ -107,10 +109,27 @@ void IoTObserver::onFind(shared_ptr<OC::OCResource> resource)
         {
             print(resource);
 
-            if (resource->uri() == Common::m_endpoint)
+            string resourceUri = resource->uri();
+            if (Common::m_endpoint == resourceUri)
             {
-                QueryParamsMap test;
-                resource->observe(OBSERVE_TYPE_TO_USE, test, &IoTObserver::onObserve);
+                cerr << "resourceUri=" << resourceUri << endl;
+
+                for (auto &resourceEndpoint: resource->getAllHosts())
+                {
+                    if (std::string::npos != resourceEndpoint.find("coaps"))
+                    {
+                        // Change Resource host if another host exists
+                        std::cout << "\tChange host of resource endpoints" << std::endl;
+                        std::cout << "\t\t" << "Current host is "
+                                  << resource->setHost(resourceEndpoint) << std::endl;
+                        if (true)   // multi client need observe (for flip/flop)
+                        {
+                            QueryParamsMap test;
+                            resource->observe(OBSERVE_TYPE_TO_USE, test, &IoTObserver::onObserve);
+                        }
+                        break;
+                    }
+                }
 
             }
         }
@@ -195,7 +214,6 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
     std::cerr << Common::m_propname << "=" << value << std::endl;
     std::cout << value << std::endl;
 }
-
 
 
 int IoTObserver::main(int argc, char *argv[])
