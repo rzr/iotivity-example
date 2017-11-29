@@ -23,7 +23,7 @@
 
 default: all
 
-name?=iotivity-example
+name?=iotivity-example-clock
 
 config_pkgconfig?=1
 export config_pkgconfig
