@@ -28,6 +28,35 @@ using namespace std;
 using namespace OC;
 
 
+Resource::Resource(shared_ptr<OCResource> resource)
+{
+    LOG();
+    m_OCResource = resource;
+    m_GETCallback = bind(&Resource::onGet, this,
+                         placeholders::_1, placeholders::_2, placeholders::_3);
+}
+
+
+Resource::~Resource()
+{
+}
+
+
+void Resource::onGet(const HeaderOptions &headerOptions,
+                     const OCRepresentation &representation, int eCode)
+{
+    LOG();
+    if (eCode < OC_STACK_INVALID_URI)
+    {
+        IoTObserver::getInstance()->handle(headerOptions, representation, eCode, 0);
+    }
+    else
+    {
+        cerr << "errror:: in GET response:" << eCode << endl;
+    }
+}
+
+
 IoTObserver::IoTObserver()
 {
     LOG();
