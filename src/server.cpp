@@ -34,6 +34,7 @@ using namespace OC;
 
 bool IoTServer::m_over = false;
 
+
 IoTServer::IoTServer(string endpoint)
 {
     LOG();
@@ -50,15 +51,27 @@ IoTServer::~IoTServer()
 }
 
 
+static FILE *override_fopen(const char *path, const char *mode)
+{
+    LOG();
+    static const char *CRED_FILE_NAME = "oic_svr_db_server.dat";
+    char const *const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
+}
+
+
 void IoTServer::init()
 {
     LOG();
+    static OCPersistentStorage ps {override_fopen, fread, fwrite, fclose, unlink };
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, // different service ?
                         ModeType::Server, // other is Client or Both
                         "0.0.0.0", // default ip
                         0, // default random port
-                            OC::QualityOfService::LowQos // qos
+                            OC::QualityOfService::LowQos, // qos
+                            &ps
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
@@ -92,7 +105,7 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
                   type, // Resource type (can use oneiota or not)
                   Common::m_interface, //resourceInterface grant CRUD opts
                   handler, // for responding to client requests
-                  Common::m_policy // observable or secured ?
+                  Common::m_ResourceFlags // tell if observable or secured
                  );
 
         if (result != OC_STACK_OK)
@@ -145,7 +158,6 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
                     {
                         result = OC_EH_OK;
                     }
-        }
     }
     return result;
 }
