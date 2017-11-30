@@ -31,18 +31,6 @@
 #include <iotivity/resource/OCResource.h>
 
 
-class Resource
-{
-    public:
-        Resource(std::shared_ptr<OC::OCResource> resource);
-        virtual ~Resource();
-    protected:
-        std::shared_ptr<OC::OCResource> m_OCResource;
-        OC::OCRepresentation m_Representation;
-        OC::GetCallback m_GETCallback;
-};
-
-
 class IoTObserver
 {
     public:
@@ -64,11 +52,9 @@ class IoTObserver
         virtual ~IoTObserver();
         void init();
         void onFind(std::shared_ptr<OC::OCResource>);
-        std::shared_ptr<Resource> getResource();
     private:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::FindCallback m_findCallback;
-        std::shared_ptr<Resource> m_resource;
         std::string m_dateTime;
         double m_countDown;
 };
