@@ -73,7 +73,7 @@ static FILE *override_fopen(const char *path, const char *mode)
     LOG();
     static char const *const CRED_FILE_NAME = "oic_svr_db_client.dat";
     char const *const filename
-        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME))
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) // 1.3-rel
           ? CRED_FILE_NAME : path;
     return fopen(filename, mode);
 }
@@ -89,7 +89,7 @@ void IoTClient::init()
                         "0.0.0.0", //
                         0, //
                         OC::QualityOfService::LowQos, //
-                        &ps
+                        Common::isSecure() ? (&ps) : NULL
                        );
     OCPlatform::Configure(*m_platformConfig);
     m_findCallback = bind(&IoTClient::onFind, this, placeholders::_1);
@@ -99,27 +99,22 @@ void IoTClient::init()
 void IoTClient::start()
 {
     LOG();
-    string coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
+    string uri = string(OC_RSRVD_WELL_KNOWN_URI);
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     try
     {
         OCPlatform::findResource("", //
-                                 coap_multicast_discovery.c_str(),
-                                 connectivityType,
-                                 m_findCallback,
-                                 OC::QualityOfService::LowQos);
+                                 uri.c_str(), // coap_multicast_discovery
+                                 connectivityType, // IP, BT, BLE etc
+                                 m_findCallback, // callback object
+                                 OC::QualityOfService::LowQos // or HIGH
+                                );
     }
     catch (OCException &e)
     {
         cerr << "error: Exception: " << e.what();
         exit(1);
     }
-}
-
-
-shared_ptr<Resource> IoTClient::getResource()
-{
-    return m_resource;
 }
 
 
@@ -131,14 +126,15 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
         if (resource)
         {
             print(resource);
-
-            string resourceUri = resource->uri();
+            auto resourceUri = resource->uri();
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
+                auto scheme = Common::isSecure() ? "coaps://" : "coap://";
                 for (auto &resourceEndpoint : resource->getAllHosts()) // 1.3-rel
                 {
-                    if (std::string::npos != resourceEndpoint.find("coaps"))
+                    cerr << "resourceEndpoint=" << resourceEndpoint << endl;
+                    if (std::string::npos != resourceEndpoint.find(scheme))
                     {
                         // Change Resource host if another host exists
                         std::cout << "\tChange host of resource endpoints" << std::endl;
@@ -188,6 +184,12 @@ void IoTClient::input()
          << "  9) Quit"
          << "  *) Display this menu"
          << endl;
+}
+
+
+shared_ptr<Resource> IoTClient::getResource()
+{
+    return m_resource;
 }
 
 
