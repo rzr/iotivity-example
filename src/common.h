@@ -42,13 +42,20 @@ class Common
         /** url's path (used both sides) **/
         static std::string  m_endpoint;
         /** resource policy **/
-        static const uint8_t m_policy = OC_DISCOVERABLE | OC_OBSERVABLE;
+        static const uint8_t m_policy = OC_DISCOVERABLE | OC_OBSERVABLE // unsecured mode
+        // | OC_SECURE //TODO: support unsecure resource in secure build
+;
         /** polling period**/
         static int m_period;
         /** log enabled if positive **/
         static int m_logLevel;
     public:
         static void log(char const *const message);
+        static bool isSecure()
+        {
+            return (OC_SECURE & m_policy);
+        }
+
 };
 
 #include <iostream>
