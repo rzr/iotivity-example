@@ -27,8 +27,9 @@
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 
-std::string Common::m_type = "oic.r.clock";
-std::string Common::m_endpoint = "/example/ClockResUri";
+std::string Common::m_type = "oic.r.light.brightness";
+std::string Common::m_endpoint = "/example/BrightnessResURI";
+double Common::m_brightness = 0;
 
 int Common::m_logLevel = 0;
 int Common::m_period = 5;

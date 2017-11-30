@@ -55,8 +55,6 @@ class IoTObserver
     private:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::FindCallback m_findCallback;
-        std::string m_dateTime;
-        double m_countDown;
 };
 
 #endif /* OBSERVER_H_ */

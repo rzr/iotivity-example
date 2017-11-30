@@ -53,8 +53,6 @@ class IoTServer
         OC::OCRepresentation m_representation;
         OCResourceHandle m_resourceHandle;
         static bool m_over;
-        std::string m_dateTime;
-        double m_countDown;
 };
 
 #endif /* SERVER_H_ */

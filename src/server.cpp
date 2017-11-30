@@ -40,7 +40,6 @@ IoTServer::IoTServer(string endpoint)
 {
     LOG();
     Common::m_endpoint = endpoint;
-    m_countDown = 0xFFFF;
     init();
     setup();
 }
@@ -173,26 +172,19 @@ void IoTServer::update()
 {
     LOG();
 
-    time_t now;
-    char datetime[sizeof "2038-01-19T03:14:08Z"];
-    static struct tm deadline = {0};
-    static time_t end;
-    if (0 == deadline.tm_year)
+    static double offset=1;
+    Common::m_brightness += offset;
+    if (100 < Common::m_brightness)
     {
-        deadline.tm_year = (2038 - 1900);
-        deadline.tm_mday = 1;
-        end = mktime(&deadline);
-        cout<<"log: deadline: " << ctime(&end);
+        Common::m_brightness = 100;
+        offset=-offset;
+    } else if (0 > Common::m_brightness)
+    {
+        Common::m_brightness = 0;
+        offset=-offset;
     }
-
-    time(&now);
-    strftime(datetime, sizeof datetime, "%FT%TZ", gmtime(&now));
-    m_dateTime = string(datetime);
-    m_countDown = difftime(end, now);
-    m_representation.setValue("datetime", m_dateTime);
-    m_representation.setValue("countdown", m_countDown);
-    cout << Common::m_type << ": { " << m_dateTime << ", " 
-         << (int) m_countDown << "}" << endl;
+    m_representation.setValue("brightness", Common::m_brightness);
+    cout << Common::m_type << ": { " << Common::m_brightness << " }" << endl;
     OCStackResult result = OCPlatform::notifyAllObservers(m_resourceHandle);
 }
 
