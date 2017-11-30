@@ -105,7 +105,7 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
                   type, // Resource type (can use oneiota or not)
                   Common::m_interface, //resourceInterface grant CRUD opts
                   handler, // for responding to client requests
-                  Common::m_ResourceFlags // tell if observable or secured
+                  Common::m_policy // tell if observable or secured
                  );
 
         if (result != OC_STACK_OK)
@@ -158,6 +158,7 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
                     {
                         result = OC_EH_OK;
                     }
+        }
     }
     return result;
 }
