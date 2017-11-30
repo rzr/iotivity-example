@@ -28,18 +28,6 @@ using namespace std;
 using namespace OC;
 
 
-Resource::Resource(shared_ptr<OCResource> resource)
-{
-    LOG();
-    m_OCResource = resource;
-}
-
-
-Resource::~Resource()
-{
-}
-
-
 IoTObserver::IoTObserver()
 {
     LOG();
@@ -136,7 +124,6 @@ void IoTObserver::onFind(shared_ptr<OCResource> resource)
                         std::cout << "\tChange host of resource endpoints" << std::endl;
                         std::cout << "\t\t" << "Current host is "
                                   << resource->setHost(resourceEndpoint) << std::endl;
-                        m_resource = make_shared<Resource>(resource);
                         QueryParamsMap test;
                         resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
                         break;
