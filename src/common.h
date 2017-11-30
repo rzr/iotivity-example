@@ -43,6 +43,7 @@ class Common
         static std::string  m_endpoint;
         /** resource policy **/
         static const uint8_t m_policy = OC_DISCOVERABLE | OC_OBSERVABLE // unsecured mode
+        | OC_NONSECURE
         // | OC_SECURE //TODO: support unsecure resource in secure build
 ;
         /** polling period**/
