@@ -33,6 +33,8 @@ IoTObserver::IoTObserver()
     LOG();
     init();
 }
+
+
 IoTObserver::~IoTObserver()
 {
     LOG();
@@ -50,15 +52,28 @@ IoTObserver *IoTObserver::getInstance()
 }
 
 
+static FILE *override_fopen(const char *path, const char *mode)
+{
+    LOG();
+    static char const *const CRED_FILE_NAME = "oic_svr_db_client.dat";
+    char const *const filename
+        = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) // 1.3-rel
+          ? CRED_FILE_NAME : path;
+    return fopen(filename, mode);
+}
+
+
 void IoTObserver::init()
 {
     LOG();
+    static OCPersistentStorage ps {override_fopen, fread, fwrite, fclose, unlink };
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
-                        ModeType::Client, //
+                        ModeType::Both, //
                         "0.0.0.0", //
                         0, //
-                        OC::QualityOfService::LowQos //
+                        OC::QualityOfService::LowQos, //
+                        Common::isSecure() ? (&ps) : NULL
                        );
     OCPlatform::Configure(*m_platformConfig);
     m_findCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
@@ -98,9 +113,23 @@ void IoTObserver::onFind(shared_ptr<OCResource> resource)
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
-                QueryParamsMap test;
-                resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
+                auto scheme = Common::isSecure() ? "coaps://" : "coap://";
+                for (auto &resourceEndpoint : resource->getAllHosts()) // 1.3-rel
+                {
+                    cerr << "resourceEndpoint=" << resourceEndpoint << endl;
 
+                    if (std::string::npos != resourceEndpoint.find(scheme))
+                    {
+                        // Change Resource host if another host exists
+                        std::cout << "\tChange host of resource endpoints" << std::endl;
+                        std::cout << "\t\t" << "Current host is "
+                                  << resource->setHost(resourceEndpoint) << std::endl;
+                        m_resource = make_shared<Resource>(resource);
+                        QueryParamsMap test;
+                        resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
+                        break;
+                    }
+                }
             }
         }
     }
