@@ -31,6 +31,21 @@
 #include <iotivity/resource/OCResource.h>
 
 
+class Resource
+{
+    public:
+        Resource(std::shared_ptr<OC::OCResource> resource);
+        virtual ~Resource();
+        void get();
+    protected:
+        void onGet(const OC::HeaderOptions &, const OC::OCRepresentation &, int);
+    protected:
+        std::shared_ptr<OC::OCResource> m_OCResource;
+        OC::OCRepresentation m_Representation;
+        OC::GetCallback m_GETCallback;
+};
+
+
 class IoTObserver
 {
     public:
@@ -42,6 +57,7 @@ class IoTObserver
                               const OC::OCRepresentation &rep,
                               const int &eCode, const int &sequenceNumber);
     public:
+        std::shared_ptr<Resource> getResource();
         void start();
         /// Override with your business logic related to resource type
         void handle(const OC::HeaderOptions /*headerOptions*/,
@@ -55,6 +71,7 @@ class IoTObserver
     private:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
         OC::FindCallback m_findCallback;
+        std::shared_ptr<Resource> m_resource;
         std::string m_dateTime;
         double m_countDown;
 };
