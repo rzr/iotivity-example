@@ -146,10 +146,6 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
                                   << resource->setHost(resourceEndpoint) << std::endl;
                         m_resource = make_shared<Resource>(resource);
                         input();
-                        if (true)   // simple client can only use get once
-                        {
-                            m_resource->get();
-                        }
                         break;
                     }
 
