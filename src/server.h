@@ -47,8 +47,8 @@ class IoTServer
         OCStackResult respond(std::shared_ptr<OC::OCResourceResponse> response);
     protected:
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        OC::OCRepresentation m_Representation;
-        OCResourceHandle m_ResourceHandle;
+        OC::OCRepresentation m_representation;
+        OCResourceHandle m_resourceHandle;
         static bool m_over;
 };
 

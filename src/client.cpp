@@ -39,6 +39,7 @@ Resource::Resource(shared_ptr<OCResource> resource)
 
 Resource::~Resource()
 {
+    LOG();
 }
 
 
@@ -54,16 +55,16 @@ IoTClient::~IoTClient()
 }
 
 
-IoTClient *IoTClient::mInstance = nullptr;
-
 IoTClient *IoTClient::getInstance()
 {
-    if (!IoTClient::mInstance)
+    static IoTClient *pInstance = nullptr;
+    if (!pInstance)
     {
-        mInstance = new IoTClient;
+        pInstance = new IoTClient;
     }
-    return mInstance;
+    return pInstance;
 }
+
 
 void IoTClient::init()
 {
@@ -77,7 +78,7 @@ void IoTClient::init()
                         OC::QualityOfService::LowQos //
                        );
     OCPlatform::Configure(*m_platformConfig);
-    m_FindCallback = bind(&IoTClient::onFind, this, placeholders::_1);
+    m_findCallback = bind(&IoTClient::onFind, this, placeholders::_1);
 }
 
 
@@ -91,7 +92,7 @@ void IoTClient::start()
         OCPlatform::findResource("", //
                                  coap_multicast_discovery.c_str(),
                                  connectivityType,
-                                 m_FindCallback,
+                                 m_findCallback,
                                  OC::QualityOfService::LowQos);
     }
     catch (OCException &e)
@@ -104,7 +105,7 @@ void IoTClient::start()
 
 shared_ptr<Resource> IoTClient::getResource()
 {
-    return m_Resource;
+    return m_resource;
 }
 
 
@@ -121,7 +122,7 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
-                m_Resource = make_shared<Resource>(resource);
+                m_resource = make_shared<Resource>(resource);
                 input();
             }
 
@@ -149,10 +150,6 @@ void IoTClient::print(shared_ptr<OCResource> resource)
     {
         cerr << "log: Resource: interface: " << interface << endl;
     }
-    for (auto &endpoint : resource->getAllHosts())
-    {
-        cerr << "log: Resource: endpoint: " << endpoint << endl;
-    }
 }
 
 
@@ -167,8 +164,6 @@ void IoTClient::input()
 
 int IoTClient::main(int argc, char *argv[])
 {
-    IoTClient::getInstance()->start();
-
     for (int i = 1; i < argc; i++)
     {
         if (0 == strcmp("-v", argv[i]))
@@ -177,7 +172,9 @@ int IoTClient::main(int argc, char *argv[])
         }
     }
 
-    int choice;
+    IoTClient::getInstance()->start();
+
+    int choice = 0;
     do
     {
         cin >> choice;
@@ -186,7 +183,7 @@ int IoTClient::main(int argc, char *argv[])
             case 9:
                 return 0;
             default:
-                IoTClient::input();
+                IoTClient::getInstance()->input();
                 break;
         }
     }

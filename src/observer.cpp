@@ -27,146 +27,128 @@
 using namespace std;
 using namespace OC;
 
-IoTObserver *IoTObserver::mInstance = nullptr;
-const OC::ObserveType IoTObserver::OBSERVE_TYPE_TO_USE = OC::ObserveType::Observe;
-
 
 IoTObserver::IoTObserver()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     init();
 }
+IoTObserver::~IoTObserver()
+{
+    LOG();
+}
+
 
 IoTObserver *IoTObserver::getInstance()
 {
-    cerr << __PRETTY_FUNCTION__;
-    if (IoTObserver::mInstance == nullptr)
+    static IoTObserver *pInstance = nullptr;
+    if (!pInstance)
     {
-        mInstance = new IoTObserver;
+        pInstance = new IoTObserver;
     }
-    return mInstance;
+    return pInstance;
 }
 
-IoTObserver::~IoTObserver()
-{
-    cerr << __PRETTY_FUNCTION__ << endl;
-}
 
 void IoTObserver::init()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
-
-    m_PlatformConfig = make_shared<PlatformConfig>
+    LOG();
+    m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
                         ModeType::Client, //
                         "0.0.0.0", //
                         0, //
-                        OC::QualityOfService::HighQos);
-
-    OCPlatform::Configure(*m_PlatformConfig);
-    m_FindCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
+                        OC::QualityOfService::LowQos //
+                       );
+    OCPlatform::Configure(*m_platformConfig);
+    m_findCallback = bind(&IoTObserver::onFind, this, placeholders::_1);
 }
 
 void IoTObserver::start()
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     string uri = string(OC_RSRVD_WELL_KNOWN_URI);
 
     cerr << "URI: " << uri << endl;
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
-    OCPlatform::findResource("",  //
-                             uri.c_str(), //
-                             connectivityType, // IP
-                             m_FindCallback, //cb
-                             OC::QualityOfService::HighQos // TODO
-                            );
+    try
+    {
+        OCPlatform::findResource("",  //
+                                 uri.c_str(), // coap_multicast_discovery
+                                 connectivityType, // IP, BT, BLE etc
+                                 m_findCallback, // callback object
+                                 OC::QualityOfService::LowQos // or HIGH
+                                );
+    }
+    catch (OCException &e)
+    {
+        cerr << "error: Exception: " << e.what();
+        exit(1);
+    }
 }
 
 
-void IoTObserver::onFind(shared_ptr<OC::OCResource> resource)
+void IoTObserver::onFind(shared_ptr<OCResource> resource)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     try
     {
         if (resource)
         {
-            print(resource);
-
-            if (resource->uri() == Common::m_endpoint)
+            auto resourceUri = resource->uri();
+            if (Common::m_endpoint == resourceUri)
             {
+                cerr << "resourceUri=" << resourceUri << endl;
                 QueryParamsMap test;
-                resource->observe(OBSERVE_TYPE_TO_USE, test, &IoTObserver::onObserve);
+                resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
 
             }
         }
     }
     catch (OCException &ex)
     {
-        cerr << "Caught exception in discoveredResource: " << ex.reason() << endl;
+        cerr << "error: Caught exception in discoveredResource: " << ex.reason() << endl;
     }
 }
 
 
-void IoTObserver::onObserve(const HeaderOptions headerOptions, const OCRepresentation &rep,
+void IoTObserver::onObserve(const HeaderOptions headerOptions,
+                            const OCRepresentation &rep,
                             const int &eCode, const int &sequenceNumber)
 {
-    cerr << __PRETTY_FUNCTION__ << endl;
+    LOG();
     try
     {
         if (eCode == OC_STACK_OK && sequenceNumber != OC_OBSERVE_NO_OPTION)
         {
             if (sequenceNumber == OC_OBSERVE_REGISTER)
             {
-                std::cerr << "Observe registration action is successful" << std::endl;
+                cerr << "log: Observe registration action is successful" << endl;
             }
             else if (sequenceNumber == OC_OBSERVE_DEREGISTER)
             {
-                std::cerr << "Observe De-registration action is successful" << std::endl;
+                cerr << "log: Observe De-registration action is successful" << endl;
             }
-            std::cerr << "OBSERVE RESULT:" << std::endl;
-            std::cerr << "\tSequenceNumber: " << sequenceNumber << std::endl;
-            handle(headerOptions, rep, eCode, sequenceNumber);
+            cerr << "log: observe: sequenceNumber=" << sequenceNumber << endl;
+            IoTObserver::getInstance()->handle(headerOptions, rep, eCode, sequenceNumber);
         }
         else
         {
             if (sequenceNumber == OC_OBSERVE_NO_OPTION)
             {
-                std::cerr << "Observe registration or de-registration action is failed" << std::endl;
+                cerr << "warning: Observe registration or de-registration action is failed" << endl;
             }
             else
             {
-                std::cerr << "onObserve Response error: " << eCode << std::endl;
-                std::exit(-1);
+                cerr << "error: onObserve Response error=" << eCode << endl;
+                exit(-1);
             }
         }
     }
-    catch (std::exception &e)
+    catch (exception &e)
     {
-        std::cerr << "Exception: " << e.what() << " in onObserve" << std::endl;
+        cerr << "warning: Exception: " << e.what() << " in onObserve" << endl;
     }
-}
-
-
-void IoTObserver::print(shared_ptr<OCResource> resource)
-{
-    string resourceUri = resource->uri();
-    string hostAddress = resource->host();
-    cerr << "host: " << hostAddress << endl;
-
-
-    cerr << "\nFound Resource" << endl << "Resource Types:" << endl;
-    for (auto &resourceTypes : resource->getResourceTypes())
-    {
-        cerr << "\t" << resourceTypes << endl;
-    }
-
-    cerr << "Resource Interfaces: " << endl;
-    for (auto &resourceInterfaces : resource->getResourceInterfaces())
-    {
-        cerr << "\t" << resourceInterfaces << endl;
-    }
-    cerr << "Resource uri: " << resourceUri << endl;
-
 }
 
 
@@ -174,11 +156,20 @@ void IoTObserver::print(shared_ptr<OCResource> resource)
 void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentation &rep,
                          const int &eCode, const int &sequenceNumber)
 {
+    LOG();
+    cerr << "TODO: override with your business logic in " << __PRETTY_FUNCTION__ endl;
 }
 
 
 int IoTObserver::main(int argc, char *argv[])
 {
+    for (int i = 1; i < argc; i++)
+    {
+        if (0 == strcmp("-v", argv[i]))
+        {
+            Common::m_logLevel++;
+        }
+    }
     IoTObserver::getInstance()->start();
 
     int choice = 0;

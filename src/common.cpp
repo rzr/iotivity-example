@@ -27,7 +27,7 @@
 
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 std::string Common::m_type = "org.example.r.example";
-std::string Common::m_endpoint = "/ExampleResURI";
+std::string Common::m_endpoint = "/example/ExampleResURI";
 
 int Common::m_logLevel = 0;
 int Common::m_period = 5;
