@@ -47,24 +47,21 @@ class IoTClient
 {
     public:
         static int main(int argc, char *argv[]);
-
-        static void input();
-
+        static IoTClient *getInstance();
     public:
         std::shared_ptr<Resource> getResource();
         void start();
+        void input();
         void print(std::shared_ptr<OC::OCResource> resource);
-        static IoTClient *getInstance();
     private:
         IoTClient();
         virtual ~IoTClient();
         void init();
         void onFind(std::shared_ptr<OC::OCResource>);
     private:
-        static IoTClient *mInstance;
-        std::shared_ptr<Resource> m_Resource;
+        std::shared_ptr<Resource> m_resource;
         std::shared_ptr<OC::PlatformConfig> m_platformConfig;
-        OC::FindCallback m_FindCallback;
+        OC::FindCallback m_findCallback;
 };
 
 #endif /* CLIENT_H_ */

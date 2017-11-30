@@ -58,7 +58,7 @@ void IoTServer::init()
                         ModeType::Server, // other is Client or Both
                         "0.0.0.0", // default ip
                         0, // default random port
-                        OC::QualityOfService::LowQos// qos
+                        OC::QualityOfService::LowQos // qos
                        );
     OCPlatform::Configure(*m_platformConfig);
 }
@@ -69,7 +69,7 @@ void IoTServer::setup()
     OCStackResult result ;
     EntityHandler handler = bind(&IoTServer::handleEntity, this, placeholders::_1);
 
-    result = createResource(Common::m_endpoint, Common::m_type, handler, m_ResourceHandle);
+    result = createResource(Common::m_endpoint, Common::m_type, handler, m_resourceHandle);
     if (OC_STACK_OK != result)
     {
         cerr << "error: Error on createResource" << endl;
@@ -82,22 +82,26 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
 {
     LOG();
     OCStackResult result;
-    string resourceUri = uri;
-    string resourceType = type;
-    string resourceInterface = Common::m_interface;
-    uint8_t resourceFlag = OC_DISCOVERABLE | OC_OBSERVABLE;
     try
     {
         result = OCPlatform::registerResource // resource to be discovered
                  (handle,
-                  resourceUri, resourceType,
-                  resourceInterface, //
-                  handler, resourceFlag);
-
+                  uri, // Resource URI, CoAP endpoint
+                  type, // Resource type (can use oneiota or not)
+                  Common::m_interface, //resourceInterface grant CRUD opts
+                  handler, // for responding to client requests
+                  Common::m_policy // observable or secured ?
+                 );
         if (result != OC_STACK_OK)
-            cerr << "error: Could not create " << type << " resource" << endl;
+        {
+            cerr << "error: Could not create endpoint:"
+                 << uri << " as " << type << endl;
+        }
         else
-            cerr << "log: Successfully created " << type << " resource" << endl;
+        {
+            cerr << "log: Successfully created endpoint: " 
+                 << uri << " as " << type << endl;
+        }
     }
     catch (OC::OCException &e)
     {
@@ -118,7 +122,7 @@ OCStackResult IoTServer::respond(std::shared_ptr<OC::OCResourceResponse> respons
     if (response)
     {
         response->setResponseResult(OC_EH_OK);
-        response->setResourceRepresentation(m_Representation);
+        response->setResourceRepresentation(m_representation);
         result = OCPlatform::sendResponse(response);
     }
     return result;
@@ -139,10 +143,9 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
             auto response = std::make_shared<OC::OCResourceResponse>();
             response->setRequestHandle(request->getRequestHandle());
             response->setResourceHandle(request->getResourceHandle());
+            if (respond(response) == OC_STACK_OK)
             {
-                cerr << "error: unsupported " << requestType << endl;
-                response->setResponseResult(OC_EH_ERROR);
-                OCPlatform::sendResponse(response);
+                result = OC_EH_OK;
             }
         }
     }
@@ -171,6 +174,7 @@ int IoTServer::main(int argc, char *argv[])
          << "Usage: server -v" << endl
          ;
 
+    int delay = Common::m_period;
     int subargc = argc;
     char **subargv = argv;
     for (int i = 1; i < argc; i++)
@@ -181,6 +185,10 @@ int IoTServer::main(int argc, char *argv[])
             argc--;
             subargv++;
         }
+        else
+        {
+            delay = atoi(argv[i]);
+        }
     }
 
     Platform::getInstance().setup(subargc, subargv);
@@ -188,7 +196,6 @@ int IoTServer::main(int argc, char *argv[])
     IoTServer server;
     try
     {
-        int delay = Common::m_period;
         do
         {
             sleep(delay);

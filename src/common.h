@@ -25,6 +25,7 @@
 #define COMMON_H_
 
 #include <string>
+#include <iotivity/resource/OCApi.h>
 
 #if !defined(PACKAGE)
 #define PACKAGE "Example"
@@ -40,6 +41,8 @@ class Common
         static std::string  m_type;
         /** url's path (used both sides) **/
         static std::string  m_endpoint;
+        /** resource policy **/
+        static const uint8_t m_policy = OC_DISCOVERABLE | OC_OBSERVABLE;
         /** polling period**/
         static int m_period;
         /** log enabled if positive **/
