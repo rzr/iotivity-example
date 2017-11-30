@@ -1,4 +1,4 @@
-Source: iotivity-example
+Source: iotivity-example-clock
 Section: net
 Priority: optional
 Maintainer: Philippe Coval <philippe.coval@osg.samsung.com>
@@ -9,7 +9,7 @@ Homepage: <insert the upstream URL, if relevant>
 Vcs-Git: http://github.com/TizenTeam/iotivity-example
 Vcs-Browser: http://github.com/TizenTeam/iotivity-example
 
-Package: iotivity-example
+Package: iotivity-example-clock
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: <insert up to 60 chars description>
