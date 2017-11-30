@@ -27,8 +27,9 @@ Preliminary you need to install IoTivity for your system.
 
 * https://wiki.iotivity.org/os
 
-For the record, it has been tested with:
+For the record, some subprojects were tested with:
 
+* Iotivity 1.3.0+ on Fedora:24
 * Iotivity 1.2.1+ on Tizen:Common
 * Iotivity 1.2.0+ on Yocto's poky
 * IoTivity 1.2.0+ on GNU/Linux system (Debian).
@@ -57,6 +58,10 @@ Then, you need to "unpack" all branches into current work directory:
   * Shows *NOTIFY* mechanism
 * branch=switch/master: (on example/master)
   * Shows *PUT* mechanism 
+* branch=clock/1.2-rel: (on example/packaging/master)
+  * Shows *OBSERVE* mechanism on previous release
+* branch=clock/master: (on clock/1.2-rel)
+  * Shows *ACL* mechanism for observing unsecured resource
 
 
 ## RESOURCES: ##
