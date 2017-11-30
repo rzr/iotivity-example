@@ -52,6 +52,7 @@ IoTObserver *IoTObserver::getInstance()
 }
 
 
+/// Needs iotivity-1.3
 static FILE *override_fopen(const char *path, const char *mode)
 {
     LOG();
@@ -117,7 +118,6 @@ void IoTObserver::onFind(shared_ptr<OCResource> resource)
                 for (auto &resourceEndpoint : resource->getAllHosts()) // 1.3-rel
                 {
                     cerr << "resourceEndpoint=" << resourceEndpoint << endl;
-
                     if (std::string::npos != resourceEndpoint.find(scheme))
                     {
                         // Change Resource host if another host exists
