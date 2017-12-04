@@ -6,8 +6,30 @@
                 "subject": { "conntype": "anon-clear" },
                 "resources": [{ "wc": "*" }],
                 "permission": 18
+            },
+            {
+                "aceid": 1,
+                "subject": { "uuid": "31393139-3139-3139-3139-313931393139" },
+                "resources": [{ "href": "/example/brightness" }],
+                "permission": 7
+            }
+        ],
+        "rowneruuid" : "31313131-3131-3131-3131-313131313131"
+    },
+    "cred": {
+        "creds": [
+            {
+                "credid": 1,
+                "subjectuuid": "31393139-3139-3139-3139-313931393139",
+                "credtype": 1,
+                "period": "20150630T060000/20990920T220000",
+                "privatedata": {
+                    "data": "AAAAAAAAAAAAAAAA",
+                    "encoding": "oic.sec.encoding.raw"
+                }
             }
         ],
         "rowneruuid" : "31313131-3131-3131-3131-313131313131"
     }
+
 }
