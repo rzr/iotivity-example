@@ -65,4 +65,9 @@ class Logger
 #define LOG()                                   \
     Logger localLoggerObject ## __LINE__ (__PRETTY_FUNCTION__)
 
+// octypes.h
+#ifndef OC_SECURITY_DB_DAT_FILE_NAME
+#define OC_SECURITY_DB_DAT_FILE_NAME    "oic_svr_db.dat"
+#endif
+
 #endif /* COMMON_H_ */
