@@ -28,7 +28,7 @@
 std::string Common::m_interface = OC_RSRVD_INTERFACE_DEFAULT; //"oic.if.baseline"
 
 std::string Common::m_type = "oic.r.light.brightness";
-std::string Common::m_endpoint = "/example/BrightnessResURI";
+std::string Common::m_endpoint = "/a/light";
 double Common::m_brightness = 0;
 
 int Common::m_logLevel = 0;

@@ -43,7 +43,7 @@ class Common
         static std::string  m_endpoint;
         /** resource policy **/
     static const uint8_t m_policy = OC_DISCOVERABLE | OC_OBSERVABLE //unsecured here
-        //| OC_SECURE // added to support coaps
+        | OC_SECURE // added to support coaps
         ;
         /** polling period**/
         static int m_period;
