@@ -85,7 +85,7 @@ void IoTClient::init()
     static OCPersistentStorage ps {override_fopen, fread, fwrite, fclose, unlink };
     m_platformConfig = make_shared<PlatformConfig>
                        (ServiceType::InProc, //
-                        ModeType::Both, // Client will work but complain about RI
+                        ModeType::Client, // Client will work but complain about RI
                         "0.0.0.0", //
                         0, //
                         OC::QualityOfService::LowQos, //
@@ -103,7 +103,7 @@ void IoTClient::start()
     OCConnectivityType connectivityType(CT_ADAPTER_IP);
     try
     {
-        OCPlatform::findResource("", //
+        OCPlatform::findResource("", // all hosts
                                  uri.c_str(), // coap_multicast_discovery
                                  connectivityType, // IP, BT, BLE etc
                                  m_findCallback, // callback object
