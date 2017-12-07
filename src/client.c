@@ -231,8 +231,7 @@ OCStackApplicationResult onDiscover(void *ctx,
     }
 
     OCResourcePayload *resource = (OCResourcePayload *) payload->resources;
-
-    while (resource)
+    for (;resource; resource = resource->next) 
     {
         LOGf("%p", resource);
         if (resource->uri)
@@ -272,7 +271,6 @@ OCStackApplicationResult onDiscover(void *ctx,
                 }
             }
         }
-        resource = resource->next;
     }
 
     return OC_STACK_KEEP_TRANSACTION;
@@ -424,7 +422,7 @@ int client_main(int argc, char *argv[])
     LOGf("%s", "Break from loop with Ctrl+C");
     signal(SIGINT, onSignal);
 
-    client_setup(void);
+    client_setup();
 
     for (; !gOver;)
     {
