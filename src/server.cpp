@@ -92,11 +92,16 @@ OCStackResult IoTServer::createResource(string uri, string type, EntityHandler h
                   handler, // for responding to client requests
                   Common::m_policy // observable or secured ?
                  );
-
         if (result != OC_STACK_OK)
-            cerr << "error: Could not create " << type << " resource" << endl;
+        {
+            cerr << "error: Could not create endpoint:"
+                 << uri << " as " << type << endl;
+        }
         else
-            cerr << "log: Successfully created " << type << " resource" << endl;
+        {
+            cerr << "log: Successfully created endpoint: " 
+                 << uri << " as " << type << endl;
+        }
     }
     catch (OC::OCException &e)
     {
