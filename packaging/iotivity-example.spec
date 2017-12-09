@@ -1,6 +1,6 @@
 Name:           iotivity-example
 Version: %{!?version:0}%{?version}
-Release: %{!?release:0}%{?release}
+Release: 20171209.050423philippe0+0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
 Url:            http://git.s-osg.org/iotivity-example/plain/README.md
@@ -16,15 +16,12 @@ Source1001:     %{name}.manifest
 BuildRequires:  make
 BuildRequires:  pkgconfig(iotivity)
 BuildRequires:  boost-devel
-BuildRequires:  systemd
 %if 0%{?tizen:1}
 BuildRequires:  pkgconfig(dlog)
 BuildRequires:  fdupes
 %define PLATFORM PLATFORM=TIZEN
 %endif
 Requires:  iotivity
-Requires(post): systemd
-Requires(preun): systemd
 
 %define EXTRA_MAKE_FLAGS \\\
  %{?_smp_mflags} \\\
@@ -52,30 +49,13 @@ cp %{SOURCE1001} .
 %install
 %__make install %{EXTRA_MAKE_FLAGS}
 
-%__make rule/systemd/install  %{EXTRA_MAKE_FLAGS}
-
-%if 0%{?install_service:1}
-%install_service network.target.wants %{name}.service
-%endif
-
 %if 0%{?fdupes:1}
 %fdupes %{buildroot}
 %endif
 
 %post
-%if 0%{?install_service:1}
-systemctl enable %{name}
-systemctl daemon-reload
-systemctl start %{name}
-%endif
 
 %preun
-%if 0%{?install_service:1}
-if [ 0 -eq $1 ] ; then
-systemctl disable %{name}
-systemctl daemon-reload
-fi
-%endif
 
 %files
 %defattr(-,root,root)
@@ -85,7 +65,3 @@ fi
 %manifest %{name}.manifest
 %endif
 /opt/%{name}/*
-%{_unitdir}/%{name}.service
-%if 0%{?install_service:1}
-%{_unitdir}/network.target.wants/%{name}.service
-%endif
