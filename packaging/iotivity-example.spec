@@ -1,6 +1,6 @@
 Name:           iotivity-example
 Version: %{!?version:0}%{?version}
-Release: 20171209.050423philippe0+0
+Release: 20171209.113044philippe0+0
 License:        Apache-2.0
 Summary:        Very minimalist example of IoTivity resource
 Url:            http://git.s-osg.org/iotivity-example/plain/README.md
