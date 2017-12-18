@@ -25,6 +25,7 @@
 #include <csignal>
 #include <ctime>
 #include <functional>
+#include <iomanip>
 
 #include "server.h"
 #include "platform.h"
@@ -158,15 +159,27 @@ OCEntityHandlerResult IoTServer::handleEntity(shared_ptr<OCResourceRequest> requ
 void IoTServer::update()
 {
     LOG();
+
     time_t now;
+    char datetime[sizeof "2038-01-19T03:14:08Z"];
+    static struct tm deadline = {0};
+    static time_t end;
+    if (0 == deadline.tm_year)
+    {
+        deadline.tm_year = (2038 - 1900);
+        deadline.tm_mday = 1;
+        end = mktime(&deadline);
+        cout<<"log: deadline: " << ctime(&end);
+    }
+
     time(&now);
-    static char datetime[sizeof "2037-12-31T23:59:59Z"];
     strftime(datetime, sizeof datetime, "%FT%TZ", gmtime(&now));
     m_dateTime = string(datetime);
+    m_countDown = difftime(end, now);
     m_representation.setValue("datetime", m_dateTime);
-    m_countDown--;
     m_representation.setValue("countdown", m_countDown);
-    cout << Common::m_type << ": { " << m_dateTime << ", " << m_countDown << "}" << endl;
+    cout << Common::m_type << ": { " << m_dateTime << ", " 
+         << (int) m_countDown << "}" << endl;
     OCStackResult result = OCPlatform::notifyAllObservers(m_resourceHandle);
 }
 

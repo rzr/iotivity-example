@@ -159,8 +159,9 @@ void IoTObserver::handle(const HeaderOptions headerOptions, const OCRepresentati
     rep.getValue("datetime", m_dateTime);
     cerr << "log: " << "datetime" << "=" << m_dateTime << endl;
     rep.getValue("countdown", m_countDown);
-    cerr << "log: " << "countdown" << "=" << m_countDown << endl;
-    cout << Common::m_type << ": { " << m_dateTime << ", " << m_countDown << "}" << endl;
+    cerr << "log: " << "countdown" << "=" << (unsigned long) m_countDown << endl;
+    cout << Common::m_type << ": { " << m_dateTime 
+         << ", " <<  (unsigned long) m_countDown << "}" << endl;
 }
 
 
