@@ -78,13 +78,13 @@ void IoTServer::setup()
         throw OC::InitializeException(__PRETTY_FUNCTION__, result);
     }
     if ( !false ) {
-        static int const delay = 100;
-        cerr<<"log: sleeping after creation: " << Common::m_endpoint<<endl;
+        static int const delay = 200;
+        cerr << "log: sleeping after creation: " << Common::m_endpoint << endl;
         sleep(delay);
         
         static string const coap_multicast_discovery = string(OC_RSRVD_WELL_KNOWN_URI);
         OCConnectivityType connectivityType(CT_ADAPTER_IP);
-        cerr<<"log: finding..."<< coap_multicast_discovery <<endl;
+        cerr << "log: finding: " << coap_multicast_discovery << "..." << endl;
         try
         {
             OCPlatform::findResource("", //
@@ -97,7 +97,7 @@ void IoTServer::setup()
             exit(1);
         }
         sleep(delay);
-        cerr<<"log: is "<< Common::m_endpoint <<" resource found ?"<<endl;
+        cerr << "log: is " << Common::m_endpoint << " resource found ?" << endl;
     }
 }
 
