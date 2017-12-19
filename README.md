@@ -62,6 +62,10 @@ Then, you need to "unpack" all branches into current work directory:
   * Shows *OBSERVE* mechanism on previous release
 * branch=clock/master: (on clock/1.2-rel)
   * Shows *ACL* mechanism for observing unsecured resource
+* branch=brightness/1.2-rel: (on example/packaging/master)
+  * Implements OneIot resource
+* branch=brightness/master: (on brightness/1.2-rel)
+  * Shows *ACL* mechanism for observing secured resource
 
 
 ## RESOURCES: ##
