@@ -29,6 +29,7 @@ Preliminary you need to install IoTivity for your system.
 
 For the record, some subprojects were tested with:
 
+* IoTivity 1.3.1+ on Ubuntu:14.04
 * Iotivity 1.3.0+ on Fedora:24
 * Iotivity 1.2.1+ on Tizen:Common
 * Iotivity 1.2.0+ on Yocto's poky
