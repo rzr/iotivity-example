@@ -69,7 +69,7 @@ IoTClient *IoTClient::getInstance()
 static FILE *override_fopen(const char *path, const char *mode)
 {
     LOG();
-    static char const *const CRED_FILE_NAME = "oic_svr_db_anon-clear.dat";
+    static char const *const CRED_FILE_NAME = "oic_svr_db_client.dat";
     char const *const filename
         = (0 == strcmp(path, OC_SECURITY_DB_DAT_FILE_NAME)) // 1.3-rel
           ? CRED_FILE_NAME : path;
@@ -129,8 +129,19 @@ void IoTClient::onFind(shared_ptr<OCResource> resource)
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
-                m_resource = make_shared<Resource>(resource);
-                input();
+                for (auto &resourceEndpoint: resource->getAllHosts())
+                {
+                    if (std::string::npos != resourceEndpoint.find("coaps"))
+                    {
+                        // Change Resource host if another host exists
+                        std::cout << "\tChange host of resource endpoints" << std::endl;
+                        std::cout << "\t\t" << "Current host is "
+                                  << resource->setHost(resourceEndpoint) << std::endl;
+                        m_resource = make_shared<Resource>(resource);
+                        input();
+                        break;
+                    }
+                }
             }
         }
     }
