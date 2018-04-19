@@ -114,8 +114,19 @@ void IoTObserver::onFind(shared_ptr<OCResource> resource)
             if (Common::m_endpoint == resourceUri)
             {
                 cerr << "resourceUri=" << resourceUri << endl;
-                QueryParamsMap test;
-                resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
+                for (auto &resourceEndpoint: resource->getAllHosts())
+                {
+                    if (std::string::npos != resourceEndpoint.find("coaps"))
+                    {
+                        // Change Resource host if another host exists
+                        std::cout << "\tChange host of resource endpoints" << std::endl;
+                        std::cout << "\t\t" << "Current host is "
+                                  << resource->setHost(resourceEndpoint) << std::endl;
+                        QueryParamsMap test;
+                        resource->observe(OC::ObserveType::Observe, test, &IoTObserver::onObserve);
+                        break;
+                    }
+                }
 
             }
         }
