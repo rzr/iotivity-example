@@ -23,7 +23,7 @@
 
 default: all
 
-name?=iotivity-example
+name?=iotivity-example-brightness
 
 config_pkgconfig?=1
 export config_pkgconfig
