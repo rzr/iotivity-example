@@ -7,8 +7,9 @@ Minimal IoTivity example
 
 It has been tested with IoTivity 1.1.1
 
-make arduino
-
+  git clone -b sandbox/pcoval/arduino https://github.com/tizenteam/iotivity-example
+  cd iotivity-example
+  make arduino
 
 ## Resources: ##
 
