@@ -1,6 +1,6 @@
 # IOTIVITY TUTORIAL #
 
-URL: http://git.s-osg.org/iotivity-example
+URL: https://github.com/rzr/iotivity-example
 
 
 ## ABOUT : ##
@@ -41,7 +41,7 @@ For the record, some subprojects were tested with:
 Then, you need to "unpack" all branches into current work directory:
 
     # First Install git make etc
-    git clone http://git.s-osg.org/iotivity-example
+    git clone https://github.com/tizenteam/iotivity-example
     cd iotivity-example
     # Flatten all subprojects to "src" folders
     make
@@ -74,6 +74,6 @@ Then, you need to "unpack" all branches into current work directory:
 * https://wiki.iotivity.org/examples
 * https://wiki.iotivity.org/build
 * https://wiki.iotivity.org/community
-* https://blogs.s-osg.org/category/iotivity/
+* https://s-opensource.org/tag/iotivity/
 * https://github.com/tizenteam/iotivity-example
 * https://wiki.tizen.org/wiki/User:Pcoval

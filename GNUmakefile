@@ -2,7 +2,7 @@
 
 default: all
 
-url?=http://git.s-osg.org/iotivity-example
+url?=https://github.com/tizenteam/iotivity-example
 #url?=file://${CURDIR}/
 
 all: src help
