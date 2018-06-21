@@ -1,6 +1,6 @@
 ## IOTIVITY EXAMPLE ##
 
-URL: http://git.s-osg.org/iotivity-example
+URL: https://github.com/rzr/iotivity-example
 
 
 ## ABOUT: ##
