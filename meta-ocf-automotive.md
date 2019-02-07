@@ -9,7 +9,7 @@ Traditional car manufacturers have begun including early iterations of touchscre
 
 The Open Connectivity Foundation (OCF) is creating a specification and sponsoring the IoTivity open source project to deliver an open and secure connectivity and interoperability framework; this enables devices from multiple vendors that belong to multiple vertical domains to run on a variety of software and hardware platforms. Automotive is one key vertical where OCF can have a significant impact. The Samsung Open Source Group (OSG) has been playing a significant role in both the Open Connectivity Foundation (OCF) and IoTivity.
 
-https://youtu.be/3d0uZE6lHvo# [CES 2017] Samsung Contributes to Open IoT Showcase at CES 2017
+[![ocf-automotive-ces2017](https://i1.ytimg.com/vi/3d0uZE6lHvo/hqdefault.jpg)](https://youtu.be/3d0uZE6lHvo# "[CES 2017] Samsung Contributes to Open IoT Showcase at CES 2017")
 
 
 ## Collaboration with Genivi & W3C ## 
