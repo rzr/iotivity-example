@@ -43,23 +43,23 @@ source ./init.sh $MACHINE bitbake genivi-dev-platform
 Once booted on qemu or the Raspberry Pi 2/3, an IoTivity server can be started from “/opt/iotivity-example*” and example clients can be run on the same LAN, including localhost. These examples are part of our IoTivity example, and are ready to be forked to create your own IoT services. We hope it will inspire you and simplify integration; start learning! For support, check out the detailed instructions on IoTivity’s automotive wiki page. Since GENIVI’s development platform is now shipping iotivity-node, linking sensors to the cloud as shown at FOSDEM, can be done in a jiffy.
 
 
-https://youtu.be/3L6_DbMLJ1k#iotivity-artik-20170204rzr
+[https://youtu.be/3L6_DbMLJ1k#iotivity-artik-20170204rzr](https://youtu.be/3L6_DbMLJ1k#iotivity-artik-20170204rzr)
 
 Working together across organizational boundaries has enabled us to realize these demonstrations with real devices that run open source software; hopefully this will help people understand the potential business opportunities of connected cars. Feel free to post a comment below if you have any questions or comments.
 
 
 ## Additional Resources ##
 
-https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-iot-interoperability
+[https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-iot-interoperability](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-iot-interoperability)
 
 IoTivity for Automotive IoT Interoperability from Samsung Open Source Group
 
-    OCF Genivi CES 2017 Connected Car Demo
-    Samsung Contributes to Open IoT Showcase at CES 2017
-    W3C OCF Interoperability Demo
-    OCF automotive profile
-    IoTivity automotive wiki page
-    IoTivity on Tizen GearS2
+* OCF Genivi CES 2017 Connected Car Demo
+* Samsung Contributes to Open IoT Showcase at CES 2017
+* W3C OCF Interoperability Demo
+* OCF automotive profile
+* IoTivity automotive wiki page
+* IoTivity on Tizen GearS2
 
 GENIVI + OCF Cooperation from Samsung Open Source Group
 
