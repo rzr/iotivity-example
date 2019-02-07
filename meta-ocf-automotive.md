@@ -16,14 +16,14 @@ The Open Connectivity Foundation (OCF) is creating a specification and sponsorin
 
 The GENIVI Alliance, a community that’s developing open source software and standards for the connected car, and OCF are partnering to co-develop open standards for vehicle connectivity and vehicle data exchange, including a unified model for secure discovery and exchange of information between smart homes, connected cars, and other IoT devices. The joint effort will also address end-to-end security challenges to enable new opportunities across multiple verticals. Additionally, GENIVI and OCF will  closely collaborate with the W3C Automotive Working Group, which develops the Open Web Platform API specification to expose vehicle data to web application developers.
 
-https://youtu.be/-iYD0cZA9to# OCF Automotive Project Video Roll
+[OCF Automotive Project Video Roll](https://youtu.be/-iYD0cZA9to#)
 
 ## Proof of Concept ##
 
 Through a broad collaboration spanning ten organizations, we were able to develop and showcase our demo at the OCF booth at CES 2017.  ETRI, Genivi Alliance, Honeywell, Intel, Jaguar Land Rover, OCF, Samsung, Tinnos, The Data Alliance, and W3C all collaborated on open specifications and open source software to realize numerous interesting connected car use cases and explore interoperability between smart home devices and the connected vehicle.
 
 
-https://youtu.be/YOzuwtA9OW4# Connected Car at CES 2017: GENIVI demo with Open Connectivity Foundation
+[Connected Car at CES 2017: GENIVI demo with Open Connectivity Foundation](https://youtu.be/YOzuwtA9OW4#)
 
 
 ## Source Code ##
@@ -63,11 +63,11 @@ IoTivity for Automotive IoT Interoperability from Samsung Open Source Group
 
 GENIVI + OCF Cooperation from Samsung Open Source Group
 
-[https://www.slideshare.net/SamsungOSG/genivi-ocf-cooperation]
+[https://www.slideshare.net/SamsungOSG/genivi-ocf-cooperation](https://www.slideshare.net/SamsungOSG/genivi-ocf-cooperation)
 
 
 IoTivity for Automotive: meta-ocf-automotive tutorial from Samsung Open Source Group 
 
-https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial
+[https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
 
 [![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial "meta-ocf-automotive-tutorial")
