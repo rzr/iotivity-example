@@ -70,4 +70,4 @@ IoTivity for Automotive: meta-ocf-automotive tutorial from Samsung Open Source G
 
 [https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
 
-[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial "meta-ocf-automotive-tutorial")
+[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
