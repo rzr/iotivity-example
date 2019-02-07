@@ -68,6 +68,10 @@ GENIVI + OCF Cooperation from Samsung Open Source Group
 
 IoTivity for Automotive: meta-ocf-automotive tutorial from Samsung Open Source Group 
 
+[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
+
 [https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
 
-[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
+
+* Authors: Sanjeev BA, Philippe Coval
+* Source: http://s-opensource.org/
