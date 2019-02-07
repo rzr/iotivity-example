@@ -4,5 +4,5 @@ Various notes related to IoTivity project:
 
 Index:
 
-* [[meta-oic.md]]
-* [[meta-ocf-automotive.md]]
+* [meta-oic]
+* [meta-ocf-automotive]
