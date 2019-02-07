@@ -1,9 +1,6 @@
 # How OCF is Creating the Connected Car #
 
 
-[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial "meta-ocf-automotive-tutorial")
-
-
 ## The Connected Car & Fragmentation ##
 
 Traditional car manufacturers have begun including early iterations of touchscreen technology with access to media and apps that can also provide basic HVAC (Heating, Ventilation and A/C) controls for the vehicle. These features can often be accessed through mobile devices with tailor-made apps from each car maker. However, this has led to OEMs building their own ecosystem silos, similar to the trends observed in the smartphone industry. The lack of an open, standardized framework has resulted in a fragmented market, where experiences from one OEM won’t work with another in any streamlined way; consequently, developers aren’t thinking about how to provide a rich user experience that allows cars and drivers to work in unison; this is a huge missed opportunity.
@@ -71,6 +68,10 @@ GENIVI + OCF Cooperation from Samsung Open Source Group
 
 
 IoTivity for Automotive: meta-ocf-automotive tutorial from Samsung Open Source Group 
+
+
+[![meta-ocf-automotive-tutorial](https://image.slidesharecdn.com/meta-ocf-automotive-20170531rzr-170531151433/95/iotivity-for-automotive-metaocfautomotive-tutorial-1-638.jpg)](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial "meta-ocf-automotive-tutorial")
+
 
 
 [https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial](https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial)
