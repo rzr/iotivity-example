@@ -11,8 +11,6 @@ The Open Connectivity Foundation (OCF) is creating a specification and sponsorin
 
 [![ocf-automotive-ces2017](https://i1.ytimg.com/vi/3d0uZE6lHvo/hqdefault.jpg)](https://youtu.be/3d0uZE6lHvo# "[CES 2017] Samsung Contributes to Open IoT Showcase at CES 2017")
 
-* https://youtu.be/3d0uZE6lHvo#
-
 
 ## Collaboration with Genivi & W3C ## 
 
@@ -70,4 +68,4 @@ https://www.slideshare.net/SamsungOSG/genivi-ocf-cooperation
 
 IoTivity for Automotive: meta-ocf-automotive tutorial from Samsung Open Source Group 
 
-https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial
+[https://www.slideshare.net/SamsungOSG/iotivity-for-automotive-metaocfautomotive-tutorial]
